@@ -8,7 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CopyToBuild\**" />
+    <EmbeddedResource Remove="CopyToBuild\**" />
+    <None Remove="CopyToBuild\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="xcopy /Y /S /E &quot;$(ProjectDir)\CopyToBuild\*&quot; &quot;$(TargetDir)&quot;" />
+	</Target>
 </Project>
