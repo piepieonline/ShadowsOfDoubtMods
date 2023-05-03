@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AssemblyRenamer": {
+      "commandName": "Project",
+      "workingDirectory": "D:\\Game Modding\\ShadowsOfDoubt\\IL2CppDumper\\DummyDll"
+    }
+  }
+}

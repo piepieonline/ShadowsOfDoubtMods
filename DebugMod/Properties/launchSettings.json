@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "ShadowsOfDoubt": {
+      "commandName": "Executable",
+      "executablePath": "E:\\SteamLibrary\\steamapps\\common\\Shadows of Doubt\\Shadows of Doubt.exe",
+      "workingDirectory": "E:\\SteamLibrary\\steamapps\\common\\Shadows of Doubt"
+    }
+  }
+}
