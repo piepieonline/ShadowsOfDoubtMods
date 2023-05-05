@@ -18,7 +18,7 @@ namespace RealEstateListingCruncherApp
                 if (hasInit) return;
                 hasInit = true;
 
-                var moddedAssetBundle = UniverseLib.AssetBundle.LoadFromFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "RealEstateListingCruncherAppBundle"));
+                var moddedAssetBundle = UniverseLib.AssetBundle.LoadFromFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "realestatelistingcruncherappbundle"));
                 // This is literally the scriptableobject the game stores these in, so that works
                 var newCruncherApp = moddedAssetBundle.LoadAsset<CruncherAppPreset>("ForSale");
                 newCruncherApp.appContent[0].AddComponent<RealEstateCruncherAppContent>();

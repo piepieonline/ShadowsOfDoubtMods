@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DebugMod", "DebugMod\DebugM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyRenamer", "AssemblyRenamer\AssemblyRenamer.csproj", "{CC77CFE1-1E17-470C-B1E7-4015A91A1749}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShadowsOfDoubtEditorSetup", "ShadowsOfDoubtEditorSetup\ShadowsOfDoubtEditorSetup.csproj", "{7673F200-F832-4EBF-8376-451D9F64AD92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShadowsOfDoubtEditorSetup", "ShadowsOfDoubtEditorSetup\ShadowsOfDoubtEditorSetup.csproj", "{7673F200-F832-4EBF-8376-451D9F64AD92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstateListingCruncherApp", "RealEstateListingCruncherApp\RealEstateListingCruncherApp.csproj", "{4C29E729-2856-46C8-9D85-F70EE246EB0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstateListingCruncherApp", "RealEstateListingCruncherApp\RealEstateListingCruncherApp.csproj", "{4C29E729-2856-46C8-9D85-F70EE246EB0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

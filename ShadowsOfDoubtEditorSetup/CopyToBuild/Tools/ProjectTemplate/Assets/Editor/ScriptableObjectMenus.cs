@@ -1,12 +1,19 @@
 using System.IO;
 using UnityEngine;
 using UnityEditor;
+using System;
+using System.Reflection;
 
 public class ScriptableObjectMenus
 {
     static void SaveAsset(ScriptableObject scriptableObject)
     {
-        AssetDatabase.CreateAsset(scriptableObject, $"Assets/_ModContent/{scriptableObject.name}.asset");
+        Type projectWindowUtilType = typeof(ProjectWindowUtil);
+        MethodInfo getActiveFolderPath = projectWindowUtilType.GetMethod("GetActiveFolderPath", BindingFlags.Static | BindingFlags.NonPublic);
+        object obj = getActiveFolderPath.Invoke(null, new object[0]);
+        string pathToCurrentFolder = obj.ToString();
+
+        AssetDatabase.CreateAsset(scriptableObject, $"{pathToCurrentFolder}/New {scriptableObject.GetType().Name}.asset");
         AssetDatabase.SaveAssets();
 
         EditorUtility.FocusProjectWindow();

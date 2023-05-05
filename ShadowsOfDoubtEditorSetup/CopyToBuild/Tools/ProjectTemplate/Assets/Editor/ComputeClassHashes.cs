@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ComputeClassHashes
 {
-    // [MenuItem("SOD/Compute Type Hashes")]
+    // [MenuItem("Shadows Of Doubt/Compute Type Hashes")]
     static void ComputeHashes()
     {
         var assembly = typeof(DatabaseApp).Assembly;
@@ -27,12 +27,6 @@ public class ComputeClassHashes
         Debug.Log(typeMap.mapping.Length);
 
         System.IO.File.WriteAllText("./ExtractedTypeIds.json", JsonUtility.ToJson(typeMap, true));
-    }
-
-    [MenuItem("SOD/Compute Path Hashes")]
-    static void ComputePathHash()
-    {
-        Debug.Log(FileIDUtil.Compute(new byte[] { 0x1e, 0xba, 0xef, 0x4e, 0xc9, 0x65, 0x4b, 0x04, 0x7b, 0xdf, 0x51, 0x38, 0x5d, 0x8a, 0x3b, 0x39 } ));
     }
 
     [System.Serializable]
