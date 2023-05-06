@@ -14,6 +14,12 @@ namespace RealEstateListingCruncherApp
 
         public override void Load()
         {
+            if (!Config.Bind("General", "Enabled", true).Value)
+            {
+                Log.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is disabled.");
+                return;
+            }
+
             Logger = Log;
 
             // Plugin startup logic
