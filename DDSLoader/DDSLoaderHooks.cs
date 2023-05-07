@@ -61,7 +61,7 @@ namespace DDSLoader
                             foreach (var line in File.ReadAllLines(stringFile))
                             {
                                 var lineSplit = line.Split(",");
-                                Strings.WriteToDictionary(fileName, lineSplit[0], lineSplit[1], lineSplit[2], lineSplit[3], int.TryParse(lineSplit[4], out var frequency) ? frequency : 0, bool.TryParse(lineSplit[5], out var requiresSuffix) ? requiresSuffix : false, lineSplit[6]);
+                                Strings.LoadIntoDictionary(fileName, Strings.stringTable[fileName].Count + 1, lineSplit[0], lineSplit[2], lineSplit[3], int.TryParse(lineSplit[4], out var frequency) ? frequency : 0, bool.TryParse(lineSplit[5], out var requiresSuffix) ? requiresSuffix : false);
                             }
                         }
 
