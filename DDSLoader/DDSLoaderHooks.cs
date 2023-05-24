@@ -20,15 +20,15 @@ namespace DDSLoader
                     var messagesPath = Path.Combine(dir.FullName, "DDS", "Messages");
                     var blocksPath = Path.Combine(dir.FullName, "DDS", "Blocks");
 
-                    if(Directory.Exists(treesPath) )
+                    if (Directory.Exists(blocksPath))
                     {
-                        foreach (var treePath in Directory.GetFiles(treesPath, "*.tree"))
+                        foreach (var blockPath in Directory.GetFiles(blocksPath, "*.block"))
                         {
-                            var message = JsonUtility.FromJson<DDSSaveClasses.DDSTreeSave>(File.ReadAllText(treePath));
-                            Toolbox.Instance.allDDSTrees.Add(message.id, message);
+                            var block = JsonUtility.FromJson<DDSSaveClasses.DDSBlockSave>(File.ReadAllText(blockPath));
+                            Toolbox.Instance.allDDSBlocks.Add(block.id, block);
                         }
                     }
-
+                    
                     if (Directory.Exists(messagesPath))
                     {
                         foreach (var messagePath in Directory.GetFiles(messagesPath, "*.msg"))
@@ -38,12 +38,19 @@ namespace DDSLoader
                         }
                     }
 
-                    if (Directory.Exists(blocksPath))
+                    if(Directory.Exists(treesPath) )
                     {
-                        foreach (var blockPath in Directory.GetFiles(blocksPath, "*.block"))
+                        foreach (var treePath in Directory.GetFiles(treesPath, "*.tree"))
                         {
-                            var block = JsonUtility.FromJson<DDSSaveClasses.DDSBlockSave>(File.ReadAllText(blockPath));
-                            Toolbox.Instance.allDDSBlocks.Add(block.id, block);
+                            var message = JsonUtility.FromJson<DDSSaveClasses.DDSTreeSave>(File.ReadAllText(treePath));
+                            message.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+
+                            foreach(var msg in message.messages)
+                            {
+                                message.messageRef.Add(msg.instanceID, msg);
+                            }
+
+                            Toolbox.Instance.allDDSTrees.Add(message.id, message);
                         }
                     }
 

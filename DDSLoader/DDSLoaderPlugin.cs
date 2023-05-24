@@ -25,7 +25,10 @@ namespace DDSLoader
             harmony.PatchAll();
             Log.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is patched!");
 
-            modsToLoadFrom = Directory.GetDirectories(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), ".."), "DDSContent", SearchOption.AllDirectories).Select(dir => new DirectoryInfo(dir)).ToList(); ;
+            // Seperate mods to load from
+            modsToLoadFrom = Directory.GetDirectories(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), ".."), "DDSContent", SearchOption.AllDirectories).Select(dir => new DirectoryInfo(dir)).ToList();
+            // DDS integrated mods to load from
+            // modsToLoadFrom.AddRange(Directory.GetDirectories(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "AdditionalContent"), "DDSContent", SearchOption.AllDirectories).Select(dir => new DirectoryInfo(dir)).ToList());
         }
     }
 }
