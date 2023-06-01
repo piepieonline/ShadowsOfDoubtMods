@@ -12,6 +12,7 @@
   <ItemGroup>
 	  <PackageReference Include="BepInEx.IL2CPP" Version="6.0.0-*" IncludeAssets="compile" />
 	  <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
+	  <PackageReference Include="Tavis.JsonPatch" Version="0.5.2-beta" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,5 +44,6 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
 	  <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;E:\SteamLibrary\steamapps\common\Shadows of Doubt\BepInEx\plugins\$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;E:\SteamLibrary\steamapps\common\Shadows of Doubt\BepInEx\plugins\$(ProjectName)&quot;" />
+	  <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;D:\Game Modding\ShadowsOfDoubt\_Mods\ShadowsOfDoubtContent\$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;D:\Game Modding\ShadowsOfDoubt\_Mods\ShadowsOfDoubtContent\$(ProjectName)&quot;" />
   </Target>
 </Project>

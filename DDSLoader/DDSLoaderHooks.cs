@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,6 +28,12 @@ namespace DDSLoader
                             var block = JsonUtility.FromJson<DDSSaveClasses.DDSBlockSave>(File.ReadAllText(blockPath));
                             Toolbox.Instance.allDDSBlocks.Add(block.id, block);
                         }
+                        
+                        foreach (var blockPath in Directory.GetFiles(blocksPath, "*.block_patch"))
+                        {
+                            var patchedBlock = JsonUtility.FromJson<DDSSaveClasses.DDSBlockSave>(CreatePatchedJson(blockPath));
+                            Toolbox.Instance.allDDSBlocks[patchedBlock.id] = patchedBlock;
+                        }
                     }
                     
                     if (Directory.Exists(messagesPath))
@@ -36,25 +43,44 @@ namespace DDSLoader
                             var message = JsonUtility.FromJson<DDSSaveClasses.DDSMessageSave>(File.ReadAllText(messagePath));
                             Toolbox.Instance.allDDSMessages.Add(message.id, message);
                         }
+
+                        foreach (var messagePath in Directory.GetFiles(messagesPath, "*.msg_patch"))
+                        {
+                            var patchedMessage = JsonUtility.FromJson<DDSSaveClasses.DDSMessageSave>(CreatePatchedJson(messagePath));
+                            Toolbox.Instance.allDDSMessages[patchedMessage.id] = patchedMessage;
+                        }
                     }
 
                     if(Directory.Exists(treesPath) )
                     {
                         foreach (var treePath in Directory.GetFiles(treesPath, "*.tree"))
                         {
-                            var message = JsonUtility.FromJson<DDSSaveClasses.DDSTreeSave>(File.ReadAllText(treePath));
-                            message.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+                            var tree = JsonUtility.FromJson<DDSSaveClasses.DDSTreeSave>(File.ReadAllText(treePath));
+                            tree.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
 
-                            foreach(var msg in message.messages)
+                            foreach(var msg in tree.messages)
                             {
-                                message.messageRef.Add(msg.instanceID, msg);
+                                tree.messageRef.Add(msg.instanceID, msg);
                             }
 
-                            Toolbox.Instance.allDDSTrees.Add(message.id, message);
+                            Toolbox.Instance.allDDSTrees.Add(tree.id, tree);
+                        }
+
+                        foreach (var treePath in Directory.GetFiles(treesPath, "*.tree_patch"))
+                        {
+                            var patchedTree = JsonUtility.FromJson<DDSSaveClasses.DDSTreeSave>(CreatePatchedJson(treePath));
+                            patchedTree.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+
+                            foreach (var msg in patchedTree.messages)
+                            {
+                                patchedTree.messageRef.Add(msg.instanceID, msg);
+                            }
+
+                            Toolbox.Instance.allDDSTrees[patchedTree.id] = patchedTree;
                         }
                     }
 
-                    DDSLoaderPlugin.Logger.LogInfo($"Loaded DDS Content For: {dir.Parent.Name}");
+                    DDSLoaderPlugin.Logger.LogInfo($"Loaded DDS Content and Patches For: {dir.Parent.Name}");
 
                     var selectedLanguagePath = Path.Combine(dir.FullName, "Strings", Game.Instance.language);
                     var englishLanguagePath = Path.Combine(dir.FullName, "Strings", "English");
@@ -75,6 +101,19 @@ namespace DDSLoader
                         DDSLoaderPlugin.Logger.LogInfo($"Loaded String Content For: {dir.Parent.Name}");
                     }
                 }
+            }
+
+            static string CreatePatchedJson(string patchPath)
+            {
+                var patchFileInfo = new FileInfo(patchPath);
+                var patchDirInfo = new DirectoryInfo(patchFileInfo.DirectoryName);
+
+                var existingDDSContent = JToken.Parse(File.ReadAllText(Path.Combine(Application.streamingAssetsPath, "DDS", patchDirInfo.Name, patchFileInfo.Name.Split("_")[0])));
+                var patchDDSContent = Tavis.PatchDocument.Parse(File.ReadAllText(patchPath));
+
+                patchDDSContent.ApplyTo(existingDDSContent);
+
+                return existingDDSContent.ToString();
             }
         }
     }

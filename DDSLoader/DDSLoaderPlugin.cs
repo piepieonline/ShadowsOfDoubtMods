@@ -25,10 +25,11 @@ namespace DDSLoader
             harmony.PatchAll();
             Log.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is patched!");
 
-            // Seperate mods to load from
-            modsToLoadFrom = Directory.GetDirectories(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), ".."), "DDSContent", SearchOption.AllDirectories).Select(dir => new DirectoryInfo(dir)).ToList();
-            // DDS integrated mods to load from
-            // modsToLoadFrom.AddRange(Directory.GetDirectories(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "AdditionalContent"), "DDSContent", SearchOption.AllDirectories).Select(dir => new DirectoryInfo(dir)).ToList());
+            // Load all folders named DDSContent (includes subfolders), unless they have a disable file
+            modsToLoadFrom = Directory.GetDirectories(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), ".."), "DDSContent", SearchOption.AllDirectories)
+                .Select(dirPath => new DirectoryInfo(dirPath))
+                .Where(dir => !File.Exists(Path.Combine(dir.Parent.FullName, "disabled.txt")))
+                .ToList();
         }
     }
 }
