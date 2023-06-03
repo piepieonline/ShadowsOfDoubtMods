@@ -1,32 +1,22 @@
 ﻿using HarmonyLib;
-using Il2CppDumper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Text;
-using UnhollowerBaseLib;
-using UnhollowerRuntimeLib;
 using UnityEngine;
-using static Il2CppSystem.Net.WebCompletionSource;
 
 namespace DebugMod
 {
     class Hooks
     {
-        // [HarmonyPatch(typeof(Human), "GetCitizenName")]
-        public class Citizen_GetCitizenName
+        [HarmonyPatch(typeof(InterfaceController), "NewGameMessage")]
+        public class InterfaceController_NewGameMessage
         {
-            public static void Prefix(Citizen __instance)
+            public static void Prefix(InterfaceController.GameMessageType newType, string newMessage)
             {
-                try
+                if(newMessage.ToLower().Contains("[scanner]"))
                 {
-                    Plugin.Logger.LogInfo($"ORG: Getting name of {__instance.firstName}");
-                }
-                catch
-                {
-                    Plugin.Logger.LogInfo($"Patcher Error!");
+                    Plugin.Logger.LogInfo($"Murder detected");
+                    InterfaceController.Instance.ToggleNotebookButton();
                 }
             }
         }
@@ -42,7 +32,7 @@ namespace DebugMod
             {
                 Plugin.Logger.LogInfo($"Building: {__instance.currentBuilding?.ToString()}");
 
-                if(__instance.currentBuilding != null)
+                if (__instance.currentBuilding != null)
                 {
                     foreach (var address in GameplayController.Instance.forSale)
                     {
@@ -64,8 +54,8 @@ namespace DebugMod
             public static void Prefix()
             {
                 if (hasInit) return;
-                hasInit = true;
 
+                /*
                 var livingRoom = Resources.FindObjectsOfTypeAll<RoomTypeFilter>().Where(roomType => roomType.name == "LivingRoom").FirstOrDefault();
                 Plugin.Logger.LogInfo($"1 {livingRoom}");
                 var apartmentAddressPreset = Resources.FindObjectsOfTypeAll<AddressPreset>().Where(roomType => roomType.name == "Apartment").FirstOrDefault();
@@ -84,28 +74,28 @@ namespace DebugMod
                 newFurniturePreset.name = "Hello?";
 
                 Toolbox.Instance.allFurniture.Add(newFurniturePreset);
-                */
+                *
 
                 var newClasses = new List<FurnitureClass>();
 
-                
+
                 foreach (var a in Resources.FindObjectsOfTypeAll<FurniturePreset>().Where(furniturePreset => furniturePreset.name.Contains("Telev")))
                 {
                     // a.prefab = phoneBoothFurniturePreset.prefab;
                     // a.subObjects = phoneBoothFurniturePreset.subObjects;
                     // a.subObjects.Add(phoneBoothFurniturePreset.subObjects[7]);
                     // a.isJobBoard = true;
-                    foreach(var b in a.classes)
+                    foreach (var b in a.classes)
                     {
                         newClasses.Add(b);
                     }
                     a.classes.Clear();
                 }
-                
+
                 Plugin.Logger.LogInfo($"5 cleared");
 
                 /// ModernTelevison
-                
+
                 /*
                 phoneBoothFurniturePreset.allowedInAddressesOfType.Clear();
                 foreach(var a in Resources.FindObjectsOfTypeAll<AddressPreset>().ToList())
@@ -133,53 +123,29 @@ namespace DebugMod
 
                 phoneBoothFurniturePreset.onlyAllowInFollowing = false;
                 */
-                Plugin.Logger.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} has custom assets!");
 
-
-
-                /// Custom Cruncher App
-                Plugin.Logger.LogInfo($"Custom Cruncher Start");
-
-                var newtestassets = UniverseLib.AssetBundle.LoadFromFile("E:\\SteamLibrary\\steamapps\\common\\Shadows of Doubt\\Shadows of Doubt_Data\\customcontent");
-
-                // This is literally the scriptableobject the game stores these in, so that works
-                foreach(var cruncher in Resources.FindObjectsOfTypeAll<InteractablePreset>().Where(preset => preset.name.Contains("Cruncher")))
-                {
-                    cruncher.additionalApps.Insert(cruncher.additionalApps.Count - 2, DebugMod.Plugin.customAssets.LoadAsset<CruncherAppPreset>("ForSale"));
-                    cruncher.additionalApps.Insert(cruncher.additionalApps.Count - 2, newtestassets.LoadAsset<CruncherAppPreset>("TestForSaleApp"));
-                }
-
-                // CustomCruncherApp.myPreset = employeeDB; // CruncherAppPreset.Instantiate(employeeDB);
-                CustomCruncherApp.myPreset = DebugMod.Plugin.customAssets.LoadAsset<CruncherAppPreset>("ForSale");
-
-                // CustomCruncherApp.myPreset.name = "Custom DB";
-                CustomCruncherApp.myPreset.openOnEnd = Resources.FindObjectsOfTypeAll<CruncherAppPreset>().Where(res => res.name.Contains("Desktop")).FirstOrDefault();
-
-                CustomCruncherApp.myPreset.appContent[0].AddComponent<CustomCruncherApp>();
-
-                /*
-                var oldDB = CustomCruncherApp.myPreset.appContent[0].GetComponent<DatabaseApp>();
-                var newDB = CustomCruncherApp.myPreset.appContent[0].AddComponent<CustomDatabaseApp>();
-                
-                newDB.titleText = oldDB.titleText;
-                newDB.searchText = oldDB.searchText;
-                newDB.list = oldDB.list;
-                newDB.printButton = oldDB.printButton;
-                newDB.searchString = oldDB.searchString;
-                newDB.ddsPrintout = oldDB.ddsPrintout;
-                newDB.citizenPool = oldDB.citizenPool;
-
-                UnityEngine.Object.Destroy(oldDB);
-                */
-                
-                Plugin.customAssets.LoadAllAssets();
-
-                Plugin.Logger.LogInfo($"Custom Cruncher End");
             }
         }
 
         // Patch to force fix a case?
-        [HarmonyPatch(typeof(CasePanelController), "SetActiveCase")]
+        [HarmonyPatch(typeof(SideJobController), "Start")]
+        public class SideJobController_Start
+        {
+            public static void Prefix()
+            {
+                var moddedAssetBundle = UniverseLib.AssetBundle.LoadFromFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "newsidejob"));
+
+                var newSideJob = moddedAssetBundle.LoadAsset<JobPreset>("NewSideJob");
+                // var newSideJob = moddedAssetBundle.LoadAsset<JobPreset>("StealAndTossItem");
+                Toolbox.Instance.allSideJobs.Clear();
+                Toolbox.Instance.allSideJobs.Add(newSideJob);
+
+                Plugin.Logger.LogInfo("Job added");
+            }
+        }
+
+            // Patch to force fix a case?
+        // [HarmonyPatch(typeof(CasePanelController), "SetActiveCase")]
         public class CasePanelController_SetActiveCase
         {
             public static void Prefix(CasePanelController __instance, Case newCase)
@@ -196,7 +162,7 @@ namespace DebugMod
             }
         }
 
-        [HarmonyPatch(typeof(GenerationController), "PickFurniture")]
+        // [HarmonyPatch(typeof(GenerationController), "PickFurniture")]
         public class GenerationController_PickFurniture
         {
             public static int count = 0;
@@ -210,7 +176,7 @@ namespace DebugMod
             }
         }
 
-        [HarmonyPatch(typeof(GenerationController), "GetValidFurniture")]
+        // [HarmonyPatch(typeof(GenerationController), "GetValidFurniture")]
         public class GenerationController_GetValidFurniture
         {
             public static int count = 0;
@@ -223,8 +189,69 @@ namespace DebugMod
                 }
             }
         }
+        
+        // [HarmonyPatch()]
+        public class NameGenerator_GenerateName_Any
+        {
+            static IEnumerable<System.Reflection.MethodInfo> TargetMethods()
+            {
+                return typeof(NameGenerator).GetMethods().Where(methodInfo => methodInfo.Name.Contains("Generate"));
+            }
 
-        [HarmonyPatch(typeof(ResolveOptionsController), "OnEnable")]
+            [HarmonyPrefix]
+            public static void Prefix()
+            {
+                Plugin.Logger.LogInfo($"Name Generator");
+                var trace = new System.Diagnostics.StackTrace();
+                foreach (var frame in trace.GetFrames())
+                {
+                    var method = frame.GetMethod();
+                    if (method.Name.Equals("LogStack")) continue;
+                    Plugin.Logger.LogInfo(string.Format("{0}::{1}",
+                        method.ReflectedType != null ? method.ReflectedType.Name : string.Empty,
+                        method.Name));
+                }
+            }
+        }
+
+        // [HarmonyPatch()]
+        public class SystemFileInfo_Read_Any
+        {
+            static IEnumerable<System.Reflection.MethodInfo> TargetMethods()
+            {
+                return typeof(System.IO.FileInfo).GetMethods().Where(methodInfo => methodInfo.Name.Contains("Open") || methodInfo.Name.Contains("Read")).Concat(
+                        typeof(System.IO.FileStream).GetMethods().Where(methodInfo => methodInfo.Name.Contains("Open") || methodInfo.Name.Contains("Read"))).Concat(
+                        typeof(System.IO.File).GetMethods().Where(methodInfo => methodInfo.Name.Contains("Open") || methodInfo.Name.Contains("Read")));
+            }
+
+            [HarmonyPrefix]
+            public static void Prefix()
+            {
+                // Plugin.Logger.LogInfo($"File Read System");
+                var frame = new System.Diagnostics.StackFrame(1);
+                var method = frame.GetMethod();
+                var type = method.DeclaringType;
+                var name = method.Name;
+                Plugin.Logger.LogInfo($"File Read System: {type} - {name}");
+            }
+        }
+
+        // [HarmonyPatch()]
+        public class FileStream_Read
+        {
+            static IEnumerable<System.Reflection.MethodInfo> TargetMethods()
+            {
+                return typeof(System.IO.FileStream).GetMethods().Where(methodInfo => methodInfo.Name == "Read");
+            }
+
+            [HarmonyPrefix]
+            public static void Prefix(System.IO.FileStream __instance)
+            {
+                Plugin.Logger.LogInfo($"File Read {__instance.Name}");
+            }
+        }
+
+        // [HarmonyPatch(typeof(ResolveOptionsController), "OnEnable")]
         public class ResolveOptionsController_OnEnable
         {
             public static GameObject forceResolveButton;
@@ -256,40 +283,6 @@ namespace DebugMod
             static void TaskOnClick()
             {
                 Debug.Log("You have clicked the button!");
-            }
-        }
-
-        /*
-        [HarmonyPatch(typeof(DatabaseApp), "OnPrintEntry")]
-        public class DatabaseApp_OnPrintEntry
-        {
-            public static void Prefix(DatabaseApp __instance)
-            {
-                __instance.ddsPrintout = DatabaseApp_UpdateSearch.optionToAddressMap[__instance.list.selected.option.text].saleNote.preset;
-            }
-        }
-        */
-        
-        public class AddressOption : ComputerOSMultiSelect.OSMultiOption
-        {
-            public NewAddress address;
-        }
-
-        [HarmonyPatch(typeof(ComputerController), "OnClickOnOSElement")]
-        public class ComputerController_OnClickOnOSElement
-        {
-            public static void Prefix(ComputerOSUIComponent c)
-            {
-                Debug.Log($"Clicked: {c.name}");
-            }
-        }
-
-        [HarmonyPatch(typeof(DesktopApp), "UpdateIcons")]
-        public class DesktopApp_UpdateIcons
-        {
-            public static void Prefix(DesktopApp __instance)
-            {
-                Debug.Log($"Updating icons");
             }
         }
     }

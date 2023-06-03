@@ -1,44 +1,35 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>AnyCitySize</AssemblyName>
     <Description>Allows for any city size to be used when generating</Description>
     <Version>1.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
+	  <RestoreAdditionalProjectSources>
+		  https://api.nuget.org/v3/index.json;
+		  https://nuget.bepinex.dev/v3/index.json
+	  </RestoreAdditionalProjectSources>
+	  <BepInExPath>D:\Game Modding\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\</BepInExPath>
   </PropertyGroup>
 
-		<ItemGroup>
-			<PackageReference Include="BepInEx.IL2CPP" Version="6.0.0-*" IncludeAssets="compile" />
-			<PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
-		</ItemGroup>
+  <ItemGroup>
+    <Compile Remove="ModFolderContent\**" />
+    <EmbeddedResource Remove="ModFolderContent\**" />
+    <None Remove="ModFolderContent\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+	  <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+  </ItemGroup>
 
 		<ItemGroup>
-			<Reference Include="Assembly-CSharp">
-				<HintPath>E:\SteamLibrary\steamapps\common\Shadows of Doubt\BepInEx\unhollowed\Assembly-CSharp.dll</HintPath>
-			</Reference>
-			<Reference Include="Il2Cppmscorlib">
-				<HintPath>E:\SteamLibrary\steamapps\common\Shadows of Doubt\BepInEx\unhollowed\Il2Cppmscorlib.dll</HintPath>
-			</Reference>
-			<Reference Include="Il2CppSystem">
-				<HintPath>E:\SteamLibrary\steamapps\common\Shadows of Doubt\BepInEx\unhollowed\Il2CppSystem.dll</HintPath>
-			</Reference>
-			<Reference Include="Unity.TextMeshPro">
-				<HintPath>E:\SteamLibrary\steamapps\common\Shadows of Doubt\BepInEx\unhollowed\Unity.TextMeshPro.dll</HintPath>
-			</Reference>
-			<Reference Include="UnityEngine">
-				<HintPath>E:\SteamLibrary\steamapps\common\Shadows of Doubt\BepInEx\unhollowed\UnityEngine.dll</HintPath>
-			</Reference>
-			<Reference Include="UnityEngine.CoreModule">
-				<HintPath>E:\SteamLibrary\steamapps\common\Shadows of Doubt\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
-			</Reference>
-			<Reference Include="UnityEngine.UI">
-				<HintPath>E:\SteamLibrary\steamapps\common\Shadows of Doubt\BepInEx\unhollowed\UnityEngine.UI.dll</HintPath>
-			</Reference>
+			<Reference Include="$(BepInExPath)/interop/*.dll"/>
 		</ItemGroup>
 
 		<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-			<Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;E:\SteamLibrary\steamapps\common\Shadows of Doubt\BepInEx\plugins\$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;E:\SteamLibrary\steamapps\common\Shadows of Doubt\BepInEx\plugins\$(ProjectName)&quot;" />
+			<Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;D:\Game Modding\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\plugins\$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;D:\Game Modding\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\plugins\$(ProjectName)&quot;" />
 		</Target>
 	</Project>

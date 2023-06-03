@@ -1,13 +1,12 @@
 ﻿using BepInEx;
-using BepInEx.IL2CPP;
+using BepInEx.Unity.IL2CPP;
 using BepInEx.Logging;
 using HarmonyLib;
-using System.Linq;
-using UnhollowerRuntimeLib;
+using Il2CppInterop.Runtime.Injection;
 
 namespace RealEstateListingCruncherApp
 {
-    [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
+    [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
     public class RealEstateListingCruncherPlugin : BasePlugin
     {
         public static ManualLogSource Logger;
@@ -16,22 +15,22 @@ namespace RealEstateListingCruncherApp
         {
             if (!Config.Bind("General", "Enabled", true).Value)
             {
-                Log.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is disabled.");
+                Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is disabled.");
                 return;
             }
 
             Logger = Log;
 
             // Plugin startup logic
-            Log.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
-            var harmony = new Harmony($"{PluginInfo.PLUGIN_GUID}");
+            Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+            var harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");
             harmony.PatchAll();
-            Log.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} is patched!");
+            Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is patched!");
 
             ClassInjector.RegisterTypeInIl2Cpp<RealEstateCruncherAppContent>();
             ClassInjector.RegisterTypeInIl2Cpp<RealEstateCruncherAppContent.CruncherForSaleContent>();
 
-            Log.LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} has added custom types!");
+            Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} has added custom types!");
         }
     }
 }
