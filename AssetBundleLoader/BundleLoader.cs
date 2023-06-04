@@ -23,6 +23,8 @@ namespace AssetBundleLoader
 
         static string classPackageFileName = "classdata.tpk";
 
+        static Dictionary<string, UniverseLib.AssetBundle> loadedBundles = new Dictionary<string, UniverseLib.AssetBundle>();
+
         public override void Load()
         {
             Logger = Log;
@@ -59,6 +61,11 @@ namespace AssetBundleLoader
         {
             string patchedBundlePath = bundlePath + "_patched_" + Game.Instance.buildID;
             
+            if(loadedBundles.ContainsKey(patchedBundlePath) && loadedBundles[patchedBundlePath] != null)
+            {
+                return loadedBundles[patchedBundlePath];
+            }
+
             if(!System.IO.File.Exists(patchedBundlePath) || skipCache)
             {
                 var customManager = new AssetsManager();
@@ -125,7 +132,8 @@ namespace AssetBundleLoader
 
             EnableLogging = false;
 
-            return UniverseLib.AssetBundle.LoadFromFile(patchedBundlePath);
+            loadedBundles[patchedBundlePath] = UniverseLib.AssetBundle.LoadFromFile(patchedBundlePath);
+            return loadedBundles[patchedBundlePath];
         }
 
         static bool WalkAndReplace(AssetFileInfo info, AssetTypeValueField parent, bool hasReplaced)
