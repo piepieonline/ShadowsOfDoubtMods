@@ -1,3 +1,7 @@
+# 1.0.4
+
+* Updating to a fixed version of AssetBundleLoader
+
 # 1.0.3
 
 * Fixed Thunderstore and r2modman breaking localisation by flattening the folder structure
