@@ -4,7 +4,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<AssemblyName>AssetBundleLoader</AssemblyName>
 		<Description>Load AssetBundles built against previous game versions safely</Description>
-		<Version>1.0.0</Version>
+		<Version>1.0.2</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 		<RestoreAdditionalProjectSources>

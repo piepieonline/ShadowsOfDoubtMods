@@ -55,6 +55,12 @@ namespace AssetBundleLoader
                 pathToId[path] = pathId;
             }
             */
+
+            // Manually init UniverseLib, in case it hasn't been done yet (No UnityExplorer or ConfigManager)
+            UniverseLib.Universe.Init(0, null, null, new UniverseLib.Config.UniverseLibConfig()
+            {
+                Unhollowed_Modules_Folder = System.IO.Path.Combine(Paths.BepInExRootPath, "interop")
+            });
         }
 
         public static UniverseLib.AssetBundle LoadBundle(string bundlePath, bool skipCache = false)
