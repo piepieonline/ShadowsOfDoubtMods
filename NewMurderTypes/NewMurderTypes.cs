@@ -63,6 +63,13 @@ namespace NewMurderTypes
 
             var murderBundle = BundleLoader.LoadBundle(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "BundleContent\\newmurdertypes"), true);
 
+            foreach (var asset in murderBundle.LoadAllAssets().Where(asset => asset.GetActualType() == typeof(MurderPreset)))
+            {
+                MurderPreset murderPreset = asset.Cast<MurderPreset>();
+                NewMurderTypes.Logger.LogInfo($"Loading MurdererPreset: {murderPreset.name}");
+                Toolbox.Instance.allMurderPresets.Add(murderPreset);
+            }
+            
             foreach (var asset in murderBundle.LoadAllAssets().Where(asset => asset.GetActualType() == typeof(MurderMO)))
             {
                 MurderMO mo = asset.Cast<MurderMO>();
