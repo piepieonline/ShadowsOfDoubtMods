@@ -613,7 +613,7 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 6
   activeInputHandler: 0
-  cloudProjectId: 769a5cf1-598f-4295-bc77-96f5e717188e
+  cloudProjectId:
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames:
   - Fastest
@@ -622,8 +622,8 @@ PlayerSettings:
   - Good
   - Beautiful
   - Fantastic
-  projectName: PD3D
-  organizationId: colej_uk
+  projectName:
+  organizationId:
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 1
   virtualTexturingSupportEnabled: 0
