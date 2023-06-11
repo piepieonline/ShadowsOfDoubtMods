@@ -110,7 +110,7 @@ namespace RealEstateListingCruncherApp
 
                 salesDataText.text = Strings.GetTextForComponent("600d4a18-7306-4871-a68e-e7764ae62f81", interactable, linkSetting: Strings.LinkSetting.forceNoLinks);
                 descriptionText.text = Strings.GetTextForComponent("3651e904-22e5-4093-9660-e59140ea6176", interactable, dataKeys: Toolbox.Instance.allDataKeys);
-                purchaseText.text = Strings.Get("evidence.generic", "Purchase") + " " + CityControls._instance.cityCurrency + Number.FormatInt32(interactable.forSale.GetPrice(false), null, NumberFormatInfo.CurrentInfo);
+                purchaseText.text = Strings.Get("evidence.generic", "Purchase") + " " + CityControls._instance.cityCurrency + interactable.forSale.GetPrice(false).ToString();
 
                 previewImage.texture = interactable.forSale.evidenceEntry.GetPhoto(Toolbox.Instance.allDataKeys);
 
