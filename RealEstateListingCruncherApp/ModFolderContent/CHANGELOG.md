@@ -1,3 +1,7 @@
+# 1.0.5
+
+* Fixed for game version 34.02
+
 # 1.0.4
 
 * Updating to a fixed version of AssetBundleLoader
