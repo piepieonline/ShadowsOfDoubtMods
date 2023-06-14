@@ -121,11 +121,8 @@ namespace NewMurderTypes
 
                 if (!selectedCiphers.ContainsKey(murdererName))
                 {
-
                     selectedCiphers.Add(murdererName, (CipherTypes)(nameAsIntValue % CIPHER_COUNT));
                 }
-
-                // NewMurderTypes.Logger.LogInfo($"Selected Cipher: {selectedCiphers[murdererName]}");
 
                 switch (selectedCiphers[murdererName])
                 {
@@ -145,9 +142,47 @@ namespace NewMurderTypes
             return true;
         }
 
+        // Taken from https://dotnetfiddle.net/TeL8qu - JerryChen
         static string ROTX(string input, int amount)
         {
-            return !string.IsNullOrEmpty(input) ? new string(input.ToCharArray().Select(s => { return (char)((s >= 97 && s <= 122) ? ((s + amount > 122) ? s - amount : s + amount) : (s >= 65 && s <= 90 ? (s + amount > 90 ? s - amount : s + amount) : s)); }).ToArray()) : input;
+            if (input.Length > 0)
+            {
+                //char [] origCharArray = new char[input.Length];
+                char[] retCharArray = new char[input.Length];
+                for (int i = 0; i < input.Length; i++)
+                {
+                    char curChar = input[i];
+                    if (System.Char.IsLetter(curChar))
+                    { // current Char is alphanumeric
+                      //System.Globalization.CharUnicodeInfo.GetNumericValue(curChar);
+                        int tempVal = (int)curChar + amount % 26;
+                        if (System.Char.IsLower(curChar))
+                        { // check if the tempVal is greater than the value of 'z'
+                            if (tempVal > (int)'z')
+                            {
+                                tempVal = (int)'a' + (tempVal - (int)'z') - 1;
+                            }
+                        }
+                        else
+                        { // upper case check if tempVal is greater than 'Z'
+                            if (tempVal > (int)'Z')
+                            {
+                                tempVal = (int)'A' + (tempVal - (int)'Z') - 1;
+                            }
+                        }
+
+                        retCharArray[i] = (char)(tempVal);
+                    }
+                    else
+                    {
+                        retCharArray[i] = curChar;
+                    }
+                }
+
+                return string.Concat(retCharArray);
+            }
+
+            return "";
         }
 
         static string GetAtbash(string s)
