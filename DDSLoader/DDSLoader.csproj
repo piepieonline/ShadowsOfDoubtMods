@@ -3,8 +3,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<AssemblyName>DDSLoader</AssemblyName>
-		<Description>Loads DDS and strings for other mods</Description>
-		<Version>1.0.0</Version>
+		<Description>Loads the DDS and strings CSV for other mods</Description>
+		<Version>1.0.2</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 		<BepInExPath>D:\Game Modding\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\</BepInExPath>
