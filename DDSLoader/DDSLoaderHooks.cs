@@ -141,28 +141,8 @@ namespace DDSLoader
                             var fileName = Path.GetFileNameWithoutExtension(stringFile);
                             foreach (var line in File.ReadAllLines(stringFile))
                             {
-                                var lineSplit = line.Split(",");
-
-                                // Invalid line, skip it
-                                if (lineSplit.Length < 7) continue;
-
-                                var key = lineSplit[0];
-                                var display = lineSplit[2];
-
-                                // Quotes mean we need to parse extra commas potentially
-                                int displayOffset = 0;
-                                if(display.StartsWith("\"") && !display.EndsWith("\""))
-                                {
-                                    do
-                                    {
-                                        displayOffset++;
-                                        display += "," + lineSplit[2 + displayOffset];
-                                    } while(!display.EndsWith("\""));
-                                    
-                                    display = display.Trim('"');
-                                }
-
-                                Strings.LoadIntoDictionary(fileName, Strings.stringTable[fileName].Count + 1, key, display, lineSplit[3 + displayOffset], int.TryParse(lineSplit[4 + displayOffset], out var frequency) ? frequency : 0, bool.TryParse(lineSplit[5 + displayOffset], out var requiresSuffix) ? requiresSuffix : false);
+                                Strings.ParseLine(line.Trim(), out var key, out var notes, out var display, out var alt, out var freq, out var suffix, out var misc);
+                                Strings.LoadIntoDictionary(fileName, Strings.stringTable[fileName].Count + 1, key, display.Replace("\\r\\n", "\r\n"), alt, freq, suffix);
                             }
                         }
 
