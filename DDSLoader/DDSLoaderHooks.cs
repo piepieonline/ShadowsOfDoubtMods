@@ -30,7 +30,7 @@ namespace DDSLoader
                                 var block = JsonUtility.FromJson<DDSSaveClasses.DDSBlockSave>(File.ReadAllText(blockPath));
                                 Toolbox.Instance.allDDSBlocks.Add(block.id, block);
                             }
-                            catch (ArgumentException exception)
+                            catch (Exception exception)
                             {
                                 DDSLoaderPlugin.Logger.LogError($"Failed to load: {blockPath}");
                                 DDSLoaderPlugin.Logger.LogError(exception);
@@ -44,7 +44,7 @@ namespace DDSLoader
                                 var patchedBlock = JsonUtility.FromJson<DDSSaveClasses.DDSBlockSave>(CreatePatchedJson(blockPath));
                                 Toolbox.Instance.allDDSBlocks[patchedBlock.id] = patchedBlock;
                             }
-                            catch (ArgumentException exception)
+                            catch (Exception exception)
                             {
                                 DDSLoaderPlugin.Logger.LogError($"Failed to load: {blockPath}");
                                 DDSLoaderPlugin.Logger.LogError(exception);
@@ -61,7 +61,7 @@ namespace DDSLoader
                                 var message = JsonUtility.FromJson<DDSSaveClasses.DDSMessageSave>(File.ReadAllText(messagePath));
                                 Toolbox.Instance.allDDSMessages.Add(message.id, message);
                             }
-                            catch (ArgumentException exception)
+                            catch (Exception exception)
                             {
                                 DDSLoaderPlugin.Logger.LogError($"Failed to load: {messagePath}");
                                 DDSLoaderPlugin.Logger.LogError(exception);
@@ -75,7 +75,7 @@ namespace DDSLoader
                                 var patchedMessage = JsonUtility.FromJson<DDSSaveClasses.DDSMessageSave>(CreatePatchedJson(messagePath));
                                 Toolbox.Instance.allDDSMessages[patchedMessage.id] = patchedMessage;
                             }
-                            catch (ArgumentException exception)
+                            catch (Exception exception)
                             {
                                 DDSLoaderPlugin.Logger.LogError($"Failed to load: {messagePath}");
                                 DDSLoaderPlugin.Logger.LogError(exception);
@@ -99,7 +99,7 @@ namespace DDSLoader
 
                                 Toolbox.Instance.allDDSTrees.Add(tree.id, tree);
                             }
-                            catch (ArgumentException exception)
+                            catch (Exception exception)
                             {
                                 DDSLoaderPlugin.Logger.LogError($"Failed to load: {treePath}");
                                 DDSLoaderPlugin.Logger.LogError(exception);
@@ -120,7 +120,7 @@ namespace DDSLoader
 
                                 Toolbox.Instance.allDDSTrees[patchedTree.id] = patchedTree;
                             }
-                            catch (ArgumentException exception)
+                            catch (Exception exception)
                             {
                                 DDSLoaderPlugin.Logger.LogError($"Failed to load: {treePath}");
                                 DDSLoaderPlugin.Logger.LogError(exception);
