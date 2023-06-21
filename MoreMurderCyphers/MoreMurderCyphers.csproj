@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>MoreMurderCyphers</AssemblyName>
+    <Description>Adds more variety to the cyphers used by killers</Description>
+    <Version>1.0.0</Version>
+	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	  <LangVersion>latest</LangVersion>
+	  <RestoreAdditionalProjectSources>
+		  https://api.nuget.org/v3/index.json;
+		  https://nuget.bepinex.dev/v3/index.json
+	  </RestoreAdditionalProjectSources>
+	  <BepInExPath>D:\Game Modding\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\</BepInExPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+	  <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+	  <ProjectReference Include="..\AssetBundleLoader\AssetBundleLoader.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <Reference Include="$(BepInExPath)/interop/*.dll" />
+	  <Reference Include="UniverseLib.IL2CPP.Interop">
+		  <HintPath>$(BepInExPath)plugins/GTFOModding-UnityExplorer_IL2CPP/UniverseLib.IL2CPP.Interop.dll</HintPath>
+	  </Reference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
+	  <Exec Command="copy /Y &quot;$(ProjectDir)ModFolderContent\*&quot; &quot;$(BepInExPath)plugins\$(ProjectName)&quot;" />
+  </Target>
+</Project>

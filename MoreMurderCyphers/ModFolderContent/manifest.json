@@ -1,0 +1,9 @@
+{
+  "name": "More_Murder_Cyphers",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/MoreMurderCyphers",
+  "description": "Adds a few more cyphers for the game to use when generating one for a murder",
+  "dependencies": [
+    "BepInEx-BepInExPack_IL2CPP-6.0.667"
+  ]
+}
