@@ -6,6 +6,6 @@
   "dependencies": [
     "BepInEx-BepInExPack_IL2CPP-6.0.667",
     "Piepieonline-Asset_Bundle_Loader-1.0.2",
-    "Piepieonline-DDSLoader-1.0.0"
+    "Piepieonline-DDSLoader-1.0.2"
   ]
 }
