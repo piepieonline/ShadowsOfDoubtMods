@@ -1,8 +1,8 @@
 {
-  "name": "RealEstateCruncherApp",
-  "version_number": "1.0.5",
-  "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/RealEstateListingCruncherApp",
-  "description": "Adds a new app to the city hall crunchers, that lists all available properties for sale and lets you purchase them.",
+  "name": "CruncherSolitaire",
+  "version_number": "0.0.9",
+  "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/CruncherSolitaire",
+  "description": "Adds a solitaire app to residential crunchers, adding something else to do between cases.",
   "dependencies": [
     "BepInEx-BepInExPack_IL2CPP-6.0.667",
     "Piepieonline-Asset_Bundle_Loader-1.0.2",
