@@ -97,4 +97,18 @@ public class PieSolitaire_Game : MonoBehaviour
             youWinPanel.gameObject.SetActive(true);
         }
     }
+
+    public GameObject CanAutoPlace(GameObject card)
+    {
+        foreach (var holder in transform.Find("Shelf").GetComponentsInChildren<PieSolitaire_CardHolder>())
+        {
+            if (holder.WillAcceptCard(card))
+            {
+                return holder.gameObject;
+            }
+        }
+
+        return null;
+    }
 }
+

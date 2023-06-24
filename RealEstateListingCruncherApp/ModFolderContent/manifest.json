@@ -5,7 +5,7 @@
   "description": "Adds a new app to the city hall crunchers, that lists all available properties for sale and lets you purchase them.",
   "dependencies": [
     "BepInEx-BepInExPack_IL2CPP-6.0.667",
-    "Piepieonline-Asset_Bundle_Loader-1.0.2",
+    "Piepieonline-Asset_Bundle_Loader-1.0.3",
     "Piepieonline-DDSLoader-1.0.2"
   ]
 }

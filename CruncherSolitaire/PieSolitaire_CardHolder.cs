@@ -94,10 +94,7 @@ public class PieSolitaire_CardHolder : MonoBehaviour
     {
         if (transform.childCount == 1 && PieSolitaire_Card.selectedIndex >= 0 && WillAcceptCard(PieSolitaire_Card.deck[PieSolitaire_Card.selectedIndex].gameObject))
         {
-            var currentCardHolder = PieSolitaire_Card.deck[PieSolitaire_Card.selectedIndex].GetComponentInParent<PieSolitaire_CardHolder>();
-            AddCard(PieSolitaire_Card.deck[PieSolitaire_Card.selectedIndex].gameObject);
-            currentCardHolder?.UnlockLast();
-            PieSolitaire_Card.SelectCard(-1);
+            PieSolitaire_Card.deck[PieSolitaire_Card.selectedIndex].MoveToNewStack(gameObject);
         }
     }
 }

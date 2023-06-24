@@ -88,48 +88,26 @@ public class PieSolitaire_Card : MonoBehaviour
                     SelectCard(index);
                 }
             }
-            else if (selectedIndex == index)
-            {
-                SelectCard(-1);
-            }
             else
             {
-                var newStack = deck[index].gameObject.GetComponentInParent<PieSolitaire_CardHolder>();
+                PieSolitaire_CardHolder newStack;
+
+                if (selectedIndex == index)
+                {
+                    newStack = GetComponentInParent<PieSolitaire_Game>().CanAutoPlace(deck[selectedIndex].gameObject)?.GetComponent<PieSolitaire_CardHolder>();
+                    if (newStack == null)
+                    {
+                        SelectCard(-1);
+                    }
+                }
+                else
+                {
+                    newStack = deck[index].gameObject.GetComponentInParent<PieSolitaire_CardHolder>();
+                }
+
                 if (newStack && newStack.WillAcceptCard(deck[selectedIndex].gameObject))
                 {
-                    var currentStack = deck[selectedIndex].gameObject.GetComponentInParent<PieSolitaire_CardHolder>();
-
-                    if (currentStack)
-                    {
-                        var moving = false;
-                        for (int i = 1; i < currentStack.transform.childCount; i++)
-                        {
-                            var currentCard = currentStack.transform.GetChild(i).GetComponent<PieSolitaire_Card>();
-
-                            if (currentCard.index == selectedIndex)
-                            {
-                                moving = true;
-                            }
-
-                            if (moving)
-                            {
-                                newStack.AddCard(currentCard.gameObject);
-                                i--;
-                            }
-                        }
-
-                        currentStack.UnlockLast();
-                    }
-                    else
-                    {
-                        newStack.AddCard(deck[selectedIndex].gameObject);
-                    }
-
-                    if (newStack.acceptChildTypes == PieSolitaire_CardHolder.AcceptChildTypes.NextUpSameSuit)
-                        deck[selectedIndex].locked = true;
-
-
-                    SelectCard(-1);
+                    MoveToNewStack(newStack.gameObject);
                 }
                 else
                 {
@@ -147,6 +125,44 @@ public class PieSolitaire_Card : MonoBehaviour
                 Flip(true);
             }
         }
+    }
+
+    public void MoveToNewStack(GameObject newStackGO)
+    {
+        var newStack = newStackGO.GetComponent<PieSolitaire_CardHolder>();
+        var currentStack = deck[selectedIndex].gameObject.GetComponentInParent<PieSolitaire_CardHolder>();
+
+        if (currentStack)
+        {
+            var moving = false;
+            for (int i = 1; i < currentStack.transform.childCount; i++)
+            {
+                var currentCard = currentStack.transform.GetChild(i).GetComponent<PieSolitaire_Card>();
+
+                if (currentCard.index == selectedIndex)
+                {
+                    moving = true;
+                }
+
+                if (moving)
+                {
+                    newStack.AddCard(currentCard.gameObject);
+                    i--;
+                }
+            }
+
+            currentStack.UnlockLast();
+        }
+        else
+        {
+            newStack.AddCard(deck[selectedIndex].gameObject);
+        }
+
+        if (newStack.acceptChildTypes == PieSolitaire_CardHolder.AcceptChildTypes.NextUpSameSuit)
+            deck[selectedIndex].locked = true;
+
+
+        SelectCard(-1);
     }
 
     public void Flip(bool show)
