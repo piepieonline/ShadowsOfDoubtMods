@@ -1,6 +1,6 @@
 {
   "name": "Asset_Bundle_Loader",
-  "version_number": "1.0.2",
+  "version_number": "1.0.3",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/AssetBundleLoader",
   "description": "Library. Load AssetBundles built against previous game versions, by correcting referenced PathIDs",
   "dependencies": [

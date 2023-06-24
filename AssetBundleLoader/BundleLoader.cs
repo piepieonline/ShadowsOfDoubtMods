@@ -103,7 +103,18 @@ namespace AssetBundleLoader
                             {
                                 if (EnableLogging)
                                     Logger.LogInfo($"Replacing {mapping.Value.PathID} with {newPathId} by Matching (Name and type)");
-                                oldToNew.Add(mapping.Value.PathID, newPathId);
+
+                                if(oldToNew.ContainsKey(mapping.Value.PathID))
+                                {
+                                    if (oldToNew[mapping.Value.PathID] != newPathId)
+                                    {
+                                        Logger.LogWarning($"Duplicate mismatch {mapping.Value.PathID} matches both {oldToNew[mapping.Value.PathID]} (kept) and {newPathId} (discarded)");
+                                    }
+                                }
+                                else
+                                {
+                                    oldToNew.Add(mapping.Value.PathID, newPathId);
+                                }
                                 break;
                             }
                         }
