@@ -17,14 +17,9 @@ namespace DDSLoader
         {
             public static void Postfix()
             {
-                for (int i = 0; i < Toolbox.Instance.allArticles.Count; i++)
+                if(DDSLoaderPlugin.debugClearNewspaperArticles.Value)
                 {
-                    if (Toolbox.Instance.allArticles[i].category == NewspaperArticle.Category.general)
-                    {
-                        Toolbox.Instance.allArticles[i].disabled = true;
-                        Toolbox.Instance.allArticles.RemoveAt(i);
-                        i--;
-                    }
+                    Toolbox.Instance.allArticles.Clear();
                 }
 
                 foreach (var dir in DDSLoader.DDSLoaderPlugin.modsToLoadFrom)

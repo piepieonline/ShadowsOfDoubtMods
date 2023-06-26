@@ -18,6 +18,7 @@ namespace DDSLoader
 
         public static ConfigEntry<bool> debugLogConversations;
         public static ConfigEntry<string> debugPauseTreeGUID;
+        public static ConfigEntry<bool> debugClearNewspaperArticles;
 
         public override void Load()
         {
@@ -31,6 +32,7 @@ namespace DDSLoader
 
             debugLogConversations = Config.Bind("Debug", "Enable debugging of conversations", false);
             debugPauseTreeGUID = Config.Bind("Debug", "Pause when this conversation tree GUID begins", "");
+            debugClearNewspaperArticles = Config.Bind("Debug", "Clear existing newspaper articles", false);
 
             // Load all folders named DDSContent (includes subfolders), unless they have a disable file
             modsToLoadFrom = Directory.GetDirectories(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), ".."), "DDSContent", SearchOption.AllDirectories)
