@@ -3,18 +3,30 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using UnityEngine;
+using Newtonsoft.Json;
 
 namespace DDSLoader
 {
     internal class DDSLoaderHooks
     {
+        static Dictionary<string, NewspaperArticle> ddsToArticle;
+
         [HarmonyPatch(typeof(Toolbox), "Start")]
         public class Toolbox_Start
         {
             public static void Postfix()
             {
+                for (int i = 0; i < Toolbox.Instance.allArticles.Count; i++)
+                {
+                    if (Toolbox.Instance.allArticles[i].category == NewspaperArticle.Category.general)
+                    {
+                        Toolbox.Instance.allArticles[i].disabled = true;
+                        Toolbox.Instance.allArticles.RemoveAt(i);
+                        i--;
+                    }
+                }
+
                 foreach (var dir in DDSLoader.DDSLoaderPlugin.modsToLoadFrom)
                 {
                     var treesPath = Path.Combine(dir.FullName, "DDS", "Trees");
@@ -98,6 +110,11 @@ namespace DDSLoader
                                 }
 
                                 Toolbox.Instance.allDDSTrees.Add(tree.id, tree);
+
+                                if (tree.treeType == DDSSaveClasses.TreeType.newspaper)
+                                {
+                                    LoadNewspaperArticle(tree, messagesPath);
+                                }
                             }
                             catch (Exception exception)
                             {
@@ -162,6 +179,63 @@ namespace DDSLoader
                 patchDDSContent.ApplyTo(existingDDSContent);
 
                 return existingDDSContent.ToString();
+            }
+
+            static void LoadNewspaperArticle(DDSSaveClasses.DDSTreeSave tree, string messagesPath)
+            {
+                if (tree.treeType == DDSSaveClasses.TreeType.newspaper)
+                {
+                    foreach (var articleDefinition in tree.messages)
+                    {
+                        var newspaperDefinition = Path.Combine(messagesPath, articleDefinition.msgID + ".newspaper");
+
+                        if(!File.Exists(newspaperDefinition))
+                        {
+                            DDSLoaderPlugin.Logger.LogError($"Newspaper article definition doesn't exist for: {articleDefinition.msgID}. Skipping.");
+                            continue;
+                        }
+
+                        var newArticleSerailized = JsonConvert.DeserializeObject<CustomSerializableNewspaperArticle>(File.ReadAllText(newspaperDefinition));
+
+                        var newArticle = ScriptableObject.CreateInstance<NewspaperArticle>();
+
+                        newArticle.name = Toolbox.Instance.allDDSMessages[articleDefinition.msgID].name;
+                        newArticle.disabled = newArticleSerailized.disabled;
+                        newArticle.ddsReference = articleDefinition.msgID;
+                        newArticle.category = (NewspaperArticle.Category)newArticleSerailized.category;
+                        newArticle.context = (NewspaperArticle.ContextSource)newArticleSerailized.context;
+
+                        if (ddsToArticle == null)
+                        {
+                            ddsToArticle = new Dictionary<string, NewspaperArticle>();
+                            foreach (var article in Toolbox.Instance.allArticles)
+                            {
+                                ddsToArticle[article.ddsReference] = article;
+                            }
+                        }
+
+                        foreach (var articleDDS in newArticleSerailized.followupStories)
+                        {
+                            newArticle.followupStories.Add(ddsToArticle[articleDDS]);
+                        }
+
+                        foreach (var spriteName in newArticleSerailized.possibleImages)
+                        {
+                            // newArticle.possibleImages.Add(Resources.FindObjectsOfTypeAll<Spite>);
+                        }
+                        Toolbox.Instance.allArticles.Add(newArticle);
+                    }
+                }
+            }
+
+            [System.Serializable]
+            class CustomSerializableNewspaperArticle
+            {
+                public bool disabled;
+                public int category;
+                public string[] followupStories;
+                public string[] possibleImages;
+                public int context;
             }
         }
     }

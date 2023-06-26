@@ -8,6 +8,11 @@ namespace DDSLoader
 {
     public class DDSDebugHelper
     {
+        public static void StartConversation(string ddsTreeId, string participantA, string participantB)
+        {
+            StartConversation(ddsTreeId, new string[] {participantA, participantB});
+        }
+
         public static void StartConversation(string ddsTreeId, string[] participants)
         {
             Human mainParticipant = null;
@@ -38,8 +43,10 @@ namespace DDSLoader
             {
                 DDSLoaderPlugin.Logger.LogInfo($"Conversation started: {newTree.id} started by {__instance.name} and including {string.Join(", ", otherParticipants.ToArray().Select(other => other.name))}");
 
-                if (DDSLoaderPlugin.debugPauseTreeGUID.Value == newTree.id)
-                    InterfaceController.Instance.ToggleNotebookButton();
+            }
+            if (DDSLoaderPlugin.debugPauseTreeGUID.Value == newTree.id)
+            {
+                InterfaceController.Instance.ToggleNotebookButton();
             }
         }
     }
