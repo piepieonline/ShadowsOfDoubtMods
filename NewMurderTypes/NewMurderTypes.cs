@@ -8,6 +8,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using UniverseLib;
 using AssetBundleLoader;
+using Il2CppInterop.Runtime;
 
 namespace NewMurderTypes
 {
@@ -61,22 +62,33 @@ namespace NewMurderTypes
 
             var murderBundle = BundleLoader.LoadBundle(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "BundleContent\\newmurdertypes"), true);
 
-            foreach (var asset in murderBundle.LoadAllAssets().Where(asset => asset.GetActualType() == typeof(MurderPreset)))
+            foreach (var asset in murderBundle.LoadAllAssets().Where(asset => asset.GetActualType().IsAssignableTo(typeof(ScriptableObject))))
             {
-                MurderPreset murderPreset = asset.Cast<MurderPreset>();
-                NewMurderTypes.Logger.LogInfo($"Loading MurdererPreset: {murderPreset.name}");
-                Toolbox.Instance.allMurderPresets.Add(murderPreset);
-            }
-            
-            foreach (var asset in murderBundle.LoadAllAssets().Where(asset => asset.GetActualType() == typeof(MurderMO)))
-            {
-                MurderMO mo = asset.Cast<MurderMO>();
-                NewMurderTypes.Logger.LogInfo($"Loading mo: {mo.name}{(mo.disabled ? " (DISABLED)" : "")}");
-                Toolbox.Instance.allMurderMOs.Add(mo);
+                if (asset.GetActualType() == typeof(InteractablePreset))
+                {
+                    InteractablePreset preset = asset.Cast<InteractablePreset>();
+                    Toolbox.Instance.objectPresetDictionary.Add(asset.name, preset);
+                }
+                
+                if (asset.GetActualType() == typeof(MurderPreset))
+                {
+                    MurderPreset murderPreset = asset.Cast<MurderPreset>();
+                    NewMurderTypes.Logger.LogInfo($"Loading MurdererPreset: {murderPreset.name}");
+                    Toolbox.Instance.allMurderPresets.Add(murderPreset);
+                }
+                
+                if (asset.GetActualType() == typeof(MurderMO))
+                {
+                    MurderMO mo = asset.Cast<MurderMO>();
+                    NewMurderTypes.Logger.LogInfo($"Loading mo: {mo.name}{(mo.disabled ? " (DISABLED)" : "")}");
+                    Toolbox.Instance.allMurderMOs.Add(mo);
+                }
+
+                Toolbox.Instance.resourcesCache[Il2CppType.From(asset.GetActualType())].Add(asset.name, asset.Cast<ScriptableObject>());
             }
 
             // Force single type for testing
-            if(NewMurderTypes.DEBUG_LoadSpecificMurder != "")
+            if (NewMurderTypes.DEBUG_LoadSpecificMurder != "")
             {
                 for (int i = Toolbox.Instance.allMurderMOs.Count - 1; i >= 0; i--)
                 {
@@ -108,7 +120,7 @@ namespace NewMurderTypes
                 Toolbox.Instance.allSideJobs.Add(jobPreset);
             }
 
-            if(NewMurderTypes.DEBUG_LoadSpecificSideJob != "")
+            if (NewMurderTypes.DEBUG_LoadSpecificSideJob != "")
             {
                 for (int i = Toolbox.Instance.allSideJobs.Count - 1; i >= 0; i--)
                 {
@@ -119,6 +131,101 @@ namespace NewMurderTypes
         }
     }
 
+    [HarmonyPatch]
+    public class Toolbox_NewVmailThread
+    {
+        static IEnumerable<System.Reflection.MethodBase> TargetMethods()
+        {
+            return typeof(Toolbox).GetMethods()
+                .Where(method => method.Name == ("NewVmailThread") && method.GetParameters().Where(param => param.Name == "to1").FirstOrDefault() != null)
+                .Cast<System.Reflection.MethodBase>();
+        }
+
+        static bool Prefix(Human from, string treeID, ref Human to1, ref Human to2, ref Human to3)
+        {
+            if (Toolbox.Instance.allDDSTrees[treeID].participantB.required && to1 == null)
+            {
+                NewMurderTypes.Logger.LogWarning($"Finding participantB connections for {treeID}");
+                to1 = MapParticipant(from, Toolbox.Instance.allDDSTrees[treeID], Toolbox.Instance.allDDSTrees[treeID].participantB);
+
+                if (to1 == null)
+                {
+                    NewMurderTypes.Logger.LogError($"Failed to map participantB");
+                    return false;
+                }
+                else
+                {
+                    NewMurderTypes.Logger.LogWarning(to1.name);
+                }
+            }
+
+            if (Toolbox.Instance.allDDSTrees[treeID].participantC.required && to2 == null)
+            {
+                NewMurderTypes.Logger.LogWarning($"Finding participantC connections for {treeID}");
+                to2 = MapParticipant(from, Toolbox.Instance.allDDSTrees[treeID], Toolbox.Instance.allDDSTrees[treeID].participantC);
+
+                if (to2 == null)
+                {
+                    NewMurderTypes.Logger.LogError($"Failed to map participantC");
+                    return false;
+                }
+                else
+                {
+                    NewMurderTypes.Logger.LogWarning(to2.name);
+                }
+            }
+
+            if (Toolbox.Instance.allDDSTrees[treeID].participantD.required && to3 == null)
+            {
+                NewMurderTypes.Logger.LogWarning($"Finding participantD connections for {treeID}");
+                to3 = MapParticipant(from, Toolbox.Instance.allDDSTrees[treeID], Toolbox.Instance.allDDSTrees[treeID].participantD);
+
+                if (to3 == null)
+                {
+                    NewMurderTypes.Logger.LogError($"Failed to map participantD");
+                    return false;
+                }
+                else
+                {
+                    NewMurderTypes.Logger.LogWarning(to3.name);
+                }
+            }
+
+            return true;
+        }
+
+        public static Human MapParticipant(Human from, DDSSaveClasses.DDSTreeSave tree, DDSSaveClasses.DDSParticipant participant)
+        {
+            NewMurderTypes.Logger.LogWarning($"Finding connections for {tree.id}");
+            var validConnections = GetListOfValidConnections(from, tree, participant);
+            NewMurderTypes.Logger.LogWarning($"Found {validConnections.Count} connections");
+            if (validConnections.Count == 0)
+            {
+                NewMurderTypes.Logger.LogWarning("No matching found, cancelling");
+                return null;
+            }
+            else
+            {
+                NewMurderTypes.Logger.LogWarning($"Using matching:");
+                return validConnections[UnityEngine.Random.Range(0, validConnections.Count - 1)];
+            }
+        }
+
+        public static List<Human> GetListOfValidConnections(Human human, DDSSaveClasses.DDSTreeSave tree, DDSSaveClasses.DDSParticipant participant)
+        {
+            var validConnections = new List<Human>();
+
+            foreach (Acquaintance acquaintance in human.acquaintances)
+            {
+                if (acquaintance.with.DDSParticipantConditionCheck(human, participant, tree.treeType))
+                {
+                    NewMurderTypes.Logger.LogWarning($"Adding valid acquaintance: {acquaintance.with.firstName}");
+                    validConnections.Add(acquaintance.with);
+                }
+            }
+            return validConnections;
+        }
+    }
 
     // Murder Debugging
     // [HarmonyPatch(typeof(MurderController), "Update")]
@@ -154,7 +261,7 @@ namespace NewMurderTypes
             }
             else
             {
-                if(murderIsExecuting)
+                if (murderIsExecuting)
                     NewMurderTypes.Logger.LogInfo($"Time ended: {Time.time} - {murderDuration}");
                 murderIsExecuting = false;
             }
