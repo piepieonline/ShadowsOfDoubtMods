@@ -29,7 +29,7 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="mkdir &quot;$(BepInExPath)plugins\$(ProjectName)&quot;" />
+		<Exec Command="mkdir &quot;$(BepInExPath)plugins\$(ProjectName)&quot;" Condition="!Exists('$(BepInExPath)plugins\$(ProjectName)')" />
 		<Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
 		<Exec Command="copy /Y &quot;$(ProjectDir)ModFolderContent\*&quot; &quot;$(BepInExPath)plugins\$(ProjectName)&quot;" />
 	</Target>
