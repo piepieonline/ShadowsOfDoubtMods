@@ -13,6 +13,7 @@
 	<ItemGroup>
 		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+		<PackageReference Include="Newtonsoft.Json" Version="5.0.8" />
 		<PackageReference Include="Tavis.JsonPatch" Version="0.5.2-beta" />
 	</ItemGroup>
 
@@ -22,6 +23,7 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="mkdir &quot;$(BepInExPath)plugins\$(ProjectName)&quot;" />
 		<Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
 		<Exec Command="copy /Y &quot;$(ProjectDir)ModFolderContent\*&quot; &quot;$(BepInExPath)plugins\$(ProjectName)&quot;" />
 		<Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;D:\Game Modding\ShadowsOfDoubt\_Mods\ShadowsOfDoubtContent\$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;D:\Game Modding\ShadowsOfDoubt\_Mods\ShadowsOfDoubtContent\$(ProjectName)&quot;" />
