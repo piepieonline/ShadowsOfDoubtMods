@@ -15,7 +15,7 @@ namespace ExampleBranchSafeMod
     {
         private void Awake()
         {
-            Logger.LogInfo($"I'm in Mono2!");
+            Logger.LogInfo($"I'm in Mono!");
         }
     }
 #elif IL2CPP
@@ -24,7 +24,7 @@ public class ExampleBranchSafeModPlugin : BasePlugin
 {
     public override void Load()
     {
-        Log.LogInfo($"I'm in IL2CPP2!");
+        Log.LogInfo($"I'm in IL2CPP!");
     }
 }
 #endif
