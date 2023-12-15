@@ -19,7 +19,7 @@ namespace DDSLoader
             {
                 if(DDSLoaderPlugin.debugClearNewspaperArticles.Value)
                 {
-                    Toolbox.Instance.allArticles.Clear();
+                    Toolbox.Instance.allArticleTrees.Clear();
                 }
 
                 foreach (var dir in DDSLoader.DDSLoaderPlugin.modsToLoadFrom)
@@ -108,7 +108,8 @@ namespace DDSLoader
 
                                 if (tree.treeType == DDSSaveClasses.TreeType.newspaper)
                                 {
-                                    LoadNewspaperArticle(tree, messagesPath);
+                                    DDSLoaderPlugin.Logger.LogWarning($"Newspaper content is no longer supported - use the official editor");
+                                    // LoadNewspaperArticle(tree, messagesPath);
                                 }
                             }
                             catch (Exception exception)
@@ -180,6 +181,7 @@ namespace DDSLoader
             {
                 if (tree.treeType == DDSSaveClasses.TreeType.newspaper)
                 {
+                    /*
                     foreach (var articleDefinition in tree.messages)
                     {
                         var newspaperDefinition = Path.Combine(messagesPath, articleDefinition.msgID + ".newspaper");
@@ -203,9 +205,9 @@ namespace DDSLoader
                         if (ddsToArticle == null)
                         {
                             ddsToArticle = new Dictionary<string, NewspaperArticle>();
-                            foreach (var article in Toolbox.Instance.allArticles)
+                            foreach (var article in Toolbox.Instance.allArticleTrees)
                             {
-                                ddsToArticle[article.ddsReference] = article;
+                                ddsToArticle[article.id] = article;
                             }
                         }
 
@@ -218,8 +220,9 @@ namespace DDSLoader
                         {
                             // newArticle.possibleImages.Add(Resources.FindObjectsOfTypeAll<Spite>);
                         }
-                        Toolbox.Instance.allArticles.Add(newArticle);
+                        Toolbox.Instance.allArticleTrees.Add(newArticle);
                     }
+                    */
                 }
             }
 
