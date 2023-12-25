@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 public class SoDEditorMenu
 {
@@ -33,17 +34,28 @@ public class SoDEditorMenu
             }
         }
 
-
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
         Debug.Log("Building bundles");
 
         var bundles = BuildPipeline.BuildAssetBundles(assetBundleDirectory, bundleBuilds.ToArray(), BuildAssetBundleOptions.UncompressedAssetBundle, BuildTarget.StandaloneWindows);
+        var builtBundles = bundles.GetAllAssetBundles();
 
         Debug.Log("Rewriting bundles");
 
-        RewriteAssetBundle.Rewrite(bundles.GetAllAssetBundles());
+        RewriteAssetBundle.Rewrite(builtBundles);
+        
+        Debug.Log("Installing bundles");
+
+        foreach(var bundleToInstall in AssetDatabase.LoadAssetAtPath<SettingsScriptableObject>("Assets/EditorSettings.asset").BundleNameToInstallPathMaps)
+        {
+            if(builtBundles.Contains(bundleToInstall.BundleName))
+            {
+                File.Copy($"AssetBundles/Patched/{bundleToInstall.BundleName}", $"{bundleToInstall.InstallPath}{bundleToInstall.BundleName}", true);
+                File.Copy($"AssetBundles/Patched/{bundleToInstall.BundleName}.manifest.json", $"{bundleToInstall.InstallPath}{bundleToInstall.BundleName}.manifest.json", true);
+            }
+        }
 
         EditorUtility.DisplayDialog("Bundle Creation Complete", "Bundle creation complete.\nCheck the console for any issues.", "OK");
     }
@@ -92,5 +104,21 @@ public class SoDEditorMenu
                 File.WriteAllText(file, content.Replace(guid, nameToAsset[fileName].GUID));
             }
         }
+
+        /*
+        if (File.Exists("Texture2DGUIDs.json"))
+        {
+            Dictionary<string, string> pathToGUID = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText("Texture2DGUIDs.json"));
+
+            foreach (var file in Directory.GetFiles("Assets/GameExtract/Texture2D", "*.meta", SearchOption.AllDirectories))
+            {
+                var content = File.ReadAllText(file);
+                var guid = content.Split('\n')[1].Substring(6);
+                var fileName = file.Split('\\').Last().Split('.')[0];
+
+                File.WriteAllText(file, content.Replace(guid, pathToGUID[fileName]));
+            }
+        }
+        */
     }
 }

@@ -2,7 +2,7 @@
   "profiles": {
     "ShadowsOfDoubtEditorSetup": {
       "commandName": "Project",
-      "commandLineArgs": "\"E:\\SteamLibrary\\steamapps\\common\\Shadows of Doubt\" \"E:\\ShadowsOfDoubtEditorNewExperi\""
+      "commandLineArgs": "\"E:\\SteamLibrary\\steamapps\\common\\Shadows of Doubt\" \"E:\\ShadowsOfDoubtEditorTest\""
     }
   }
 }

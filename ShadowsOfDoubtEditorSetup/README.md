@@ -10,3 +10,8 @@ This tool uses a modified AssetRipper and other tweaks to prepare a Unity projec
 * Open the 'ShadowsOfDoubtEditor' subfolder in Unity
 
 * ...more
+
+# Known Issues
+
+* Textures are ripping duplicated, currently working around that manually
+* TMPPro font assets broken

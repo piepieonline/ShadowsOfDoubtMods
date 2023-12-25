@@ -23,8 +23,10 @@ public class PathIdMap_Files
 [Serializable]
 public class PathIdMap_Asset
 {
-    public int PathID;
+    public long PathID;
     public string Name;
     public string Type;
     public string GUID;
+    public long? AddressablesPathID;
+    public string? AddressablesCAB;
 }

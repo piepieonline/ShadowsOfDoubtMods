@@ -1,4 +1,8 @@
-﻿Console.WriteLine("Setting up the Unity editor for Shadows of Doubt");
+﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.IO;
+
+Console.WriteLine("Setting up the Unity editor for Shadows of Doubt");
 
 string gamePath = "";
 string editorPath = "";
@@ -18,6 +22,8 @@ else
 
 if (!Directory.Exists(gamePath) || !Directory.Exists(editorPath)) throw new IOException("Folders not found");
 
+Helpers.listAllProcessedFiles = true;
+
 string projectPath = Path.Join(editorPath, "ExportedProject");
 string assetsPath = Path.Join(projectPath, "Assets");
 string modContentPath = Path.Join(assetsPath, "_ModContent");
@@ -25,7 +31,7 @@ string gameExtractPath = Path.Join(assetsPath, "GameExtract");
 
 Console.WriteLine($"GameDir {gamePath} : EditorDir {editorPath}");
 
-BuildAssetMap.Build(gamePath);
+// BuildAssetMap.Build(gamePath);
 
 // Rip the entire project from the game itself
 Console.WriteLine("Ripping project...");
@@ -48,8 +54,46 @@ Console.WriteLine("Project ripped");
 string pathIdMapPath = Path.Join(editorPath, "AuxiliaryFiles", "path_id_map.json");
 
 Console.WriteLine("Processing references...");
+
 Helpers.RepointGUIDs(pathIdMapPath, new DirectoryInfo(assetsPath));
+
+Dictionary<(string, string), (long, string)> addressablesMap = new Dictionary<(string, string), (long, string)>();
+
+JObject o1 = JObject.Parse(File.ReadAllText(pathIdMapPath));
+foreach(var file in o1["Files"])
+{
+    if (file["Name"].Value<string>().StartsWith("cab"))
+    {
+        foreach(var asset in file["Assets"])
+        {
+            addressablesMap[(asset["Type"].Value<string>(), asset["Name"].Value<string>())] = (asset["PathID"].Value<long>(), file["Name"].Value<string>());
+        }
+    }
+}
+
+foreach (var file in o1["Files"])
+{
+    if (!file["Name"].Value<string>().StartsWith("cab"))
+    {
+        foreach (var asset in file["Assets"])
+        {
+            var key = (asset["Type"].Value<string>(), asset["Name"].Value<string>());
+            if (addressablesMap.ContainsKey(key))
+            {
+                asset["AddressablePathID"] = addressablesMap[key].Item1;
+                asset["AddressablesCAB"] = addressablesMap[key].Item2;
+            }
+        }
+    }
+}
+
+File.WriteAllText(pathIdMapPath, o1.ToString());
+
+
 Console.WriteLine("References processed");
+
+// Create a mapping for Texture2D GUIDs, as Unity will nuke them when compressing
+BackupTexture2DGUIDs.CreateBackup(Path.Join(assetsPath, "Texture2D"), Path.Join(projectPath, "Texture2DGUIDs.json"));
 
 // Moving a bunch of files around inside the project, and deleting some that would cause issues
 Console.WriteLine("Adjusting project layout...");
@@ -77,6 +121,24 @@ foreach(var directory in Directory.EnumerateDirectories(assetsPath))
     {
         Helpers.CopyFolder(directoryInfo, new DirectoryInfo(gameExtractPath), true, false);
     }
+}
+
+Console.WriteLine("Moving ScriptableObjects");
+
+var soDirectory = Directory.CreateDirectory(Path.Join(assetsPath, "GameExtract", "ScriptableObjects"));
+var soFiles = new DirectoryInfo(assetsPath).GetFiles("*.asset");
+for (int i = soFiles.Length - 1; i >= 0; i--)
+{
+    File.Move(soFiles[i].FullName, Path.Join(soDirectory.FullName, soFiles[i].Name));
+    File.Move(soFiles[i].FullName + ".meta", Path.Join(soDirectory.FullName, soFiles[i].Name) + ".meta");
+}
+
+var jsonDirectory = Directory.CreateDirectory(Path.Join(assetsPath, "GameExtract", "JSON"));
+var jsonFiles = new DirectoryInfo(assetsPath).GetFiles("*.json");
+for (int i = jsonFiles.Length - 1; i >= 0; i--)
+{
+    File.Move(jsonFiles[i].FullName, Path.Join(jsonDirectory.FullName, jsonFiles[i].Name));
+    File.Move(jsonFiles[i].FullName + ".meta", Path.Join(jsonDirectory.FullName, jsonFiles[i].Name) + ".meta");
 }
 
 Console.WriteLine("Project layout adjusted");

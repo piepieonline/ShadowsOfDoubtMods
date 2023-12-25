@@ -23,9 +23,12 @@ public class RewriteAssetBundle
         var vanillaRefAssetsFile = customManager.LoadAssetsFileFromBundle(vanillaRefBundle, 0);
         customManager.LoadClassDatabaseFromPackage(vanillaRefAssetsFile.file.Metadata.UnityVersion);
 
-        foreach(var asset in JsonUtility.FromJson<PathIdMap>(File.ReadAllText("path_id_map.json")).Files.Where(file => file.Name == "resources.assets").First().Assets)
+        foreach(var file in JsonUtility.FromJson<PathIdMap>(File.ReadAllText("path_id_map.json")).Files)// .Where(file => file.Name == "resources.assets").First().Assets)
         {
-            guidToAsset[asset.GUID] = asset;
+            foreach(var asset in file.Assets)
+            {
+                guidToAsset[asset.GUID] = asset;
+            }
         }
 
         foreach (var data in customManager.GetBaseField(vanillaRefAssetsFile, vanillaRefAssetsFile.file.GetAssetsOfType(AssetClassID.AssetBundle)[0])["m_Container.Array"].Children)
@@ -110,7 +113,16 @@ public class RewriteAssetBundle
             if (oldPathToAsset.ContainsKey(oldPathId))
             {
                 var asset = oldPathToAsset[oldPathId];
-                parent["m_PathID"].AsLong = asset.PathID;
+                
+                if(asset.AddressablesPathID != null)
+                {
+                    parent["m_PathID"].AsLong = (long)asset.AddressablesPathID;
+                }
+                else
+                {
+                    parent["m_PathID"].AsLong = asset.PathID;
+                }
+
                 manifest[asset.PathID] = asset;
                 UnityEngine.Debug.Log($"Mapped: {asset.Name} from {oldPathId} to {asset.PathID}");
                 return true;

@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 
 public class Helpers
 {
+    public static bool listAllProcessedFiles = false;
+
     public static void CopyFolder(DirectoryInfo source, DirectoryInfo target, bool overwrite, bool copy)
     {
         CopyFolder_Internal(source, target.CreateSubdirectory(source.Name), overwrite, copy);
@@ -40,6 +42,8 @@ public class Helpers
         // Scripts
         foreach(var file in Directory.GetFiles(Path.Join(directory.FullName, "Scripts"), "*.cs.meta", SearchOption.AllDirectories))
         {
+            if (file.StartsWith(Path.Join(directory.FullName, "Scripts", "Unity."))) continue;
+
             var fo = new FileInfo(file);
             var guid = File.ReadAllLines(file)[1].Substring(6);
             mapping[guid] = new Remap()
@@ -52,22 +56,20 @@ public class Helpers
 
         // TMPPro
         // MonoBehaviour
-        mapping["34dbb99afe9d0774ba685b3ff21205e7"] = new Remap()
+        mapping["67dfb1fdfb2b407222eda8e23ac8b724"] = new Remap()
         {
             type = Remap.RemapType.Both,
             id = "11500000",
-            guid = "9541d86e2fd84c1d9990edf0852d74ab"
+            guid = "f4688fdb7df04437aeb418b961361dc5"
         };
 
         // Font Asset
-        /* todo - need a proper script mapping system
-        mapping["34dbb99afe9d0774ba685b3ff21205e7"] = new Remap()
+        mapping["eef129d5e40c07af534a8e24da6b5c16"] = new Remap()
         {
             type = Remap.RemapType.Both,
             id = "11500000",
             guid = "71c1514a6bd24e1e882cebbe1904ce04"
         };
-        */
 
         // Material shaders
         mapping["2f4a68c7e72e2fe4a94462f14ffd2d2e"] = new Remap()
@@ -87,6 +89,16 @@ public class Helpers
 
         foreach (DirectoryInfo dir in directory.GetDirectories())
             RepointGUID_Internal(dir);
+
+        // Remove _0 versions?
+        /*
+        var version0Files = directory.GetFiles("*_0.asset");
+        for (int i = version0Files.Length - 1; i >= 0; i--)
+        {
+            version0Files[i].MoveTo(version0Files[i].Name.Replace("_0", ""), true);
+        }
+        */
+
         foreach (FileInfo file in directory.GetFiles())
         {
             if(knownExtensions.Contains(file.Extension))
@@ -112,7 +124,10 @@ public class Helpers
 
                 File.WriteAllText(file.FullName, content);
 
-                Console.WriteLine($"{file.Name} processed");
+                if (listAllProcessedFiles)
+                {
+                    Console.WriteLine($"{file.Name} processed");
+                }
             }
         }
     }
@@ -130,5 +145,25 @@ public class Helpers
         public RemapType type;
         public string? guid;
         public string? id;
+    }
+
+    public class PathIdMap
+    {
+        public class PathIdMap_Asset
+        {
+            public long PathID;
+            public string Name;
+            public string Type;
+            public string GUID;
+            public long? AddressablePathID;
+        }
+
+        public class PathIdMap_File
+        {
+            public string Name;
+            public List<PathIdMap_Asset> Assets;
+        }
+
+        public List<PathIdMap_File> Files;
     }
 }
