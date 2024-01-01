@@ -1,3 +1,7 @@
+# 1.0.6
+
+* Fixed for game version 34.05 (Addressables)
+
 # 1.0.5
 
 * Fixed for game version 34.02

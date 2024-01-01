@@ -3,18 +3,20 @@ using System.Linq;
 
 using UnityEngine;
 using UnityEngine.UI;
-
-using Il2CppSystem;
-using Il2CppSystem.Globalization;
 using UniverseLib;
+using static ComputerOSMultiSelect;
 
 namespace RealEstateListingCruncherApp
 {
+
     public class RealEstateCruncherAppContent : CruncherAppContent
     {
         public ComputerOSMultiSelect list;
         public CruncherForSaleContent forSaleController;
         public static Dictionary<string, Interactable> optionTextToSaleNote = new Dictionary<string, Interactable>();
+
+        ChangePage changePageDelegate;
+
 
         // This one seems to be retired?
         public override void Setup(ComputerController cc)
@@ -32,9 +34,17 @@ namespace RealEstateListingCruncherApp
         {
             GetComponentsInChildren<UnityEngine.UI.Button>().Where(button => button.name == "Exit").FirstOrDefault().onClick.AddListener(() => controller.OnAppExit());
             list = GetComponentInChildren<ComputerOSMultiSelect>();
+
+            changePageDelegate = new System.Action(UpdateSearch);
+            list.OnChangePage += changePageDelegate;
+
             forSaleController = transform.Find("ApartmentSaleContent").gameObject.AddComponent<CruncherForSaleContent>();
 
             UpdateSearch();
+        }
+        private void OnDestroy()
+        {
+            list.OnChangePage -= changePageDelegate;
         }
 
         public override void PrintButton()
@@ -57,7 +67,7 @@ namespace RealEstateListingCruncherApp
             list.UpdateElements(newOptions);
             list.usePages = newOptions.Count > list.maxPerPage;
 
-            foreach (var selectionElement in GetComponentsInChildren<ComputerOSMultiSelectElement>())
+            foreach (var selectionElement in GetComponentsInChildren<ComputerOSMultiSelectElement>(true))
             {
                 selectionElement.button.onClick.AddListener(() =>
                 {
