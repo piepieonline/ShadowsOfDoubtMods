@@ -88,8 +88,9 @@ public class RewriteAssetBundle
                 }
             }
 
-            // Replace vanilla bundle reference with resources
-            customAssetsFile.file.Metadata.Externals[0].PathName = "resources.assets";
+            // Replace vanilla bundle reference with addressables
+            // customAssetsFile.file.Metadata.Externals[0].PathName = "resources.assets";
+            customAssetsFile.file.Metadata.Externals[0].PathName = "archive:/CAB-37b77ade5e80bd224f8f5edcabd11692/CAB-37b77ade5e80bd224f8f5edcabd11692";
 
             bundleReplacers.Add(new BundleReplacerFromAssets(customAssetsFile.name, null, customAssetsFile.file, assetsReplacers));
 

@@ -16,7 +16,6 @@ public class SoDEditorMenu
         var bundleBuilds = new List<AssetBundleBuild>();
 
         Debug.Log("Creating dependency tags");
-
         foreach (var bundle in AssetDatabase.GetAllAssetBundleNames())
         {
             bundleBuilds.Add(new AssetBundleBuild() { assetBundleName = bundle, assetNames = AssetDatabase.GetAssetPathsFromAssetBundle(bundle) });
