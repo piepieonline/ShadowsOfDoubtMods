@@ -1,3 +1,7 @@
+# 1.0.4
+
+* Fixed for game version 34.05 (Addressables)
+
 # 1.0.3
 
 * Fixed an issue that could occur when loading multiple bundles fresh that reference the same asset

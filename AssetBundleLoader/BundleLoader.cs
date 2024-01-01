@@ -1,19 +1,32 @@
 ﻿using AssetsTools.NET;
 using AssetsTools.NET.Extra;
 using BepInEx;
-using BepInEx.Unity.IL2CPP;
 using BepInEx.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
+
+#if MONO
+using BepInEx.Unity.Mono;
+using UnityEngine;
+#elif IL2CPP
+using BepInEx.Unity.IL2CPP;
+using UniverseLib;
+#endif
 
 namespace AssetBundleLoader
 {
+#if MONO
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-    public class BundleLoader : BasePlugin
+    public class BundleLoader : BaseUnityPlugin
+#elif IL2CPP
+[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+public class BundleLoader : BasePlugin
+#endif
     {
         public static bool EnableLogging = false;
 
-        static ManualLogSource Logger;
+        static ManualLogSource PluginLogger;
 
         static AssetsManager vanillaManager;
         static AssetsFileInstance vanillaAssetsFile;
@@ -23,50 +36,53 @@ namespace AssetBundleLoader
 
         static string classPackageFileName = "classdata.tpk";
 
-        static Dictionary<string, UniverseLib.AssetBundle> loadedBundles = new Dictionary<string, UniverseLib.AssetBundle>();
+        static Dictionary<string, AssetBundle> loadedBundles = new Dictionary<string, AssetBundle>();
 
+        static string bundleFileName = "DUMMY";
+
+#if MONO
+        public void Awake()
+        {
+            PluginLogger = Logger;
+#elif IL2CPP
         public override void Load()
         {
-            Logger = Log;
+            PluginLogger = Log;
+#endif
 
-            // Plugin startup logic
-            Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+            // TODO: Not sure how to do this properly. Right now, read the largest bundle as the base (and hope the devs don't split bundles :S)
+            string fileToRead = System.IO.Directory.EnumerateFiles(System.IO.Path.Combine(Paths.GameRootPath, "Shadows of Doubt_Data", "StreamingAssets", "aa", "StandaloneWindows64"))
+                .OrderByDescending(file => new System.IO.FileInfo(file).Length)
+                .FirstOrDefault();
 
             vanillaManager = new AssetsManager();
             vanillaManager.LoadClassPackage(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), classPackageFileName));
-            vanillaAssetsFile = vanillaManager.LoadAssetsFile(Paths.GameRootPath + "\\Shadows of Doubt_Data\\resources.assets", false);
+            var bundle = vanillaManager.LoadBundleFile(fileToRead);
+            vanillaAssetsFile = vanillaManager.LoadAssetsFileFromBundle(bundle, 0, false);
             vanillaManager.LoadClassDatabaseFromPackage(vanillaAssetsFile.file.Metadata.UnityVersion);
 
-            /*
-            // Path matching is corrupting, needs more research
-            // Probably a container at the path, with no child reference
-         
-            var vanillaGMManager = new AssetsManager();
-            vanillaGMManager.LoadClassPackage(classPackagePath);
-            var vanillaGMAssetsFile = vanillaGMManager.LoadAssetsFile(gameManagerPath, false);
-            vanillaGMManager.LoadClassDatabaseFromPackage(vanillaGMAssetsFile.file.Metadata.UnityVersion);
-            var vanillaGMResourceManager = vanillaGMManager.GetBaseField(vanillaGMAssetsFile, vanillaGMAssetsFile.file.GetAssetsOfType(AssetClassID.ResourceManager)[0]);
+            PluginLogger.LogInfo($"{MyPluginInfo.PLUGIN_GUID}: Loading bundle {bundle.name} with file {vanillaAssetsFile.name}");
 
-            foreach (var data in vanillaGMResourceManager["m_Container.Array"].Children)
-            {
-                var path = data[0].AsString;
-                var pathId = data[1]["m_PathID"].AsString;
+            bundleFileName = vanillaAssetsFile.name;
 
-                pathToId[path] = pathId;
-            }
-            */
-
+#if IL2CPP
             // Manually init UniverseLib, in case it hasn't been done yet (No UnityExplorer or ConfigManager)
             UniverseLib.Universe.Init(0, null, null, new UniverseLib.Config.UniverseLibConfig()
             {
                 Unhollowed_Modules_Folder = System.IO.Path.Combine(Paths.BepInExRootPath, "interop")
             });
+#endif
+
+            PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
         }
 
-        public static UniverseLib.AssetBundle LoadBundle(string bundlePath, bool skipCache = false)
+        public static AssetBundle LoadBundle(string bundlePath, bool skipCache = false, bool stable = false)
+
         {
-            string patchedBundlePath = bundlePath + "_patched_" + Game.Instance.buildID;
-            
+            string patchedBundlePath = stable ? (bundlePath + "_stable") : (bundlePath + "_patched_" + Game.Instance.buildID);
+
+            if (stable) skipCache = false;
+
             if(loadedBundles.ContainsKey(patchedBundlePath) && loadedBundles[patchedBundlePath] != null)
             {
                 return loadedBundles[patchedBundlePath];
@@ -80,45 +96,15 @@ namespace AssetBundleLoader
                 var customAssetsFile = customManager.LoadAssetsFileFromBundle(customBundle, 0, false);
                 customManager.LoadClassDatabaseFromPackage(customAssetsFile.file.Metadata.UnityVersion);
 
-                var existingMapping = JsonConvert.DeserializeObject<AssetMappingList>(System.IO.File.ReadAllText(bundlePath + ".manifest.json"));
+                var existingMappingText = System.IO.File.ReadAllText(bundlePath + ".manifest.json");
+                PluginLogger.LogInfo(existingMappingText);
+                var existingMapping = JsonConvert.DeserializeObject<AssetMappingList>(existingMappingText);
 
                 foreach (var mapping in existingMapping.assets)
                 {
-                    if (mapping.Value.Path != null && pathToId.ContainsKey(mapping.Value.Path))
-                    {
-                        if(EnableLogging)
-                            Logger.LogInfo($"Replacing {mapping.Value.PathID} with {pathToId[mapping.Value.Path]} by Path");
-                        oldToNew[mapping.Value.PathID] = long.Parse(pathToId[mapping.Value.Path]);
-                    }
-                    else
-                    {
-
-                        for (int i = 0; i < vanillaAssetsFile.file.AssetInfos.Count; i++)
-                        {
-                            long newPathId = mapping.Value.PathID + i;
-                            if (AssetMappingList.CheckMatch(
-                                mapping.Value,
-                                vanillaManager.GetBaseField(vanillaAssetsFile, vanillaAssetsFile.file.GetAssetInfo(newPathId))
-                                ))
-                            {
-                                if (EnableLogging)
-                                    Logger.LogInfo($"Replacing {mapping.Value.PathID} with {newPathId} by Matching (Name and type)");
-
-                                if(oldToNew.ContainsKey(mapping.Value.PathID))
-                                {
-                                    if (oldToNew[mapping.Value.PathID] != newPathId)
-                                    {
-                                        Logger.LogWarning($"Duplicate mismatch {mapping.Value.PathID} matches both {oldToNew[mapping.Value.PathID]} (kept) and {newPathId} (discarded)");
-                                    }
-                                }
-                                else
-                                {
-                                    oldToNew.Add(mapping.Value.PathID, newPathId);
-                                }
-                                break;
-                            }
-                        }
-                    }
+                    if (EnableLogging)
+                        PluginLogger.LogInfo($"Replacing {mapping.Value.PathID} with {mapping.Value.AddressablePathID} by Matching (Name and type)");
+                    oldToNew[mapping.Value.PathID] = mapping.Value.AddressablePathID;
                 }
 
                 var bundleReplacers = new List<BundleReplacer>();
@@ -133,6 +119,8 @@ namespace AssetBundleLoader
                     }
                 }
 
+                customAssetsFile.file.Metadata.Externals[0].PathName = $"archive:/{bundleFileName}/{bundleFileName}";
+
                 bundleReplacers.Add(new BundleReplacerFromAssets(customAssetsFile.name, null, customAssetsFile.file, assetsReplacers));
 
                 using (AssetsFileWriter writer = new AssetsFileWriter(patchedBundlePath))
@@ -140,16 +128,16 @@ namespace AssetBundleLoader
                     customBundle.file.Write(writer, bundleReplacers);
                 }
 
-                Logger.LogInfo("Using new bundle: " + patchedBundlePath);
+                PluginLogger.LogInfo("Using new bundle: " + patchedBundlePath);
             }
             else
             {
-                Logger.LogInfo("Using existing bundle: " + patchedBundlePath);
+                PluginLogger.LogInfo("Using existing bundle: " + patchedBundlePath);
             }
 
             EnableLogging = false;
 
-            loadedBundles[patchedBundlePath] = UniverseLib.AssetBundle.LoadFromFile(patchedBundlePath);
+            loadedBundles[patchedBundlePath] = AssetBundle.LoadFromFile(patchedBundlePath);
             return loadedBundles[patchedBundlePath];
         }
 

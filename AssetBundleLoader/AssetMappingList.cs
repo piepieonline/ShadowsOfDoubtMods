@@ -12,10 +12,12 @@ namespace AssetBundleLoader
         public class AssetMapping
         {
             public long PathID;
+            public long AddressablePathID;
             public string? Name;
             public string? Type;
             public string? Container;
             public string? Path;
+            public string? AddressablesCAB;
         }
 
         public Dictionary<string, AssetMapping> assets = new Dictionary<string, AssetMapping>();
