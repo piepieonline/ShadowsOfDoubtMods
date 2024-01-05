@@ -1,6 +1,7 @@
 # Piepieonline's CityDirectoryPhoneNumbers
 
 Changes the city directory to list phone numbers instead of addresses. Thanks to Dusty926 on Discord for the suggestion.
+Note that not all addresses have phones attached - in these cases, the address will show as per normal (mostly businesses, I've noticed)
 
 # Manual Installation
 
