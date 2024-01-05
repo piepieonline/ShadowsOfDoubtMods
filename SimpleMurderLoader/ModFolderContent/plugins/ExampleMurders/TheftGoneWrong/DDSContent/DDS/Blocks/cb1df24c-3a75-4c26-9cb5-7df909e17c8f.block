@@ -1,0 +1,30 @@
+{
+    "id": "cb1df24c-3a75-4c26-9cb5-7df909e17c8f",
+    "name": "StickupBlock",
+    "replacements": [
+        {
+            "connection": 15,
+            "dislikeLike": 0.5,
+            "replaceWithID": "cb1df24c-3a75-4c26-9cb5-7df909e17c8f",
+            "strangerKnown": 0.5,
+            "traitCondition": 0,
+            "traits": [
+            ],
+            "useConnection": false,
+            "useDislikeLike": false,
+            "useTraits": false
+        },
+        {
+            "connection": 15,
+            "dislikeLike": 0.5,
+            "replaceWithID": "7adfb355-5195-46a7-80b2-edd0c3b56eda",
+            "strangerKnown": 0.5,
+            "traitCondition": 0,
+            "traits": [
+            ],
+            "useConnection": false,
+            "useDislikeLike": false,
+            "useTraits": false
+        }
+    ]
+}

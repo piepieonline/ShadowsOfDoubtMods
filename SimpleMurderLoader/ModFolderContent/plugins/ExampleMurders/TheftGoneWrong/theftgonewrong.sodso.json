@@ -1,0 +1,173 @@
+{
+  "name": "TheftGoneWrong",
+  "type": "MurderMO",
+  "notes": "TheftGoneWrong",
+  "disabled": 0,
+  "compatibleWith": [
+    "REF:MurderPreset|SerialKiller"
+  ],
+  "baseDifficulty": 0,
+  "pickRandomScoreRange": {
+    "x": 0,
+    "y": 15
+  },
+  "murdererTraitModifiers": [
+    {
+      "rule": 0,
+      "traitList": [
+        "REF:CharacterTrait|Affliction-Alcoholic",
+        "REF:CharacterTrait|Affliction-Destitute",
+        "REF:CharacterTrait|Affliction-DrugAddict",
+        "REF:CharacterTrait|Affliction-GamblingAddict",
+        "REF:CharacterTrait|Affliction-Sociopath"
+      ],
+      "mustPassForApplication": 0,
+      "scoreModifier": 15
+    },
+    {
+      "rule": 0,
+      "traitList": [
+        "REF:CharacterTrait|Char-Reckless",
+        "REF:CharacterTrait|Char-ShortTemper",
+        "REF:CharacterTrait|Char-Dishonest"
+      ],
+      "mustPassForApplication": 0,
+      "scoreModifier": 5
+    }
+  ],
+  "murdererJobModifiers": [],
+  "murdererCompanyModifiers": [],
+  "useMurdererSocialClassRange": 0,
+  "murdererClassRange": {
+    "x": 0,
+    "y": 1
+  },
+  "murdererClassRangeBoost": 10,
+  "useHexaco": 0,
+  "hexaco": {
+    "outputMin": 0,
+    "outputMax": 10,
+    "enableFeminineMasculine": 0,
+    "feminineMasculine": 0,
+    "enableHumility": 0,
+    "humility": 0,
+    "enableEmotionality": 1,
+    "emotionality": 0,
+    "enableExtraversion": 0,
+    "extraversion": 0,
+    "enableAgreeableness": 0,
+    "agreeableness": 0,
+    "enableConscientiousness": 1,
+    "conscientiousness": 10,
+    "enableCreativity": 0,
+    "creativity": 0
+  },
+  "weaponsPool": [
+    "REF:MurderWeaponsPool|Guns",
+    "REF:MurderWeaponsPool|Blades"
+  ],
+  "blockDroppingWeapons": 0,
+  "allowAnywhere": 0,
+  "allowHome": 0,
+  "allowWork": 1,
+  "allowPublic": 0,
+  "allowStreets": 0,
+  "acquaintedSuitabilityBoost": 0,
+  "attractedToSuitabilityBoost": 0,
+  "likeSuitabilityBoost": -3,
+  "sameWorkplaceBoost": -3,
+  "murdererIsTenantBoost": 0,
+  "victimRandomScoreRange": {
+    "x": 0,
+    "y": 1
+  },
+  "victimTraitModifiers": [],
+  "victimJobModifiers": [
+    {
+      "jobs": [
+        "REF:OccupationPreset|Shopkeeper",
+        "REF:OccupationPreset|ShopAssistant"
+      ],
+      "jobBoost": 20
+    }
+  ],
+  "victimCompanyModifiers": [
+    {
+      "companies": [
+        "REF:CompanyPreset|Chemist",
+        "REF:CompanyPreset|HardwareStore",
+        "REF:CompanyPreset|PawnShop",
+        "REF:CompanyPreset|Supermarket"
+      ],
+      "mininumEmployees": 2,
+      "companyBoost": 20,
+      "boostPerEmployeeOverMinimum": 5
+    }
+  ],
+  "useVictimSocialClassRange": 0,
+  "victimClassRange": {
+    "x": 0,
+    "y": 0
+  },
+  "victimClassRangeBoost": 0,
+  "monkierDDSMessageList": "319cb03a-2616-43e5-83af-40b96a801b1c",
+  "MOleads": [
+    {
+      "name": "RepoNotice",
+      "compatibleWithMotives": [
+        {
+          "fileID": 11400000
+        }
+      ],
+      "spawnOnPhase": 1,
+      "belongsTo": 2,
+      "chance": 1,
+      "useTraits": 0,
+      "traitModifiers": [
+        {
+          "who": 2,
+          "rule": 0,
+          "traitList": [
+            "REF:CharacterTrait|Affliction-Alcoholic",
+            "REF:CharacterTrait|Affliction-Destitute",
+            "REF:CharacterTrait|Affliction-DrugAddict",
+            "REF:CharacterTrait|Affliction-GamblingAddict",
+            "REF:CharacterTrait|Affliction-Sociopath"
+          ],
+          "mustPassForApplication": 1,
+          "chanceModifier": 20
+        }
+      ],
+      "useIf": 0,
+      "ifTag": 0,
+      "useOrGroup": 0,
+      "orGroup": 0,
+      "chanceRatio": 0,
+      "itemTag": 0,
+      "spawnItem": "REF:InteractablePreset|RepossessionNotice",
+      "vmailThread": null,
+      "vmailProgressThreshold": {
+        "x": 0,
+        "y": 0
+      },
+      "where": 2,
+      "writer": 0,
+      "receiver": 2,
+      "security": 0,
+      "priority": 0,
+      "ownershipRule": 0
+    }
+  ],
+  "graffiti": [],
+  "callingCardPool": [
+    {
+      "item": "REF:InteractablePreset|CrumpledPaperStickupInteractable",
+      "origin": 0,
+      "randomScoreRange": {
+        "x": 1,
+        "y": 1
+      },
+      "traitModifiers": []
+    }
+  ]
+}

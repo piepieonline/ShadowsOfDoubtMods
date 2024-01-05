@@ -1,0 +1,7 @@
+{
+    "name": "CrumpledPaperStickupEvidence",
+    "type": "EvidencePreset",
+    "copyFrom": "EvidencePreset|CrumpledNameCipher",
+    "presetName": "CrumpledPaperStickupEvidence",
+    "ddsDocumentID": "1b9c6ec6-78e7-46a2-aecd-5e36a6c3782f"
+}

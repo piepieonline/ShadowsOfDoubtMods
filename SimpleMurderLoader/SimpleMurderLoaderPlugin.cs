@@ -83,7 +83,7 @@ namespace SimpleMurderLoader
             }
             if (SimpleMurderLoaderPlugin.CreateMapping)
             {
-                System.IO.File.WriteAllText("E:\\test.json", jobject.ToString(Newtonsoft.Json.Formatting.Indented));
+                System.IO.File.WriteAllText("D:\\Game Modding\\ShadowsOfDoubt\\Documentation\\allSOs.json", jobject.ToString(Newtonsoft.Json.Formatting.Indented));
             }
 
             LoadManifest("""E:\SteamLibrary\steamapps\common\Shadows of Doubt mono\BepInEx\plugins\SimpleMurderLoader\ExampleMurders\TheftGoneWrong\""");
