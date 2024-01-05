@@ -47,14 +47,14 @@ namespace CityDirectoryPhoneNumbers
 
                 foreach (Company company in CityData.Instance.companyDirectory)
                 {
-                    if (company.address.telephones.Count > 0)
+                    if (company?.address?.telephones.Count > 0)
                     {
                         currentLinkToPhoneNumber[company.name] = Strings.AddOrGetLink(company.address.telephones[0].telephoneEntry).id;
                     }
                 }
                 foreach (NewAddress newAddress in CityData.Instance.addressDirectory)
                 {
-                    if (newAddress.telephones.Count > 0)
+                    if (newAddress?.telephones.Count > 0)
                     {
                         currentLinkToPhoneNumber[newAddress.name] = Strings.AddOrGetLink(newAddress.telephones[0].telephoneEntry).id;
                     }
