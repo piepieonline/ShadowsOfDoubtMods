@@ -5,6 +5,6 @@
   "description": "ApartmentRent",
   "dependencies": [
     "BepInEx-BepInExPack_IL2CPP-6.0.667",
-    "Venomaus-SODCommon-1.1.5"
+    "Venomaus-SODCommon-1.1.6"
   ]
 }
