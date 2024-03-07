@@ -230,28 +230,41 @@ ApartmentRent.ApartmentRentPlugin.GiveMoney(1300);
                         null,
                         null,
                         wedgeWorldPos,
-                        entrance.door.doorInteractable.wEuler,
+                        entrance.door.peekInteractable.wEuler,
                         null,
                         null
                     );
                     wedge.locked = true;
                     entrance.door.SetJammed(true, wedge, true);
 
-                    var noteWorldPos = entrance.door.gameObject.transform.TransformPoint(new Vector3(0, 1.5f, -0.11f));
+                    var note1WorldPos = entrance.door.gameObject.transform.TransformPoint(new Vector3(0, 1.5f, -0.11f));
+                    var note2WorldPos = entrance.door.gameObject.transform.TransformPoint(new Vector3(0, 1.5f, 0.01f));
 
-                    var note = InteractableCreator.Instance.CreateWorldInteractable(
+                    var note1 = InteractableCreator.Instance.CreateWorldInteractable(
                         InteriorControls.Instance.note,
                         Player.Instance,
                         null,
                         null,
-                        noteWorldPos,
-                        entrance.door.doorInteractable.wEuler + new Vector3(90, 0, 0),
+                        note1WorldPos,
+                        entrance.door.peekInteractable.wEuler + new Vector3(90, 0, 0),
                         null,
                         null,
                         "fdf6930b-0c20-434f-a181-dd4975944331"
                     );
 
-                    foreclosedInteractables[apartment.residenceNumber] = new List<Interactable>() { wedge, note };
+                    var note2 = InteractableCreator.Instance.CreateWorldInteractable(
+                        InteriorControls.Instance.note,
+                        Player.Instance,
+                        null,
+                        null,
+                        note2WorldPos,
+                        entrance.door.peekInteractable.wEuler + new Vector3(270, 0, 0),
+                        null,
+                        null,
+                        "fdf6930b-0c20-434f-a181-dd4975944331"
+                    );
+
+                    foreclosedInteractables[apartment.residenceNumber] = new List<Interactable>() { wedge, note1, note2 };
                     foreclosedDoorIDs[entrance.door.GetInstanceID()] = true;
                 }
             }
