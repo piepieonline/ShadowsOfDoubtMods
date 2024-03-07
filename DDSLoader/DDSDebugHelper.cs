@@ -1,8 +1,14 @@
 ﻿using BepInEx.Configuration;
 using HarmonyLib;
-using Il2CppSystem.Collections.Generic;
+
 using UnityEngine;
 using System.Linq;
+
+#if MONO
+using System.Collections.Generic;
+#elif IL2CPP
+using Il2CppSystem.Collections.Generic;
+#endif
 
 namespace DDSLoader
 {
@@ -37,11 +43,11 @@ namespace DDSLoader
     [HarmonyPatch(typeof(Human), "ExecuteConversationTree")]
     public class Human_ExecuteConversationTree
     {
-        public static void Postfix(Human __instance, DDSSaveClasses.DDSTreeSave newTree, Il2CppSystem.Collections.Generic.List<Human> otherParticipants)
+        public static void Postfix(Human __instance, DDSSaveClasses.DDSTreeSave newTree, List<Human> otherParticipants)
         {
             if (DDSLoaderPlugin.debugLogConversations.Value)
             {
-                DDSLoaderPlugin.Logger.LogInfo($"Conversation started: {newTree.id} started by {__instance.name} and including {string.Join(", ", otherParticipants.ToArray().Select(other => other.name))}");
+                DDSLoaderPlugin.PluginLogger.LogInfo($"Conversation started: {newTree.id} started by {__instance.name} and including {string.Join(", ", otherParticipants.ToArray().Select(other => other.name))}");
 
             }
             if (DDSLoaderPlugin.debugPauseTreeGUID.Value == newTree.id)

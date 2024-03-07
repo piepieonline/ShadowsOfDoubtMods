@@ -17,7 +17,7 @@ namespace DDSLoader
         {
             public static void Postfix()
             {
-                if(DDSLoaderPlugin.debugClearNewspaperArticles.Value)
+                if (DDSLoaderPlugin.debugClearNewspaperArticles.Value)
                 {
                     Toolbox.Instance.allArticleTrees.Clear();
                 }
@@ -39,8 +39,8 @@ namespace DDSLoader
                             }
                             catch (Exception exception)
                             {
-                                DDSLoaderPlugin.Logger.LogError($"Failed to load: {blockPath}");
-                                DDSLoaderPlugin.Logger.LogError(exception);
+                                DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {blockPath}");
+                                DDSLoaderPlugin.PluginLogger.LogError(exception);
                             }
                         }
 
@@ -53,8 +53,8 @@ namespace DDSLoader
                             }
                             catch (Exception exception)
                             {
-                                DDSLoaderPlugin.Logger.LogError($"Failed to load: {blockPath}");
-                                DDSLoaderPlugin.Logger.LogError(exception);
+                                DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {blockPath}");
+                                DDSLoaderPlugin.PluginLogger.LogError(exception);
                             }
                         }
                     }
@@ -70,8 +70,8 @@ namespace DDSLoader
                             }
                             catch (Exception exception)
                             {
-                                DDSLoaderPlugin.Logger.LogError($"Failed to load: {messagePath}");
-                                DDSLoaderPlugin.Logger.LogError(exception);
+                                DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {messagePath}");
+                                DDSLoaderPlugin.PluginLogger.LogError(exception);
                             }
                         }
 
@@ -84,8 +84,8 @@ namespace DDSLoader
                             }
                             catch (Exception exception)
                             {
-                                DDSLoaderPlugin.Logger.LogError($"Failed to load: {messagePath}");
-                                DDSLoaderPlugin.Logger.LogError(exception);
+                                DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {messagePath}");
+                                DDSLoaderPlugin.PluginLogger.LogError(exception);
                             }
                         }
                     }
@@ -97,7 +97,12 @@ namespace DDSLoader
                             try
                             {
                                 var tree = JsonUtility.FromJson<DDSSaveClasses.DDSTreeSave>(File.ReadAllText(treePath));
+
+#if MONO
+                                tree.messageRef = new Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+#elif IL2CPP
                                 tree.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+#endif
 
                                 foreach (var msg in tree.messages)
                                 {
@@ -108,14 +113,14 @@ namespace DDSLoader
 
                                 if (tree.treeType == DDSSaveClasses.TreeType.newspaper)
                                 {
-                                    DDSLoaderPlugin.Logger.LogWarning($"Newspaper content is no longer supported - use the official editor");
+                                    DDSLoaderPlugin.PluginLogger.LogWarning($"Newspaper content is no longer supported - use the official editor");
                                     // LoadNewspaperArticle(tree, messagesPath);
                                 }
                             }
                             catch (Exception exception)
                             {
-                                DDSLoaderPlugin.Logger.LogError($"Failed to load: {treePath}");
-                                DDSLoaderPlugin.Logger.LogError(exception);
+                                DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {treePath}");
+                                DDSLoaderPlugin.PluginLogger.LogError(exception);
                             }
                         }
 
@@ -124,7 +129,13 @@ namespace DDSLoader
                             try
                             {
                                 var patchedTree = JsonUtility.FromJson<DDSSaveClasses.DDSTreeSave>(CreatePatchedJson(treePath));
+
+
+#if MONO
+                                patchedTree.messageRef = new Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+#elif IL2CPP
                                 patchedTree.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+#endif
 
                                 foreach (var msg in patchedTree.messages)
                                 {
@@ -135,31 +146,49 @@ namespace DDSLoader
                             }
                             catch (Exception exception)
                             {
-                                DDSLoaderPlugin.Logger.LogError($"Failed to load: {treePath}");
-                                DDSLoaderPlugin.Logger.LogError(exception);
+                                DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {treePath}");
+                                DDSLoaderPlugin.PluginLogger.LogError(exception);
                             }
                         }
                     }
 
-                    DDSLoaderPlugin.Logger.LogInfo($"Loaded DDS Content and Patches For: {dir.Parent.Name}");
+                    DDSLoaderPlugin.PluginLogger.LogInfo($"Loaded DDS Content and Patches For: {dir.Parent.Name}");
 
                     var selectedLanguagePath = Path.Combine(dir.FullName, "Strings", Game.Instance.language);
                     var englishLanguagePath = Path.Combine(dir.FullName, "Strings", "English");
 
-                    var stringsPath = Directory.Exists(selectedLanguagePath) ? selectedLanguagePath : Directory.Exists(englishLanguagePath) ? englishLanguagePath : "";
-                    if (stringsPath != "")
-                    {
-                        foreach (var stringFile in Directory.GetFiles(stringsPath, "*.csv", SearchOption.AllDirectories))
-                        {
-                            var fileName = Path.GetFileNameWithoutExtension(stringFile);
-                            foreach (var line in File.ReadAllLines(stringFile))
-                            {
-                                Strings.ParseLine(line.Trim(), out var key, out var notes, out var display, out var alt, out var freq, out var suffix, out var misc);
-                                Strings.LoadIntoDictionary(fileName, Strings.stringTable[fileName].Count + 1, key, display.Replace("\\r\\n", "\r\n"), alt, freq, suffix);
-                            }
-                        }
+                    // var StringsLoadIntoDictionaryMI = typeof(Strings).GetMethod("LoadIntoDictionary", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+                    var StringsLoadIntoDictionaryMI = Il2CppInterop.Runtime.Il2CppType.From(typeof(Strings)).GetMethod("LoadIntoDictionary", Il2CppSystem.Reflection.BindingFlags.NonPublic | Il2CppSystem.Reflection.BindingFlags.Static);
 
-                        DDSLoaderPlugin.Logger.LogInfo($"Loaded String Content For: {dir.Parent.Name}");
+                    if(StringsLoadIntoDictionaryMI == null)
+                    {
+                        DDSLoaderPlugin.PluginLogger.LogError("Strings.LoadIntoDictionary not found!");
+                    }
+                    else
+                    {
+                        var stringsPath = Directory.Exists(selectedLanguagePath) ? selectedLanguagePath : Directory.Exists(englishLanguagePath) ? englishLanguagePath : "";
+                        if (stringsPath != "")
+                        {
+                            foreach (var stringFile in Directory.GetFiles(stringsPath, "*.csv", SearchOption.AllDirectories))
+                            {
+                                var fileName = Path.GetFileNameWithoutExtension(stringFile);
+                                foreach (var line in File.ReadAllLines(stringFile))
+                                {
+                                    Strings.ParseLine(line.Trim(), out var key, out var notes, out var display, out var alt, out var freq, out var suffix, out var misc);
+                                    if (display != null && StringsLoadIntoDictionaryMI != null)
+                                    {
+                                        StringsLoadIntoDictionaryMI.Invoke(null, (new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<Il2CppSystem.Object>(new Il2CppSystem.Object[] { fileName, Strings.stringTable[fileName].Count + 1, key, display.Replace("\\r\\n", "\r\n"), alt, freq, suffix })));
+
+                                        if (DDSLoaderPlugin.debugPrintLoadedStrings.Value)
+                                        {
+                                            DDSLoaderPlugin.PluginLogger.LogInfo($"{fileName}: {display.Replace("\\r\\n", "\r\n")}");
+                                        }
+                                    }
+                                }
+                            }
+
+                            DDSLoaderPlugin.PluginLogger.LogInfo($"Loaded String Content For: {dir.Parent.Name}");
+                        }
                     }
                 }
             }
@@ -169,7 +198,7 @@ namespace DDSLoader
                 var patchFileInfo = new FileInfo(patchPath);
                 var patchDirInfo = new DirectoryInfo(patchFileInfo.DirectoryName);
 
-                var existingDDSContent = JToken.Parse(File.ReadAllText(Path.Combine(Application.streamingAssetsPath, "DDS", patchDirInfo.Name, patchFileInfo.Name.Split("_")[0])));
+                var existingDDSContent = JToken.Parse(File.ReadAllText(Path.Combine(Application.streamingAssetsPath, "DDS", patchDirInfo.Name, patchFileInfo.Name.Split('_')[0])));
                 var patchDDSContent = Tavis.PatchDocument.Parse(File.ReadAllText(patchPath));
 
                 patchDDSContent.ApplyTo(existingDDSContent);
@@ -188,7 +217,7 @@ namespace DDSLoader
 
                         if(!File.Exists(newspaperDefinition))
                         {
-                            DDSLoaderPlugin.Logger.LogError($"Newspaper article definition doesn't exist for: {articleDefinition.msgID}. Skipping.");
+                            DDSLoaderPlugin.PluginLogger.LogError($"Newspaper article definition doesn't exist for: {articleDefinition.msgID}. Skipping.");
                             continue;
                         }
 
