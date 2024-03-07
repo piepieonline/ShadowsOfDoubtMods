@@ -20,21 +20,24 @@ using BepInEx.Unity.Mono;
 using BepInEx.Unity.IL2CPP;
 #endif
 
-namespace ApartmentRent
-{
-    /* TODO
-     *  Uses SODCommon, which doesn't work on Mono
-     *  
-     *  Somehow list the amount of rent and due dates for the player?
-    */
+/* 
+ * TODO:
+ *  - Uses SODCommon, which doesn't work on Mono
+ *  - Somehow list the amount of rent and due dates for the player?
+*/
 
 
-    /*
-     * Debug helpers:
+/*
+Debug helpers:
+
 ApartmentRent.ApartmentRentPlugin.GiveMoney(1300);
 // ApartmentRent.ApartmentRentPlugin.ActionRentDue();
 // ApartmentRent.ApartmentRentPlugin.PayToUnlock(Player.Instance.apartmentsOwned[0]);
-    */
+
+*/
+
+namespace ApartmentRent
+{
 
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 #if MONO
