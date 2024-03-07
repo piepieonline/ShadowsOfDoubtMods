@@ -1,8 +1,9 @@
 # Piepieonline's ApartmentRent
 
-Adds rental payments that are due on a regular schedule. Also enables the 'tired' debuff, to encourage you to own an apartment.
+Adds rental payments that are due on a regular schedule.
 When you miss your rental payment, the door will be locked and barred (barging is also blocked) and you need to pay the missed payments back to regain access.
 
+SODQOL is recommended to enable the tired effect, which will encourage renting an apartment.
 
 # Manual Installation
 

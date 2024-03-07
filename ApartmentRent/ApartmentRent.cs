@@ -340,53 +340,6 @@ ApartmentRent.ApartmentRentPlugin.GiveMoney(1300);
             }
         }
 
-        // Enable the tiredness effect
-        /*
-        // Broken, causing startup CTD?
-        [HarmonyPatch(typeof(Human), nameof(Human.AddWellRested))]
-        internal class Human_AddAlertness
-        {
-            [HarmonyPostfix]
-            internal static void Postfix(Human __instance, float addVal)
-            {
-                if (__instance.isPlayer && __instance.alertness < 0.1f && addVal < 0)
-                {
-                    __instance.AddEnergy(addVal / 2f); // Called twice per frame (bug?), so halve it
-                }
-            }
-        }
-        */
-
-        // Alternate method to get past the crashing hook
-        [HarmonyPatch(typeof(CitizenBehaviour), nameof(CitizenBehaviour.GameWorldCheck))]
-        internal class CitizenBehaviour_GameWorldCheck
-        {
-            [HarmonyPrefix]
-            internal static void Prefix(CitizenBehaviour __instance, ref float __state)
-            {
-                __state = SessionData.Instance.gameTime - __instance.timeOnLastGameWorldUpdate;
-            }
-
-            [HarmonyPostfix]
-            internal static void Postfix(ref float __state)
-            {
-                // Copied from decomp
-                if (Player.Instance.spendingTimeMode && InteractionController.Instance.lockedInInteraction != null && InteractionController.Instance.lockedInInteraction.preset.specialCaseFlag == InteractablePreset.SpecialCase.sleepPosition)
-                { }
-                else
-                {
-                    if (!Game.Instance.disableSurvivalStatusesInStory || !Toolbox.Instance.IsStoryMissionActive(out Chapter _, out int _))
-                    {
-                        float addVal = GameplayControls.Instance.playerTirednessRate * -__state;
-                        if (Player.Instance.alertness < 0.1f && addVal < 0)
-                        {
-                            Player.Instance.AddEnergy(addVal); // Called twice per frame (bug?), so halve it
-                        }
-                    }
-                }
-            }
-        }
-
         // Custom "pay missed rent" button in the evidence window
         [HarmonyPatch(typeof(InterfaceController), nameof(InterfaceController.SpawnWindow))]
         internal class InterfaceController_SpawnWindow
@@ -398,8 +351,6 @@ ApartmentRent.ApartmentRentPlugin.GiveMoney(1300);
                 {
                     return;
                 }
-
-                PluginLogger.LogInfo($"Opened interactable: {passedInteractable.name}");
 
                 foreach ((var residenceNumber, var interactables) in foreclosedInteractables)
                 {
