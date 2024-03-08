@@ -12,7 +12,7 @@
 		<Platforms>x64</Platforms>
 		<AssemblyName>CityDirectoryPhoneNumbers</AssemblyName>
 		<Description>A small mod to change the city directory to list phone numbers instead of addresses</Description>
-		<Version>1.0.0</Version>
+		<Version>1.0.3</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 		<RestoreAdditionalProjectSources>

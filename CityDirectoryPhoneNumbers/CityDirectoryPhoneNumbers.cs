@@ -3,6 +3,7 @@ using UnityEngine;
 using BepInEx.Logging;
 using HarmonyLib;
 using System.Collections.Generic;
+using BepInEx.Configuration;
 
 #if MONO
 using BepInEx.Unity.Mono;
@@ -21,6 +22,9 @@ namespace CityDirectoryPhoneNumbers
 #endif
     {
         public static ManualLogSource PluginLogger;
+
+        private static ConfigEntry<bool> ShowAddressInCitizenCard;
+
 #if MONO
         private void Awake()
         {
@@ -31,6 +35,8 @@ namespace CityDirectoryPhoneNumbers
             PluginLogger = Log;
 #endif
             // Plugin startup logic
+            ShowAddressInCitizenCard = Config.Bind("General", "Should the directory entry for citizens also include their address?", false);
+
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
             var harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");
             harmony.PatchAll();
@@ -47,23 +53,35 @@ namespace CityDirectoryPhoneNumbers
 
                 foreach (Company company in CityData.Instance.companyDirectory)
                 {
-                    if (company?.address?.telephones.Count > 0)
+                    if (GetPhoneEntry(company?.address, out var phoneEntryLink))
                     {
-                        currentLinkToPhoneNumber[company.name] = Strings.AddOrGetLink(company.address.telephones[0].telephoneEntry).id;
+                        if(company?.name != null)
+                            currentLinkToPhoneNumber[company.name] = phoneEntryLink;
                     }
                 }
                 foreach (NewAddress newAddress in CityData.Instance.addressDirectory)
                 {
-                    if (newAddress?.telephones.Count > 0)
+                    if (GetPhoneEntry(newAddress, out var phoneEntryLink))
                     {
-                        currentLinkToPhoneNumber[newAddress.name] = Strings.AddOrGetLink(newAddress.telephones[0].telephoneEntry).id;
+                        currentLinkToPhoneNumber[newAddress.name] = phoneEntryLink;
                     }
                 }
                 foreach (Citizen citizen in CityData.Instance.citizenDirectory)
                 {
-                    if (citizen.home?.telephones.Count > 0)
+                    if (GetPhoneEntry(citizen?.home, out var phoneEntryLink))
                     {
-                        currentLinkToPhoneNumber[citizen.GetInitialledName()] = Strings.AddOrGetLink(citizen.home.telephones[0].telephoneEntry).id;
+                        var eviList = new Il2CppSystem.Collections.Generic.List<Evidence.DataKey>();
+                        eviList.Add(Evidence.DataKey.initialedName);
+                        eviList.Add(Evidence.DataKey.telephoneNumber);
+
+                        if(ShowAddressInCitizenCard.Value)
+                        {
+                            eviList.Add(Evidence.DataKey.address);
+                        }
+
+                        var combinedLink = Strings.AddOrGetLink(citizen.evidenceEntry, eviList);
+
+                        currentLinkToPhoneNumber[citizen.GetInitialledName()] = combinedLink.id;
                     }
                 }
 
@@ -91,6 +109,21 @@ namespace CityDirectoryPhoneNumbers
                 }
 
                 PluginLogger.LogInfo($"CityDirectoryPhoneNumbersPlugin: Updated city directory");
+            }
+
+            private static bool GetPhoneEntry(NewAddress phoneAddress, out int evidenceLink)
+            {
+                Strings.LinkData phoneEntry = null;
+                evidenceLink = -1;
+                if (phoneAddress?.telephones?.Count > 0)
+                {
+                    phoneEntry = Strings.AddOrGetLink(phoneAddress.telephones[0].telephoneEntry);
+                    if (phoneEntry != null)
+                    {
+                        evidenceLink = phoneEntry.id;
+                    }
+                }
+                return phoneEntry != null && evidenceLink != -1;
             }
         }
     }

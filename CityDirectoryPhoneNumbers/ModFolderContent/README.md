@@ -6,7 +6,7 @@ Note that not all addresses have phones attached - in these cases, the address w
 # Manual Installation
 
 * Ensure you have BepInEx BE installed
-* Extract the mod to ".\BepInEx\plugins\", so you should have ".\BepInEx\plugins\RealEstateListingCruncherApp\CityDirectoryPhoneNumbers.dll"
+* Extract the mod to ".\BepInEx\plugins\", so you should have ".\BepInEx\plugins\CityDirectoryPhoneNumbers\CityDirectoryPhoneNumbers.dll"
 
 # Source:
 
