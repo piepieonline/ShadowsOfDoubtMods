@@ -55,7 +55,7 @@ namespace CityDirectoryPhoneNumbers
                 {
                     if (GetPhoneEntry(company?.address, out var phoneEntryLink))
                     {
-                        if(company?.name != null)
+                        if (company?.name != null)
                             currentLinkToPhoneNumber[company.name] = phoneEntryLink;
                     }
                 }
@@ -66,15 +66,26 @@ namespace CityDirectoryPhoneNumbers
                         currentLinkToPhoneNumber[newAddress.name] = phoneEntryLink;
                     }
                 }
+
                 foreach (Citizen citizen in CityData.Instance.citizenDirectory)
                 {
+                    if(ChapterController.Instance.chapterScript)
+                    {
+                        ChapterIntro chapterIntro = ((dynamic)ChapterController.Instance.chapterScript).Cast<ChapterIntro>();
+                        if (Toolbox.Instance.IsStoryMissionActive(out var _, out var _) && (chapterIntro?.kidnapper?.humanID == citizen?.humanID))
+                        {
+                            // Skip the tutorial character to prevent breaking it
+                            continue;
+                        }
+                    }
+
                     if (GetPhoneEntry(citizen?.home, out var phoneEntryLink))
                     {
                         var eviList = new Il2CppSystem.Collections.Generic.List<Evidence.DataKey>();
                         eviList.Add(Evidence.DataKey.initialedName);
                         eviList.Add(Evidence.DataKey.telephoneNumber);
 
-                        if(ShowAddressInCitizenCard.Value)
+                        if (ShowAddressInCitizenCard.Value)
                         {
                             eviList.Add(Evidence.DataKey.address);
                         }
@@ -124,6 +135,18 @@ namespace CityDirectoryPhoneNumbers
                     }
                 }
                 return phoneEntry != null && evidenceLink != -1;
+            }
+        }
+
+        [HarmonyPatch(typeof(ChapterController), nameof(ChapterController.LoadPart), new System.Type[] { typeof(int), typeof(bool), typeof(bool) })]
+        public class ChapterController_LoadPart
+        {
+            public static void Postfix()
+            {
+                if(Toolbox.Instance.IsStoryMissionActive(out var _, out var _))
+                {
+                    CityData.Instance.CreateCityDirectory();
+                }
             }
         }
     }

@@ -1,3 +1,7 @@
+# 1.0.5
+
+* Bugfix for the tutorial story case
+
 # 1.0.4
 
 * Opening for citizens now opens the citizen evidence panel, with the initialed name and phone number. Via a setting in config, this can have the address as well.
