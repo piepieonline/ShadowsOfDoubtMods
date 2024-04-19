@@ -1,9 +1,9 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using System.Linq;
 using System.Collections.Generic;
 using Il2CppSystem.Reflection;
+using BepInEx.Configuration;
 
 #if MONO
 using BepInEx.Unity.Mono;
@@ -34,6 +34,9 @@ namespace DialogAdditions
         private static DialogAdditionPlugin instance;
         public static Dictionary<string, CustomDialogPreset> customDialogInterceptors = new Dictionary<string, CustomDialogPreset>();
         public static ManualLogSource PluginLogger;
+
+        public static ConfigEntry<bool> TalkToPartnerCanFail;
+        public static ConfigEntry<float> TalkToPartnerBaseSuccess;
 #if MONO
         private void Awake()
         {
@@ -46,6 +49,9 @@ namespace DialogAdditions
             // Plugin startup logic
 
             instance = this;
+
+            TalkToPartnerCanFail = Config.Bind("Talk to Partner", "Can asking for the partner fail?", false);
+            TalkToPartnerBaseSuccess = Config.Bind("Talk to Partner", "Base chance of success (before trait modifications, in the range 0 to 1)?", 0.25f);
 
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
             var harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");
@@ -73,7 +79,10 @@ namespace DialogAdditions
         [HarmonyPostfix]
         internal static void Postfix(DialogController __instance)
         {
-            foreach(var customDialog in new CustomDialogPreset[] { new TalkToPartner() })
+            foreach(var customDialog in new CustomDialogPreset[]
+            {
+                new TalkToPartner(DialogAdditionPlugin.TalkToPartnerCanFail.Value, DialogAdditionPlugin.TalkToPartnerBaseSuccess.Value)
+            })
             {
                 Toolbox.Instance.allDialog.Add(customDialog.Preset);
                 Toolbox.Instance.defaultDialogOptions.Add(customDialog.Preset);
