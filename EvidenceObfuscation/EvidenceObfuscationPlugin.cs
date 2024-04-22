@@ -23,8 +23,6 @@ namespace EvidenceObfuscation
         public static ConfigEntry<bool> ModifyCityDirectory;
         public static ConfigEntry<bool> ShowAddressInCitizenCard;
 
-        public static ConfigEntry<bool> ModifySalesLedgers;
-
 #if MONO
         private void Awake()
         {
@@ -37,8 +35,6 @@ namespace EvidenceObfuscation
 
             ModifyCityDirectory = Config.Bind("City Directory", "Should the directory be modified to be phone numbers instead of addresses?", true);
             ShowAddressInCitizenCard = Config.Bind("City Directory", "Should the directory entry for citizens also include their address?", false);
-
-            ModifySalesLedgers = Config.Bind("Sales Ledgers", "Should sales ledgers be modified to have a random identifier?", true);
 
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
             var harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");

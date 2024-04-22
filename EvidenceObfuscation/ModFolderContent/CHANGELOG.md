@@ -1,7 +1,19 @@
+# 2.0.3
+
+* Removed the sale ledger obfuscation, as it now exists in the base game.
+
+# 2.0.2
+
+* Fixed an error in the sale ledger that would occur when the buyer was unemployed
+
+# 2.0.1
+
+* Typo in description
+
 # 2.0.0
 
 * Renamed from CityDirectoryPhoneNumbers to EvidenceLinkModifiers
-* Added options to modify the Sales Ledgers to be obfuscated
+* Added options to modify the sales ledgers to be obfuscated
 
 # 1.0.5
 
