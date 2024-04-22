@@ -14,8 +14,6 @@ using BepInEx.Unity.IL2CPP;
 /*
  * TODO:
  *  - Ask to talk to the partner:
- *      - Chance to fail dialog call (traits?) (config)
- *      - Different failure mode for not home
  *      - Don't let someone cycle between people at the door
  *      - Tidy up lines used when rejecting
  *  

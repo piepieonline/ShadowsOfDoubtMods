@@ -1,3 +1,7 @@
+# 0.10.0
+
+* Added config for the request being rejected, added more dialog lines.
+
 # 0.9.1
 
 * Fixed broken manifest and icon.
