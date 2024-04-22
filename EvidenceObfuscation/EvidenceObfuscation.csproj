@@ -10,7 +10,7 @@
 	
 	<PropertyGroup>
 		<Platforms>x64</Platforms>
-		<AssemblyName>CityDirectoryPhoneNumbers</AssemblyName>
+		<AssemblyName>EvidenceObfuscation</AssemblyName>
 		<Description>A small mod to change the city directory to list phone numbers instead of addresses</Description>
 		<Version>1.0.5</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -19,7 +19,7 @@
 			https://api.nuget.org/v3/index.json;
 			https://nuget.bepinex.dev/v3/index.json
 		</RestoreAdditionalProjectSources>
-		<RootNamespace>CityDirectoryPhoneNumbers</RootNamespace>
+		<RootNamespace>EvidenceObfuscation</RootNamespace>
 		<Configurations>Mono;IL2CPP</Configurations>
 	</PropertyGroup>
 
@@ -44,6 +44,8 @@
 
 	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">
 		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+		<PackageReference Include="SOD.Common" Version="1.1.5" IncludeAssets="compile" />
+		<Reference Include="$(BepInExPath)interop/Unity.TextMeshPro.dll" />
 		<Reference Include="$(BepInExPath)interop/Il2Cppmscorlib.dll" />
 		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
 	</ItemGroup>

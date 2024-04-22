@@ -1,9 +1,10 @@
 {
-  "name": "CityDirectoryPhoneNumbers",
-  "version_number": "1.0.5",
+  "name": "EvidenceLinkModifiers",
+  "version_number": "2.0.0",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/CityDirectoryPhoneNumbers",
   "description": "Changes the city directory to list phone numbers instead of addresses. Thanks to Dusty926 on Discord for the suggestion.",
   "dependencies": [
-    "BepInEx-BepInExPack_IL2CPP-6.0.667"
+    "BepInEx-BepInExPack_IL2CPP-6.0.667",
+    "Venomaus-SODCommon-1.1.6"
   ]
 }

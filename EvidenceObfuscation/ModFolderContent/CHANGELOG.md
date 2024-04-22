@@ -1,3 +1,8 @@
+# 2.0.0
+
+* Renamed from CityDirectoryPhoneNumbers to EvidenceLinkModifiers
+* Added options to modify the Sales Ledgers to be obfuscated
+
 # 1.0.5
 
 * Bugfix for the tutorial story case
