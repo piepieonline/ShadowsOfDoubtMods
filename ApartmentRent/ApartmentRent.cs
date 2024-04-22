@@ -433,6 +433,11 @@ namespace ApartmentRent
         {
             string path = GetSavePath(e.FilePath);
 
+            if(!File.Exists(path))
+            {
+                return;
+            }
+
             var saveFileContent = JsonSerializer.Deserialize<RentSaveFile>(File.ReadAllText(path));
 
             foreach (var addressSaveFile in saveFileContent.apartmentSaveFiles)

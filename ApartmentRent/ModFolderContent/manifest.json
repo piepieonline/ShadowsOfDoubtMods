@@ -1,6 +1,6 @@
 {
   "name": "ApartmentRent",
-  "version_number": "0.9.0",
+  "version_number": "0.9.1",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/ApartmentRent",
   "description": "Adds rental payments that are due on a regular schedule.",
   "dependencies": [
