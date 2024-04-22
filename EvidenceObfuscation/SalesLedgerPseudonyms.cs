@@ -55,7 +55,7 @@ namespace EvidenceLinkModifiers
             var punter = __instance.salesRecord.GetPunter();
             var evidenceLinkList = new Il2CppSystem.Collections.Generic.List<Evidence.DataKey>();
 
-            var saleEvidenceTypeKey = __instance.salesRecord.punterID % 4;
+            var saleEvidenceTypeKey = __instance.salesRecord.punterID % (punter.job != null ? 4 : 3);
 
             switch(saleEvidenceTypeKey)
             {
@@ -64,12 +64,12 @@ namespace EvidenceLinkModifiers
                     __instance.nameText.text = "<link=" + Strings.AddOrGetLink(punter.evidenceEntry, evidenceLinkList).id.ToString() + ">" + punter.GetInitials() + "</link>";
                     break;
                 case 2:
-                    evidenceLinkList.Add(Evidence.DataKey.work);
-                    __instance.nameText.text = "<link=" + Strings.AddOrGetLink(punter.evidenceEntry, evidenceLinkList).id.ToString() + ">" + punter.job.employer.name + "</link>";
+                    evidenceLinkList.Add(Evidence.DataKey.firstName);
+                    __instance.nameText.text = "<link=" + Strings.AddOrGetLink(punter.evidenceEntry, evidenceLinkList).id.ToString() + ">" + punter.firstName + "</link>";
                     break;
                 case 3:
-                    evidenceLinkList.Add(Evidence.DataKey.firstName);
-                    __instance.nameText.text = "<link=" + Strings.AddOrGetLink(punter.evidenceEntry, evidenceLinkList).id.ToString() + ">" + punter.GetFirstName() + "</link>";
+                    evidenceLinkList.Add(Evidence.DataKey.work);
+                    __instance.nameText.text = "<link=" + Strings.AddOrGetLink(punter.evidenceEntry, evidenceLinkList).id.ToString() + ">" + punter.job.employer.name + "</link>";
                     break;
                 default:
                     // Standard option
