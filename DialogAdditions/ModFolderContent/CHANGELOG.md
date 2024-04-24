@@ -1,3 +1,7 @@
+# 0.11.1
+
+* Doco update
+
 # 0.11.0
 
 * Added showing a photo of someone at an eatery, to find out if they regularly meet up with anyone there
