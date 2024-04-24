@@ -1,0 +1,62 @@
+{
+  "name": "SeenThisPersonWithOthers-receiverheight",
+  "id": "b4e4d266-b0a4-4d88-aedc-1437b40fd9f9",
+  "replacements": [
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "b4e4d266-b0a4-4d88-aedc-1437b40fd9f9",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "|receiver.height|, with a |receiver.build|."
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "bd4ba679-7884-4ecd-9028-3e137c2dd7eb",
+      "strangerKnown": 0.5,
+      "traitCondition": 2,
+      "traits": [
+        "Quirk-Bald"
+      ],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": true,
+      "_ENG Localisation_": "|receiver.height|, with |receiver.hairtype| |receiver.haircolour|."
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "b1721a9a-9ec3-4af0-b70d-7b535ebd1e1a",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [
+        "Affliction-FarSighted",
+        "Affliction-ShortSighted"
+      ],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": true,
+      "_ENG Localisation_": "|receiver.height|, wearing glasses."
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "18f89a05-9b0f-4248-a939-19e2ab78d7dc",
+      "strangerKnown": 0.5,
+      "traitCondition": 1,
+      "traits": [
+        "Quirk-FacialHair"
+      ],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": true,
+      "_ENG Localisation_": "|receiver.height|, with facial hair."
+    }
+  ],
+  "_ENG Localisation_": "|receiver.height|, with a |receiver.build|."
+}

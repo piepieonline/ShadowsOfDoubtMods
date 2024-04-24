@@ -23,15 +23,7 @@ namespace DialogAdditions
             // If it's not a 100% success, influence it with traits.
             if(canFail)
             {
-                foreach (var dialogPreset in Toolbox.Instance.allDialog)
-                {
-                    if (dialogPreset.name == "Introduce")
-                    {
-                        // Shortcut, use the Introduce traits as they are suitable
-                        preset.modifySuccessChanceTraits = dialogPreset.modifySuccessChanceTraits;
-                        break;
-                    }
-                }
+                preset.modifySuccessChanceTraits = DialogAdditionPlugin.dialogPresets["Introduce"].modifySuccessChanceTraits;
             }
 
             preset.responses.Add(new AIActionPreset.AISpeechPreset()
@@ -62,7 +54,7 @@ namespace DialogAdditions
 
         public override bool IsAvailable(DialogPreset preset, Citizen saysTo, SideJob jobRef)
         {
-            return (saysTo != null && !saysTo.isHomeless && saysTo.isHome);
+            return (!saysTo.isHomeless && saysTo.isHome);
         }
 
         public override void RunDialogMethod(DialogController instance, Citizen saysTo, Interactable saysToInteractable, NewNode where, Actor saidBy, bool success, NewRoom roomRef, SideJob jobRef)
@@ -95,9 +87,6 @@ namespace DialogAdditions
 
         public override DialogController.ForceSuccess ShouldDialogSucceedOverride(DialogController instance, EvidenceWitness.DialogOption dialog, Citizen saysTo, NewNode where, Actor saidBy)
         {
-            if (!saysTo)
-                return DialogController.ForceSuccess.none;
-
             if (!saysTo.isHome || !saysTo.partner || (saysTo.partner && !saysTo.partner.isHome))
             {
                 return DialogController.ForceSuccess.fail;

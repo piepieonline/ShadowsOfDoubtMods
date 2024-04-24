@@ -4,6 +4,10 @@ using HarmonyLib;
 using System.Collections.Generic;
 using Il2CppSystem.Reflection;
 using BepInEx.Configuration;
+using Cpp2IL.Core.Api;
+using System.Linq;
+
+
 
 #if MONO
 using BepInEx.Unity.Mono;
@@ -29,12 +33,14 @@ namespace DialogAdditions
     public class DialogAdditionPlugin : BasePlugin
 #endif
     {
-        private static DialogAdditionPlugin instance;
+        public static Dictionary<string, DialogPreset> dialogPresets = new Dictionary<string, DialogPreset>();
         public static Dictionary<string, CustomDialogPreset> customDialogInterceptors = new Dictionary<string, CustomDialogPreset>();
         public static ManualLogSource PluginLogger;
 
         public static ConfigEntry<bool> TalkToPartnerCanFail;
         public static ConfigEntry<float> TalkToPartnerBaseSuccess;
+
+        private static DialogAdditionPlugin instance;
 #if MONO
         private void Awake()
         {
@@ -77,23 +83,26 @@ namespace DialogAdditions
         [HarmonyPostfix]
         internal static void Postfix(DialogController __instance)
         {
-            foreach(var customDialog in new CustomDialogPreset[]
+            MethodInfo warnNotewriterMI = null;
+            foreach (var dialogPreset in Toolbox.Instance.allDialog)
             {
-                new TalkToPartner(DialogAdditionPlugin.TalkToPartnerCanFail.Value, DialogAdditionPlugin.TalkToPartnerBaseSuccess.Value)
+                if (dialogPreset.name == "WarnNotewriter")
+                {
+                    warnNotewriterMI = __instance.dialogRef[dialogPreset];
+                }
+                DialogAdditionPlugin.dialogPresets[dialogPreset.name] = dialogPreset;
+            }
+
+            foreach (var customDialog in new CustomDialogPreset[]
+            {
+                new TalkToPartner(DialogAdditionPlugin.TalkToPartnerCanFail.Value, DialogAdditionPlugin.TalkToPartnerBaseSuccess.Value),
+                new SeenThisPersonWithOthers()
             })
             {
                 Toolbox.Instance.allDialog.Add(customDialog.Preset);
-                Toolbox.Instance.defaultDialogOptions.Add(customDialog.Preset);
-
-                MethodInfo warnNotewriterMI = null;
-                foreach (var dialogPreset in Toolbox.Instance.allDialog)
-                {
-                    if (dialogPreset.name == "WarnNotewriter")
-                    {
-                        warnNotewriterMI = __instance.dialogRef[dialogPreset];
-                        break;
-                    }
-                }
+                
+                if(customDialog.Preset.defaultOption)
+                    Toolbox.Instance.defaultDialogOptions.Add(customDialog.Preset);
 
                 __instance.dialogRef.Add(customDialog.Preset, warnNotewriterMI);
 
@@ -129,7 +138,14 @@ namespace DialogAdditions
         {
             if (DialogAdditionPlugin.customDialogInterceptors.ContainsKey(preset.name))
             {
-                __result = DialogAdditionPlugin.customDialogInterceptors[preset.name].IsAvailable(preset, saysTo, jobRef);
+                if(!saysTo)
+                {
+                    __result = false;
+                }
+                else
+                {
+                    __result = DialogAdditionPlugin.customDialogInterceptors[preset.name].IsAvailable(preset, saysTo, jobRef);
+                }
                 return false;
             }
 
