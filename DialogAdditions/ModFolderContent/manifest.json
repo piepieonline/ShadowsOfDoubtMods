@@ -1,8 +1,8 @@
 {
   "name": "PlayerDialogAdditions",
-  "version_number": "0.10.0",
+  "version_number": "0.11.0",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/DialogAdditions",
-  "description": "Adds dialog options for the player to say to NPCs. Currently just allows asking the citizens partner to come to the door.",
+  "description": "Adds dialog options for the player to say to NPCs, as well as modifying some responses.",
   "dependencies": [
     "BepInEx-BepInExPack_IL2CPP-6.0.667",
     "Piepieonline-DDSLoader-1.0.4"

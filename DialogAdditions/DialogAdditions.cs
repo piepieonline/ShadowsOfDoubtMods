@@ -39,6 +39,7 @@ namespace DialogAdditions
 
         public static ConfigEntry<bool> TalkToPartnerCanFail;
         public static ConfigEntry<float> TalkToPartnerBaseSuccess;
+        public static ConfigEntry<float> SeenUnusualLikeBlock;
 
         private static DialogAdditionPlugin instance;
 #if MONO
@@ -56,6 +57,7 @@ namespace DialogAdditions
 
             TalkToPartnerCanFail = Config.Bind("Talk to Partner", "Can asking for the partner fail?", false);
             TalkToPartnerBaseSuccess = Config.Bind("Talk to Partner", "Base chance of success (before trait modifications, in the range 0 to 1)?", 0.25f);
+            SeenUnusualLikeBlock = Config.Bind("Have you seen anything?", "How well liked does the perp have to be before acquaintances protect them? (in the range 0 to 1)?", 0.45f);
 
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
             var harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");

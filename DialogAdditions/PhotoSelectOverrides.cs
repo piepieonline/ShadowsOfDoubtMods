@@ -239,6 +239,14 @@ namespace DialogAdditions
 
                 return false;
             }
+            else if (speaker.humanID == MurderController.Instance.currentMurderer.humanID)
+            {
+                if(MurderController.Instance.activeMurders.Exists((Il2CppSystem.Predicate<MurderController.Murder>)(murder => murder.victimID == askTarget.humanID)))
+                {
+                    speaker.speechController.Speak("a6815309-f9d4-40b0-8a1e-3ec3550c64a2", speakAbout: askTarget);
+                    return false;
+                }
+            }
 
             // Acquaintance
             return true;
