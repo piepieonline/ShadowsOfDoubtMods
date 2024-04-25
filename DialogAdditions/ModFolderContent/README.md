@@ -7,7 +7,7 @@ Adds and modifies dialog lines that the player can say.
   * If they know the person, and like them, they might lie. If they don't like them, they'll give more info.
 * Changed: "Do you know this person"
   * People won't always answer if you present a photo of themselves (Depends if they would have answered "What is your name?").
-  * Murderers will no longer 'know' the person they murdered to prevent self-incrimination
+  * Murderers will no longer self-incriminate when asked about a person they have murdered
 
 # Manual Installation
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using SOD.Common.Extensions;
 
 namespace DialogAdditions
 {
@@ -214,7 +215,8 @@ namespace DialogAdditions
             }
         }
 
-
+        static CharacterTrait charImpulsive;
+        static CharacterTrait charAwkward;
         static bool DoYouKnowThisPersonAdditions(Human speaker, Human askTarget, Il2CppSystem.Collections.Generic.List<Evidence.DataKey> askTargetKeys)
         {
             // Self, check if they would normally give their name
@@ -241,7 +243,11 @@ namespace DialogAdditions
             }
             else if (speaker.humanID == MurderController.Instance.currentMurderer.humanID)
             {
-                if(MurderController.Instance.activeMurders.Exists((Il2CppSystem.Predicate<MurderController.Murder>)(murder => murder.victimID == askTarget.humanID)))
+                if (charImpulsive == null) charImpulsive = Toolbox.Instance.allCharacterTraits.Where(item => item.name == "Char-Impulsive").First();
+                if (charAwkward == null) charAwkward = Toolbox.Instance.allCharacterTraits.Where(item => item.name == "Char-Awkward").First();
+
+                // If they have these traits, just clam up and pretend to not know them
+                if ((speaker.TraitExists(charImpulsive) || speaker.TraitExists(charAwkward)) && MurderController.Instance.activeMurders.Exists((Il2CppSystem.Predicate<MurderController.Murder>)(murder => murder.victimID == askTarget.humanID)))
                 {
                     speaker.speechController.Speak("a6815309-f9d4-40b0-8a1e-3ec3550c64a2", speakAbout: askTarget);
                     return false;
@@ -250,6 +256,25 @@ namespace DialogAdditions
 
             // Acquaintance
             return true;
+        }
+
+        // If the questioned person is the murdered, they should pretend to not have seen the vic
+        [HarmonyPatch(typeof(Human), nameof(Human.RevealSighting), [typeof(Human), typeof(Human.Sighting)])]
+        class Human_RevealSighting_Murderer
+        {
+            static bool Prefix(Human __instance, Human prospectCitizen)
+            {
+                if (__instance.humanID == MurderController.Instance.currentMurderer.humanID)
+                {
+                    if (MurderController.Instance.activeMurders.Exists((Il2CppSystem.Predicate<MurderController.Murder>)(murder => murder.victimID == prospectCitizen.humanID)))
+                    {
+                        __instance.speechController.Speak("aeba5683-cb14-4df7-a95c-04025dfcd5d0", speakAbout: prospectCitizen);
+                        return false;
+                    }
+                }
+
+                return true;
+            }
         }
     }
 

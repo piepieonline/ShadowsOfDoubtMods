@@ -1,3 +1,7 @@
+# 0.11.2
+
+* Minor change to how murders avoid self-incrimination
+
 # 0.11.1
 
 * Doco update
