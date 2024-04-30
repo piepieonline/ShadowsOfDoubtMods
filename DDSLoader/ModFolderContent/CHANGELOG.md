@@ -1,3 +1,12 @@
+# 1.0.5
+
+* Better warning messages for empty files
+
+# 1.0.4
+
+* Fixes for the experimental branch
+* Removed newspaper support
+
 # 1.0.3
 
 * Added newspaper article support

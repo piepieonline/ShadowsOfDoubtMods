@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using Newtonsoft.Json;
 
 namespace DDSLoader
 {
@@ -35,7 +34,14 @@ namespace DDSLoader
                             try
                             {
                                 var block = JsonUtility.FromJson<DDSSaveClasses.DDSBlockSave>(File.ReadAllText(blockPath));
-                                Toolbox.Instance.allDDSBlocks.Add(block.id, block);
+                                if (block == null)
+                                {
+                                    DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {blockPath} (Empty)");
+                                }
+                                else
+                                {
+                                    Toolbox.Instance.allDDSBlocks.Add(block.id, block);
+                                }
                             }
                             catch (Exception exception)
                             {
@@ -49,7 +55,14 @@ namespace DDSLoader
                             try
                             {
                                 var patchedBlock = JsonUtility.FromJson<DDSSaveClasses.DDSBlockSave>(CreatePatchedJson(blockPath));
-                                Toolbox.Instance.allDDSBlocks[patchedBlock.id] = patchedBlock;
+                                if (patchedBlock == null)
+                                {
+                                    DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {blockPath} (Empty)");
+                                }
+                                else
+                                {
+                                    Toolbox.Instance.allDDSBlocks[patchedBlock.id] = patchedBlock;
+                                }
                             }
                             catch (Exception exception)
                             {
@@ -66,7 +79,14 @@ namespace DDSLoader
                             try
                             {
                                 var message = JsonUtility.FromJson<DDSSaveClasses.DDSMessageSave>(File.ReadAllText(messagePath));
-                                Toolbox.Instance.allDDSMessages.Add(message.id, message);
+                                if (message == null)
+                                {
+                                    DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {messagePath} (Empty)");
+                                }
+                                else
+                                {
+                                    Toolbox.Instance.allDDSMessages.Add(message.id, message);
+                                }
                             }
                             catch (Exception exception)
                             {
@@ -80,7 +100,14 @@ namespace DDSLoader
                             try
                             {
                                 var patchedMessage = JsonUtility.FromJson<DDSSaveClasses.DDSMessageSave>(CreatePatchedJson(messagePath));
-                                Toolbox.Instance.allDDSMessages[patchedMessage.id] = patchedMessage;
+                                if (patchedMessage == null)
+                                {
+                                    DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {messagePath} (Empty)");
+                                }
+                                else
+                                {
+                                    Toolbox.Instance.allDDSMessages[patchedMessage.id] = patchedMessage;
+                                }
                             }
                             catch (Exception exception)
                             {
@@ -98,23 +125,30 @@ namespace DDSLoader
                             {
                                 var tree = JsonUtility.FromJson<DDSSaveClasses.DDSTreeSave>(File.ReadAllText(treePath));
 
+                                if (tree == null)
+                                {
+                                    DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {treePath} (Empty)");
+                                }
+                                else
+                                {
 #if MONO
-                                tree.messageRef = new Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+                                    tree.messageRef = new Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
 #elif IL2CPP
-                                tree.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+                                    tree.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
 #endif
 
-                                foreach (var msg in tree.messages)
-                                {
-                                    tree.messageRef.Add(msg.instanceID, msg);
-                                }
+                                    foreach (var msg in tree.messages)
+                                    {
+                                        tree.messageRef.Add(msg.instanceID, msg);
+                                    }
 
-                                Toolbox.Instance.allDDSTrees.Add(tree.id, tree);
+                                    Toolbox.Instance.allDDSTrees.Add(tree.id, tree);
 
-                                if (tree.treeType == DDSSaveClasses.TreeType.newspaper)
-                                {
-                                    DDSLoaderPlugin.PluginLogger.LogWarning($"Newspaper content is no longer supported - use the official editor");
-                                    // LoadNewspaperArticle(tree, messagesPath);
+                                    if (tree.treeType == DDSSaveClasses.TreeType.newspaper)
+                                    {
+                                        DDSLoaderPlugin.PluginLogger.LogWarning($"Newspaper content is no longer supported - use the official editor");
+                                        // LoadNewspaperArticle(tree, messagesPath);
+                                    }
                                 }
                             }
                             catch (Exception exception)
@@ -130,19 +164,25 @@ namespace DDSLoader
                             {
                                 var patchedTree = JsonUtility.FromJson<DDSSaveClasses.DDSTreeSave>(CreatePatchedJson(treePath));
 
-
+                                if (patchedTree == null)
+                                {
+                                    DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {treePath} (Empty)");
+                                }
+                                else
+                                {
 #if MONO
-                                patchedTree.messageRef = new Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+                                    patchedTree.messageRef = new Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
 #elif IL2CPP
-                                patchedTree.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+                                    patchedTree.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
 #endif
 
-                                foreach (var msg in patchedTree.messages)
-                                {
-                                    patchedTree.messageRef.Add(msg.instanceID, msg);
-                                }
+                                    foreach (var msg in patchedTree.messages)
+                                    {
+                                        patchedTree.messageRef.Add(msg.instanceID, msg);
+                                    }
 
-                                Toolbox.Instance.allDDSTrees[patchedTree.id] = patchedTree;
+                                    Toolbox.Instance.allDDSTrees[patchedTree.id] = patchedTree;
+                                }
                             }
                             catch (Exception exception)
                             {
