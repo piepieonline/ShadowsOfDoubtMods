@@ -33,7 +33,6 @@
 	<ItemGroup>
 		<PackageReference Include="AssetsTools.NET" Version="3.0.0-preview3" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='MONO'">

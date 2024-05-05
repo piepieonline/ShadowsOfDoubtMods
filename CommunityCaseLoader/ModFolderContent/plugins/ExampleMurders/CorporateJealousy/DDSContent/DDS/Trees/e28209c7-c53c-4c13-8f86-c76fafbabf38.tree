@@ -1,0 +1,105 @@
+{
+  "document": {
+    "background": "",
+    "colour": {
+      "a": 0,
+      "b": 0,
+      "g": 0,
+      "r": 0
+    },
+    "fill": 1,
+    "size": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "id": "e28209c7-c53c-4c13-8f86-c76fafbabf38",
+  "messages": [
+    {
+      "alignH": 0,
+      "alignV": 0,
+      "charSpace": 0,
+      "col": {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 0
+      },
+      "elementName": "",
+      "font": "Halogen",
+      "fontSize": 22,
+      "fontStyle": 0,
+      "instanceID": "cec023b4-a763-4180-987f-b7636dbe05ce",
+      "lineSpace": 16,
+      "links": [],
+      "msgID": "a21abf62-aec5-4dc5-954b-445fdb297e25",
+      "order": 0,
+      "paraSpace": 0,
+      "pos": {
+        "x": -30,
+        "y": -175
+      },
+      "rot": 0,
+      "saidBy": 0,
+      "saidTo": 1,
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "usePages": false,
+      "wordSpace": 0
+    }
+  ],
+  "name": "CorporateJealousy-DefaultTree",
+  "participantA": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantB": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantC": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantD": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "priority": 3,
+  "repeat": 1,
+  "startingMessage": "cec023b4-a763-4180-987f-b7636dbe05ce",
+  "stopMovement": true,
+  "treeChance": 1,
+  "treeType": 1,
+  "triggerPoint": 5
+}

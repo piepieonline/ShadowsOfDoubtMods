@@ -1,0 +1,10 @@
+{
+  "name": "CommunityCaseLoader",
+  "version_number": "0.1.0",
+  "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/CommunityCaseLoader",
+  "description": "Adds dialog options for the player to say to NPCs, as well as modifying some responses.",
+  "dependencies": [
+    "BepInEx-BepInExPack_IL2CPP-6.0.667",
+    "Piepieonline-DDSLoader-1.0.5"
+  ]
+}

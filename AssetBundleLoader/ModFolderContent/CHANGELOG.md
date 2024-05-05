@@ -1,3 +1,7 @@
+# 1.0.5
+
+* Added JSON object loading
+
 # 1.0.4
 
 * Fixed for game version 34.05 (Addressables)

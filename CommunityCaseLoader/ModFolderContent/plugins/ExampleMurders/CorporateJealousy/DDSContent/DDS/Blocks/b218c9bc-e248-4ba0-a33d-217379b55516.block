@@ -1,0 +1,31 @@
+{
+  "name": "CorporateJealousy-Iwillnotstandfor",
+  "id": "b218c9bc-e248-4ba0-a33d-217379b55516",
+  "replacements": [
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "3dee5bcd-fcfb-499f-861a-c588a1194cee",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "Watch your back near |murder.location.street|..."
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "b218c9bc-e248-4ba0-a33d-217379b55516",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "I will not stand for this! |murder.killer.job.employer.name| will not stand for this!"
+    }
+  ],
+  "_ENG Localisation_": "I will not stand for this! |murder.killer.job.employer.name| will not stand for this!"
+}

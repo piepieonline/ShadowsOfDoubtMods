@@ -1,8 +1,8 @@
 {
   "name": "TheftGoneWrong",
-  "type": "MurderMO",
+  "fileType": "MurderMO",
   "notes": "TheftGoneWrong",
-  "disabled": 0,
+  "disabled": 1,
   "compatibleWith": [
     "REF:MurderPreset|SerialKiller"
   ],
@@ -151,7 +151,7 @@
         "y": 0
       },
       "where": 2,
-      "writer": 0,
+      "writer": 2,
       "receiver": 2,
       "security": 0,
       "priority": 0,

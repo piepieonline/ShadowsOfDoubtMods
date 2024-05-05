@@ -1,0 +1,58 @@
+{
+  "name": "CorporateJealousy",
+  "fileType": "MurderMO",
+  "copyFrom": "REF:MurderMO|TheCoporateKiller",
+  "notes": "Kills people in other companies than might compete with them",
+  "disabled": 0,
+  "sameWorkplaceBoost": -20,
+  "useVictimSocialClassRange": 0,
+  "confessionalDDSResponses": [
+    "5e0c53d5-8808-4a8f-86b5-447b358e27db"
+  ],
+  "victimCompanyModifiers": [
+    {
+      "companies": [
+        "REF:CompanyPreset|MediumOffice"
+      ],
+      "mininumEmployees": 4,
+      "companyBoost": 20,
+      "boostPerEmployeeOverMinimum": 0
+    }
+  ],
+  "MOleads": [
+    {
+      "name": "VMAIL: Anon Threat",
+      "compatibleWithAllMotives": 0,
+      "compatibleWithMotives": [
+        {
+          "fileID": 11400000
+        }
+      ],
+      "spawnOnPhase": 1,
+      "tryToSpawnWithEachNewMurder": 1,
+      "belongsTo": 2,
+      "chance": 1,
+      "useTraits": false,
+      "traitModifiers": [],
+      "useIf": false,
+      "ifTag": 0,
+      "useOrGroup": false,
+      "orGroup": 0,
+      "chanceRatio": 0,
+      "itemTag": 0,
+      "spawnItem": null,
+      "vmailThread": "e28209c7-c53c-4c13-8f86-c76fafbabf38",
+      "vmailProgressThreshold": {
+        "x": 0,
+        "y": 0
+      },
+      "writer": 1,
+      "receiver": 1,
+      "vmailOtherParticipants": [1, 2],
+      "where": 0,
+      "security": 0,
+      "priority": 3,
+      "ownershipRule": 4
+    }
+  ]
+}
