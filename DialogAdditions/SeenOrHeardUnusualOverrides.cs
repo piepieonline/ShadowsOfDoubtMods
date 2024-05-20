@@ -42,7 +42,7 @@ namespace DialogAdditions
                         else
                         {
                             // I saw |receiver.casualname| acting a bit strange actually...
-                            saysTo.speechController.Speak("51421182-3138-47a6-a8cf-3991990e9815");
+                            saysTo.speechController.Speak("51421182-3138-47a6-a8cf-3991990e9815", speakAbout: seenHuman);
                             return false;
                         }
                     }

@@ -121,9 +121,20 @@ namespace DialogAdditions
 
             ModifyDDSScopes.GroupToSpeakAbout = group;
             // There are |receiver.currentgroup.membercount| of them that meet here on |receiver.currentgroup.days| at |receiver.currentgroup.time|
-            speaker.speechController.Speak("669bd28e-22fd-4db7-8b64-c4425ed7b0e7", speakAbout: askTarget);
             // SeenThisPersonWithOthers.GroupToSpeakAbout = null;
-
+            if(group.members.Count == 2)
+            {
+                speaker.speechController.Speak("d5af67b2-9c85-41f1-a703-add0be0b1ddf", speakAbout: askTarget);
+            }
+            else if (group.members.Count <= 4)
+            {
+                speaker.speechController.Speak("76ec3908-68e5-4238-bc2e-57545ce46850", speakAbout: askTarget);
+            }
+            else
+            {
+                speaker.speechController.Speak("669bd28e-22fd-4db7-8b64-c4425ed7b0e7", speakAbout: askTarget);
+            }
+            
             if(groupPreset.groupType == GroupPreset.GroupType.interestGroup)
             {
                 // I think it's a |receiver.currentgroup.type|.
@@ -148,19 +159,21 @@ namespace DialogAdditions
 
             if (group.members.Count == 2)
             {
+                var speakAbout = CityData.Instance.citizenDictionary[group.members.Where(memberId => memberId != askTarget.humanID).First()];
+
                 if (speaker.FindAcquaintanceExists(askTarget, out var returnAcq))//  && returnAcq.known > 0.5f)
                 {
                     // TODO: Levels of certainity?
                     // returnAcq.known
                     // I think their name is |receiver.casualname|?
-                    speaker.speechController.Speak("846d9642-f500-41d4-97a2-c2821ae7c2ba", speakAbout: askTarget);
+                    speaker.speechController.Speak("846d9642-f500-41d4-97a2-c2821ae7c2ba", speakAbout: speakAbout);
                 }
                 else
                 {
                     // They were...
-                    speaker.speechController.Speak("b700b7d9-69f4-479a-b448-2a4234f3d4fb", speakAbout: askTarget);
+                    speaker.speechController.Speak("b700b7d9-69f4-479a-b448-2a4234f3d4fb", speakAbout: speakAbout);
                     // |receiver.height|, with a |receiver.build| build. - dynamic based on traits
-                    speaker.speechController.Speak("80409e68-0be4-4657-8afd-9a519a386f4f", speakAbout: askTarget);
+                    speaker.speechController.Speak("80409e68-0be4-4657-8afd-9a519a386f4f", speakAbout: speakAbout);
                 }
             }
             else
@@ -219,6 +232,8 @@ namespace DialogAdditions
         static CharacterTrait charAwkward;
         static bool DoYouKnowThisPersonAdditions(Human speaker, Human askTarget, Il2CppSystem.Collections.Generic.List<Evidence.DataKey> askTargetKeys)
         {
+            if(!speaker) return true;
+
             // Self, check if they would normally give their name
             if (speaker.humanID == askTarget.humanID && (askTargetKeys.Contains(Evidence.DataKey.name) || askTargetKeys.Contains(Evidence.DataKey.photo)))
             {
@@ -241,7 +256,7 @@ namespace DialogAdditions
 
                 return false;
             }
-            else if (speaker.humanID == MurderController.Instance.currentMurderer.humanID)
+            else if (speaker.humanID == MurderController.Instance.currentMurderer?.humanID)
             {
                 if (charImpulsive == null) charImpulsive = Toolbox.Instance.allCharacterTraits.Where(item => item.name == "Char-Impulsive").First();
                 if (charAwkward == null) charAwkward = Toolbox.Instance.allCharacterTraits.Where(item => item.name == "Char-Awkward").First();
@@ -264,7 +279,7 @@ namespace DialogAdditions
         {
             static bool Prefix(Human __instance, Human prospectCitizen)
             {
-                if (__instance.humanID == MurderController.Instance.currentMurderer.humanID)
+                if (__instance.humanID == MurderController.Instance.currentMurderer?.humanID)
                 {
                     if (MurderController.Instance.activeMurders.Exists((Il2CppSystem.Predicate<MurderController.Murder>)(murder => murder.victimID == prospectCitizen.humanID)))
                     {
@@ -371,7 +386,7 @@ namespace DialogAdditions
                 baseChance += UpgradeEffectController.Instance.GetUpgradeEffect(SyncDiskPreset.Effect.guestPassIssueModifier);
 
             float num = Mathf.Clamp01(baseChance + UpgradeEffectController.Instance.GetUpgradeEffect(SyncDiskPreset.Effect.dialogChanceModifier));
-            if (introduceDialogPreset.specialCase == DialogPreset.SpecialCase.mustBeMurdererForSuccess && MurderController.Instance.currentMurderer != cit)
+            if (introduceDialogPreset.specialCase == DialogPreset.SpecialCase.mustBeMurdererForSuccess && MurderController.Instance.currentMurderer?.humanID != cit?.humanID)
             {
                 num = 0.0f;
                 success = false;

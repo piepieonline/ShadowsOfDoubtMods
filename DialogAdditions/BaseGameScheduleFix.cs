@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Il2CppInterop.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,26 +10,19 @@ namespace DialogAdditions
 {
     internal class BaseGameScheduleFix
     {
-        /*
-         [HarmonyPatch(typeof(NewAIGoal), nameof(NewAIGoal.UpdateNextGroupTimes))]
-         public class NewAIGoal_UpdateNextGroupTimes
-         {
-             public static void Postfix(NewAIGoal __instance)
-             {
-                 DialogAdditionPlugin.PluginLogger.LogInfo($"UpdateNextGroupTimes: {__instance?.passedGroup?.id} : {__instance?.passedGroup?.preset} @ {__instance?.triggerTime}");
-             }
-         }
-         */
 
 
-        [HarmonyPatch(typeof(NewAIController), nameof(NewAIController.AITick))]
-        public class NewAIController_AITick
+        [HarmonyPatch(typeof(NewAIController), nameof(NewAIController.CreateNewGoal))]
+        public class NewAIController_CreateNewGoal
         {
-            public static void Postfix(NewAIController __instance)
+            public static void Prefix(NewAIController __instance, ref AIGoalPreset newPreset, float newTrigerTime, ref NewGameLocation newPassedGameLocation)
             {
-                if (__instance != null && __instance.currentGoal != null && __instance.currentGoal.name.Contains("MeetUpEvent"))
+                if (newPreset != null && newPreset.name.Contains("MeetUpEvent"))
                 {
-                    DialogAdditionPlugin.PluginLogger.LogInfo($"{__instance.currentGoal.name}: {__instance.currentGoal.triggerTime} @ {__instance?.human?.citizenName} at {__instance?.currentGoal?.gameLocation?.name}");
+                    DialogAdditionPlugin.PluginLogger.LogInfo($"{newPreset.name}: {newTrigerTime} @ {__instance?.human?.citizenName} at {newPassedGameLocation.thisAsAddress.name}");
+                    newPassedGameLocation = CityData.Instance.addressDictionary[newPassedGameLocation.thisAsAddress.id - 1];
+                    newPreset.basePriority = 5;
+                    DialogAdditionPlugin.PluginLogger.LogInfo($"{newPreset.name}: {newTrigerTime} @ {__instance?.human?.citizenName} at {newPassedGameLocation.thisAsAddress.name}");
                 }
             }
         }

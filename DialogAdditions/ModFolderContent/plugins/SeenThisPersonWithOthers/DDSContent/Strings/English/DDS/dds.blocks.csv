@@ -15,3 +15,6 @@ b1721a9a-9ec3-4af0-b70d-7b535ebd1e1a,,"|receiver.height|, wearing glasses.",,,,1
 aa5121a4-488e-4830-b33b-cd9bbd65eadd,,I think it's a |receiver.currentgroup.type|.,,,,15:13 24/04/2024
 2493e66e-3033-42ac-b339-f4859f03cd77,,They were...,,,,16:14 24/04/2024
 14d2a997-ce0c-4206-a299-769c3717e9ee,,"Yea, they meet here regularly.",,,,16:24 24/04/2024
+
+385f5635-bf55-421d-b7a2-bbecc8e6489e,,They're here on |receiver.currentgroup.days| at about |receiver.currentgroup.time|.,,,,18:22 29/04/2024
+ea1a4b54-36b8-4f4c-a441-4031bec76501,,|receiver.currentgroup.membercount| of them that meet up on |receiver.currentgroup.days| at about |receiver.currentgroup.time|.,,,,18:24 29/04/2024
