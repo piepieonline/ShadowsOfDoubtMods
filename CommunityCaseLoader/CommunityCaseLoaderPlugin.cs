@@ -56,43 +56,43 @@ namespace CommunityCaseLoader
     [HarmonyPatch(typeof(Toolbox), "Start")]
     public class Toolbox_Start
     {
+        static bool hasToolboxInit = false;
+
         public static void Postfix()
         {
-            // Codegen specific stuff
-            var codegenSOMap = new Dictionary<string, Dictionary<string, SortedSet<string>>>();
-            codegenSOMap["ScriptableObject"] = new Dictionary<string, SortedSet<string>>();
-            codegenSOMap["Enum"] = new Dictionary<string, SortedSet<string>>();
-            var codegenTemplates = new Dictionary<string, dynamic>();
-            var codegenSOTypeMapping = new Dictionary<string, Dictionary<string, (string Class, bool Array)>>();
-
-            // Search the plugins directory to find any and all murdermanifests, so that people can upload thunderstore mods that purely contain json without code
-            var modsToLoadFrom = Directory.GetDirectories(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), ".."), "*", SearchOption.AllDirectories)
-                .Select(dirPath => new DirectoryInfo(dirPath))
-                .Where(dir => File.Exists(Path.Combine(dir.FullName, "murdermanifest.sodso.json")))
-                .ToList();
-
-            foreach(var mod in modsToLoadFrom)
+            if (!hasToolboxInit)
             {
-                LoadManifest(mod.Name, mod.FullName);
-            }
+                // Search the plugins directory to find any and all murdermanifests, so that people can upload thunderstore mods that purely contain json without code
+                var modsToLoadFrom = Directory.GetDirectories(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), ".."), "*", SearchOption.AllDirectories)
+                    .Select(dirPath => new DirectoryInfo(dirPath))
+                    .Where(dir => File.Exists(Path.Combine(dir.FullName, "murdermanifest.sodso.json")))
+                    .ToList();
 
-            // Force single type for testing
-            if (CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder != "")
-            {
-                CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Forcing MurderMO: {CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder}");
-                for (int i = Toolbox.Instance.allMurderMOs.Count - 1; i >= 0; i--)
+                foreach (var mod in modsToLoadFrom)
                 {
-                    if (Toolbox.Instance.allMurderMOs[i].name != CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder)
-                        Toolbox.Instance.allMurderMOs[i].disabled = true; // TODO: Cache the current state to allow changing at runtime
+                    LoadManifest(mod.Name, mod.FullName);
                 }
+
+                // Force single type for testing
+                if (CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder != "")
+                {
+                    CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Forcing MurderMO: {CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder}");
+                    for (int i = Toolbox.Instance.allMurderMOs.Count - 1; i >= 0; i--)
+                    {
+                        if (Toolbox.Instance.allMurderMOs[i].name != CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder)
+                            Toolbox.Instance.allMurderMOs[i].disabled = true; // TODO: Cache the current state to allow changing at runtime
+                    }
+                }
+
+                // TODO: Incomplete, not added to citizens atm
+                CommunityCaseLoaderPlugin.homelessTrait = ScriptableObject.CreateInstance<CharacterTrait>();
+                CommunityCaseLoaderPlugin.homelessTrait.name = "Quirk-Homeless";
+                CommunityCaseLoaderPlugin.homelessTrait.isTrait = true;
+
+                Toolbox.Instance.allCharacterTraits.Add(CommunityCaseLoaderPlugin.homelessTrait);
+
+                hasToolboxInit = true;
             }
-
-            // TODO: Incomplete, not added to citizens atm
-            CommunityCaseLoaderPlugin.homelessTrait = ScriptableObject.CreateInstance<CharacterTrait>();
-            CommunityCaseLoaderPlugin.homelessTrait.name = "Quirk-Homeless";
-            CommunityCaseLoaderPlugin.homelessTrait.isTrait = true;
-
-            Toolbox.Instance.allCharacterTraits.Add(CommunityCaseLoaderPlugin.homelessTrait);
         }
 
         private static void LoadManifest(string moName, string folderPath)
