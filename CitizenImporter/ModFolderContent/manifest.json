@@ -1,0 +1,9 @@
+{
+  "name": "CitizenImporter",
+  "version_number": "0.1.0",
+  "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/CitizenImporter",
+  "description": "Create citizens from a file at city generation, allowing for custom names and physical attributes. Requires a new city. Spreadsheet template for citizens: https://docs.google.com/spreadsheets/d/11OvB572ezm2j-iO2rd89XHInrTNXey83eLdw2VJcujE/edit#gid=90891271",
+  "dependencies": [
+    "BepInEx-BepInExPack_IL2CPP-6.0.667"
+  ]
+}
