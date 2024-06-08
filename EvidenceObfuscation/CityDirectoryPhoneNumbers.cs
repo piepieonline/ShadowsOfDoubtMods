@@ -14,7 +14,7 @@ namespace EvidenceLinkModifiers
                 return;
             }
 
-            EvidenceObfuscationPlugin.PluginLogger.LogInfo($"EvidenceObfuscationPlugin: Started updating city directory");
+            EvidenceObfuscationPlugin.PluginLogger.LogInfo($"Started updating city directory");
             var currentLinkToPhoneNumber = new Dictionary<string, int>();
 
             foreach (Company company in CityData.Instance.companyDirectory)
@@ -85,7 +85,7 @@ namespace EvidenceLinkModifiers
                 });
             }
 
-            EvidenceObfuscationPlugin.PluginLogger.LogInfo($"EvidenceObfuscationPlugin: Updated city directory");
+            EvidenceObfuscationPlugin.PluginLogger.LogInfo($"Updated city directory");
         }
 
         private static bool GetPhoneEntry(NewAddress phoneAddress, out int evidenceLink)

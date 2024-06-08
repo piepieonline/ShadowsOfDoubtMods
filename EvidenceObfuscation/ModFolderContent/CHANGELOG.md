@@ -1,3 +1,7 @@
+# 2.1.0
+
+* Added options to remove fingerprints from employee records, both printed from a cruncher and found in a filling cabinet
+
 # 2.0.3
 
 * Removed the sale ledger obfuscation, as it now exists in the base game.

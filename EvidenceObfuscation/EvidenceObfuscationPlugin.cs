@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace EvidenceObfuscation
 {
@@ -23,6 +24,9 @@ namespace EvidenceObfuscation
         public static ConfigEntry<bool> ModifyCityDirectory;
         public static ConfigEntry<bool> ShowAddressInCitizenCard;
 
+        public static ConfigEntry<bool> EmployeeRecord_Printed_FingerprintsRemoved;
+        public static ConfigEntry<bool> EmployeeRecord_Filling_FingerprintsRemoved;
+
 #if MONO
         private void Awake()
         {
@@ -35,6 +39,9 @@ namespace EvidenceObfuscation
 
             ModifyCityDirectory = Config.Bind("City Directory", "Should the directory be modified to be phone numbers instead of addresses?", true);
             ShowAddressInCitizenCard = Config.Bind("City Directory", "Should the directory entry for citizens also include their address?", false);
+
+            EmployeeRecord_Printed_FingerprintsRemoved = Config.Bind("Employee Record", "Should fingerprints be removed from employee records printed from a cruncher?", false);
+            EmployeeRecord_Filling_FingerprintsRemoved = Config.Bind("Employee Record", "Should fingerprints be removed from employee records found in a filling cabinet?", false);
 
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
             var harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");
