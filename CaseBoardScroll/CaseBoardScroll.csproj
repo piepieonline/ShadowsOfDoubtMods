@@ -1,7 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='MONO'">
+		<TargetFramework>net472</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
 		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<AssemblyName>CaseBoardScroll</AssemblyName>
 		<Description>Adds WASD controlls to the case board</Description>
 		<Version>1.0.0</Version>
@@ -13,6 +20,7 @@
 		</RestoreAdditionalProjectSources>
 		<RootNamespace>CaseBoardScroll</RootNamespace>
 		<BepInExPath>D:\Game Modding\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\</BepInExPath>
+		<Configurations>Mono;IL2CPP</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>

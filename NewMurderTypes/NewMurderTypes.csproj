@@ -12,6 +12,7 @@
 			https://nuget.bepinex.dev/v3/index.json
 		</RestoreAdditionalProjectSources>
 		<BepInExPath>D:\Game Modding\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\</BepInExPath>
+		<Configurations>Mono;IL2CPP</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -21,7 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="$(BepInExPath)/interop/*.dll"/>
+		<Reference Include="$(BepInExPath)/interop/*.dll" />
 		<Reference Include="UniverseLib.IL2CPP.Interop">
 			<HintPath>$(BepInExPath)plugins/GTFOModding-UnityExplorer_IL2CPP/UniverseLib.IL2CPP.Interop.dll</HintPath>
 		</Reference>
