@@ -1,6 +1,6 @@
 {
   "name": "RealEstateCruncherApp",
-  "version_number": "1.0.6",
+  "version_number": "1.0.8",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/RealEstateListingCruncherApp",
   "description": "Adds a new app to the city hall crunchers, that lists all available properties for sale and lets you purchase them.",
   "dependencies": [

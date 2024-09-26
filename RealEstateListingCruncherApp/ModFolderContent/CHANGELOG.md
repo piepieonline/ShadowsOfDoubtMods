@@ -1,3 +1,11 @@
+# 1.0.8
+
+* Fixed a bug that could occur in the tutorial case
+
+# 1.0.7
+
+* Fixed an issues where properties not on the first page were unselectable
+
 # 1.0.6
 
 * Fixed for game version 34.05 (Addressables)

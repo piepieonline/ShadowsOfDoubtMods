@@ -58,6 +58,9 @@ namespace RealEstateListingCruncherApp
             optionTextToSaleNote.Clear();
             foreach (var add in GameplayController.Instance.forSale)
             {
+                // Sometimes the sale note is null, which is a base game bug (Related to the tutorial?)
+                if (add.saleNote == null) continue;
+
                 var lastOption = new ComputerOSMultiSelect.OSMultiOption() { text = add.name };
                 // var lastOption = new AddressOption() { text = add.name, address = add }; // Not working :(
                 optionTextToSaleNote[lastOption.text] = add.saleNote;
