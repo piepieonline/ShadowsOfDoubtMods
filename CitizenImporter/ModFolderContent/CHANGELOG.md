@@ -1,3 +1,8 @@
+# 0.1.3
+
+* If a partner is specified, they will now always spawn
+* Fixed a bug that could happen when loading non-existant partners
+
 # 0.1.2
 
 * Any names (first, last, both) that aren't specified will now use the game's randomisation

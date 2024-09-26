@@ -10,9 +10,6 @@ using static Descriptors;
 using System.Linq;
 using UniverseLib;
 
-
-
-
 #if MONO
 using BepInEx.Unity.Mono;
 #elif IL2CPP
@@ -91,6 +88,8 @@ namespace CitizenImporter
         };
         static Dictionary<int, (Human, HumanOverride)> overridenHumans = new Dictionary<int, (Human, HumanOverride)>();
 
+        public static float seriousRelationshipsRatioCache;
+
 #if MONO
         private void Awake()
         {
@@ -101,8 +100,6 @@ namespace CitizenImporter
             PluginLogger = Log;
 #endif
 
-            ReloadCitizensFromFile();
-
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
             var harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");
             harmony.PatchAll();
@@ -111,6 +108,8 @@ namespace CitizenImporter
 
         static bool ReloadCitizensFromFile()
         {
+            seriousRelationshipsRatioCache = SocialStatistics.Instance.seriousRelationshipsRatio;
+
             var path = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "citizens.csv");
             if (!File.Exists(path))
             {
@@ -192,6 +191,10 @@ namespace CitizenImporter
         {
             public static bool citizensLoadedFromFile = false;
             public static int unusedPartnersCount = 0;
+
+            public static int directSpawnedCitCount = 0;
+            public static int partnerSpawnedCitCount = 0;
+
             public static void Postfix(Creator __instance)
             {
                 if (citizensLoadedFromFile && __instance.GetActualType() == typeof(CitizenCreator))
@@ -217,6 +220,20 @@ namespace CitizenImporter
                         }
                     }
                     */
+
+                    foreach (var cit in CityData.Instance.citizenDirectory)
+                    {
+                        if (cit.partner != null)
+                        {
+                            partnerSpawnedCitCount++;
+                        }
+                        else if(cit.home != null)
+                        {
+                            directSpawnedCitCount++;
+                        }
+                    }
+
+                    PluginLogger.LogInfo($"{partnerSpawnedCitCount} have partners, {directSpawnedCitCount} do not");
                 }
             }
         }
@@ -253,7 +270,7 @@ namespace CitizenImporter
                                 }
                             }
 
-                            if(System.Enum.TryParse(HumanOverride.createdHumans[partnerId].gender, true, out Human.Gender partnerGender))
+                            if(HumanOverride.createdHumans.ContainsKey(partnerId) && System.Enum.TryParse(HumanOverride.createdHumans[partnerId].gender, true, out Human.Gender partnerGender))
                             {
                                 // Our partner has a fixed gender
                                 if (__instance.attractedTo.Contains(partnerGender))
@@ -287,6 +304,16 @@ namespace CitizenImporter
                             // Nonbinary, non specified, will cause us issues later, so remove it
                             if (__instance.attractedTo.Count > 1)
                                 __instance.attractedTo.Remove(Human.Gender.nonBinary);
+
+                            if (overridenHumans[__instance.humanID].Item2.partner != "")
+                            {
+                                SocialStatistics.Instance.seriousRelationshipsRatio = 1;
+                            }
+                            else if (overridenHumans[__instance.humanID].Item2.attractedTo == "none")
+                            {
+                                SocialStatistics.Instance.seriousRelationshipsRatio = 0;
+                            }
+
                             PluginLogger.LogInfo($"Setting override: {overridenHumans[__instance.humanID].Item2.firstName} {overridenHumans[__instance.humanID].Item2.lastName} ({overridenHumans[__instance.humanID].Item2.id}) will replace {__instance.humanID}");
                         }
                     }
@@ -299,6 +326,7 @@ namespace CitizenImporter
         {
             public static void Postfix(Human __instance, Citizen newPartner)
             {
+                SocialStatistics.Instance.seriousRelationshipsRatio = seriousRelationshipsRatioCache;
                 if (SessionData.Instance.isFloorEdit || CityConstructor.Instance.generateNew)
                 {
                     if (overridenHumans.ContainsKey(newPartner.humanID) && int.TryParse(overridenHumans[newPartner.humanID].Item2.partner, out var partnerHumanId))
@@ -372,12 +400,12 @@ namespace CitizenImporter
         [HarmonyPatch(typeof(Toolbox), "RandomRangeWeightedSeedContained")]
         public class Toolbox_RandomRangeWeightedSeedContained
         {
-            public static void Postfix(string input, ref string output, ref float __result)
+            public static void Postfix(ref string inputSeed, ref float __result)
             {
-                if (input.StartsWith("piecitizenoverride"))
+                if (inputSeed.StartsWith("piecitizenoverride"))
                 {
-                    var vals = input.Split('_');
-                    output = vals[2];
+                    var vals = inputSeed.Split('_');
+                    inputSeed = vals[2];
                     __result = float.Parse(vals[1]);
                 }
             }
@@ -508,7 +536,9 @@ namespace CitizenImporter
                                 {
                                     if (hairColourSetting.colour == __instance.hairColourCategory)
                                     {
-                                        __instance.hairColour = Color.Lerp(hairColourSetting.hairColourRange1, hairColourSetting.hairColourRange2, Toolbox.Instance.GetPsuedoRandomNumberContained(0.0f, 1f, __instance.citizen.seed, out _));
+                                        var seed = __instance.citizen.seed;
+                                        __instance.hairColour = Color.Lerp(hairColourSetting.hairColourRange1, hairColourSetting.hairColourRange2, Toolbox.Instance.GetPsuedoRandomNumberContained(0.0f, 1f, ref seed));
+                                        __instance.citizen.seed = seed;
                                         break;
                                     }
                                 }
