@@ -1,3 +1,9 @@
+# 0.11.5
+
+* Fixed for game version 1.0
+* "Do you know this person"
+  * Added a response - "Yes, that was the suspicous person I saw earlier!"
+
 # 0.11.4
 
 * "I'd like to ask you about some friends of mine"

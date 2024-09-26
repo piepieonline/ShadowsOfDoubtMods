@@ -256,6 +256,7 @@ namespace DialogAdditions
 
                 return false;
             }
+            // Check if the murderer knows the person we are asking about (some traits mean they will give themselves away
             else if (speaker.humanID == MurderController.Instance.currentMurderer?.humanID)
             {
                 if (charImpulsive == null) charImpulsive = Toolbox.Instance.allCharacterTraits.Where(item => item.name == "Char-Impulsive").First();
@@ -267,6 +268,12 @@ namespace DialogAdditions
                     speaker.speechController.Speak("a6815309-f9d4-40b0-8a1e-3ec3550c64a2", speakAbout: askTarget);
                     return false;
                 }
+            }
+            // TODO: "Yes, that is the suspicious person I saw earlier!"
+            else if (askTarget.humanID == MurderController.Instance.currentMurderer?.humanID)
+            {
+                speaker.speechController.Speak("90f766cd-ae3f-482d-9cbb-5f72a69a0a4b", speakAbout: askTarget);
+                return false;
             }
 
             // Acquaintance
@@ -391,7 +398,8 @@ namespace DialogAdditions
                 num = 0.0f;
                 success = false;
             }
-            success = (double)Toolbox.Instance.GetPsuedoRandomNumber(0.0f, 1f, cit.name) <= (double)num;
+            string psuedoRandomSeed = cit.name;
+            success = (double)Toolbox.Instance.GetPsuedoRandomNumber(0.0f, 1f, ref psuedoRandomSeed) <= (double)num;
             // End copied from game
 
             return success;
