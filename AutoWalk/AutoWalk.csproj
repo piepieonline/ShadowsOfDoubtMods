@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup Condition="'$(Configuration)'=='MONO'">
+		<TargetFramework>net472</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AssemblyName>AutoWalk</AssemblyName>
+		<Description>Adds WASD controlls to the case board</Description>
+		<Version>1.0.0</Version>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>latest</LangVersion>
+		<RestoreAdditionalProjectSources>
+			https://api.nuget.org/v3/index.json;
+			https://nuget.bepinex.dev/v3/index.json
+		</RestoreAdditionalProjectSources>
+		<RootNamespace>AutoWalk</RootNamespace>
+		<BepInExPath>D:\Game Modding\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\</BepInExPath>
+		<Configurations>Debug;Release;Mono;IL2CPP</Configurations>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Reference Include="$(BepInExPath)/interop/*.dll" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="mkdir &quot;$(BepInExPath)plugins\$(ProjectName)&quot;" Condition="!Exists('$(BepInExPath)plugins\$(ProjectName)')" />
+		<Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
+		<Exec Command="copy /Y &quot;$(ProjectDir)ModFolderContent\*&quot; &quot;$(BepInExPath)plugins\$(ProjectName)&quot;" />
+	</Target>
+</Project>

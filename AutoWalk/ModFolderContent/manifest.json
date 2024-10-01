@@ -1,0 +1,9 @@
+{
+  "name": "Autowalk",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/AutoWalk",
+  "description": "Adds a hotkey (left-alt by default) that can be held to enable 'autowalk' mode, where the character will keep walking forward until the walk forward input is released and reapplied",
+  "dependencies": [
+    "BepInEx-BepInExPack_IL2CPP-6.0.667"
+  ]
+}
