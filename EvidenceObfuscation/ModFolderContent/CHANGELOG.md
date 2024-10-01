@@ -1,3 +1,11 @@
+# 2.1.1
+
+* Fixed a bug with the city directory where NPCs with the same initialled name would share an evidence card when clicked on
+
+Known bugs:
+
+* Clicking on an entry in the directory multiple times will open the same evidence card multiple times, rather than focusing on the one you already have open
+
 # 2.1.0
 
 * Added options to remove fingerprints from employee records, both printed from a cruncher and found in a filling cabinet

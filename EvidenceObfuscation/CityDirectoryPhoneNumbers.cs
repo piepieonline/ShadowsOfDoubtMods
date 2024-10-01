@@ -1,6 +1,7 @@
 ﻿using EvidenceObfuscation;
 using HarmonyLib;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace EvidenceLinkModifiers
 {
@@ -58,7 +59,10 @@ namespace EvidenceLinkModifiers
 
                     var combinedLink = Strings.AddOrGetLink(citizen.evidenceEntry, eviList);
 
-                    currentLinkToPhoneNumber[citizen.GetInitialledName()] = combinedLink.id;
+                    // Use a combo key of home evidence ID and initialled name
+                    // Prevents a bug where two citizens with the same initialled name would share an entry
+                    // Technically, two citizens living in the same place with the same initialled name would still share an entry... but we are only revealing name/address/phone number at most, so that's ok
+                    currentLinkToPhoneNumber[$"{citizen.home.evidenceEntry.evID}_{citizen.GetInitialledName()}"] = combinedLink.id;
                 }
             }
 
@@ -69,13 +73,33 @@ namespace EvidenceLinkModifiers
                 keys.Add(item.Key);
             }
 
+            // Because we can't rely on just initials to get a unique link, we have to reverse our way through the evidenceLinkDictionary
+            // Cache it, so we only do it once
+            var linkEvidenceMap = new Dictionary<int, Evidence>();
+            foreach (var evLink in Strings.Instance.evidenceLinkDictionary)
+            {
+                foreach (var linkData in evLink.Value)
+                {
+                    linkEvidenceMap[linkData.id] = evLink.Key;
+                }
+            }
+
             for (var i = 0; i < keys.Count; i++)
             {
                 var key = keys[i];
                 __instance.cityDirText[key] = System.Text.RegularExpressions.Regex.Replace(__instance.cityDirText[key], "<link=(\\d+)>(.*)</link>", (match) =>
                 {
                     // var existingId = int.Parse(match.Groups[1].Value);
-                    var existingId = match.Groups[2].Value;
+                    var existingId = match.Groups[1].Value;
+                    var intExistingId = int.Parse(existingId);
+                    // var existingId = match.Groups[2].Value;
+
+                    // If the linkEvidenceMap has this id, modify the key to be a combination key of the evidence ID and name
+                    if(linkEvidenceMap.ContainsKey(intExistingId))
+                    {
+                        existingId = $"{linkEvidenceMap[intExistingId].evID}_{match.Groups[2].Value}";
+                    }
+                    
                     if (currentLinkToPhoneNumber.ContainsKey(existingId))
                     {
                         // PluginLogger.LogInfo($"EvidenceObfuscationPlugin: Updating link from {existingId} to {currentLinkToPhoneNumber[existingId]}");
