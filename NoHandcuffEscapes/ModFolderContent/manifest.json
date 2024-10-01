@@ -1,0 +1,9 @@
+{
+  "name": "No_Handcuff_Escapes",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/NoHandcuffEscapes",
+  "description": "Adds configuration options for how long handcuffs should stay locked for. By default, increases the locked time to 24 hours, but can also be set to make them lock indefinitely.",
+  "dependencies": [
+    "BepInEx-BepInExPack_IL2CPP-6.0.667"
+  ]
+}
