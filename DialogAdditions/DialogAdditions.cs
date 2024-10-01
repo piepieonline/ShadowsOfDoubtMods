@@ -40,6 +40,7 @@ namespace DialogAdditions
         public static ConfigEntry<bool> TalkToPartnerCanFail;
         public static ConfigEntry<float> TalkToPartnerBaseSuccess;
         public static ConfigEntry<float> SeenUnusualLikeBlock;
+        public static ConfigEntry<bool> ConfirmSuspiciousPhotos;
 
         private static DialogAdditionPlugin instance;
 #if MONO
@@ -58,6 +59,7 @@ namespace DialogAdditions
             TalkToPartnerCanFail = Config.Bind("Talk to Partner", "Can asking for the partner fail?", false);
             TalkToPartnerBaseSuccess = Config.Bind("Talk to Partner", "Base chance of success (before trait modifications, in the range 0 to 1)?", 0.25f);
             SeenUnusualLikeBlock = Config.Bind("Have you seen anything?", "How well liked does the perp have to be before acquaintances protect them? (in the range 0 to 1)?", 0.45f);
+            ConfirmSuspiciousPhotos = Config.Bind("Do you know this person?", "If the NPC has seen something someone suspicous, and you present a photo, will they confirm it?", true);
 
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
             var harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");

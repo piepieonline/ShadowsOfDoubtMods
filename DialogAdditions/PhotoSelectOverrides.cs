@@ -228,11 +228,14 @@ namespace DialogAdditions
             }
         }
 
-        static CharacterTrait charImpulsive;
-        static CharacterTrait charAwkward;
         static bool DoYouKnowThisPersonAdditions(Human speaker, Human askTarget, Il2CppSystem.Collections.Generic.List<Evidence.DataKey> askTargetKeys)
         {
-            if(!speaker) return true;
+            if (!speaker) return true;
+
+            DialogAdditionPlugin.PluginLogger.LogWarning($"Setting: {DialogAdditionPlugin.ConfirmSuspiciousPhotos.Value}");
+            DialogAdditionPlugin.PluginLogger.LogWarning($"Has seen: { speaker.lastSightings.ContainsKey(askTarget)}");
+            DialogAdditionPlugin.PluginLogger.LogWarning($"Asking about murderer {askTarget.humanID == MurderController.Instance.currentMurderer?.humanID}");
+            DialogAdditionPlugin.PluginLogger.LogWarning($"SeenOrHeard success: {InternalMethodClones.TestDialogForSuccess("SeenOrHeardUnusual", speaker)}");
 
             // Self, check if they would normally give their name
             if (speaker.humanID == askTarget.humanID && (askTargetKeys.Contains(Evidence.DataKey.name) || askTargetKeys.Contains(Evidence.DataKey.photo)))
@@ -256,31 +259,25 @@ namespace DialogAdditions
 
                 return false;
             }
-            // Check if the murderer knows the person we are asking about (some traits mean they will give themselves away
-            else if (speaker.humanID == MurderController.Instance.currentMurderer?.humanID)
-            {
-                if (charImpulsive == null) charImpulsive = Toolbox.Instance.allCharacterTraits.Where(item => item.name == "Char-Impulsive").First();
-                if (charAwkward == null) charAwkward = Toolbox.Instance.allCharacterTraits.Where(item => item.name == "Char-Awkward").First();
-
-                // If they have these traits, just clam up and pretend to not know them
-                if ((speaker.TraitExists(charImpulsive) || speaker.TraitExists(charAwkward)) && MurderController.Instance.activeMurders.Exists((Il2CppSystem.Predicate<MurderController.Murder>)(murder => murder.victimID == askTarget.humanID)))
-                {
-                    speaker.speechController.Speak("a6815309-f9d4-40b0-8a1e-3ec3550c64a2", speakAbout: askTarget);
-                    return false;
-                }
-            }
-            // TODO: "Yes, that is the suspicious person I saw earlier!"
-            else if (askTarget.humanID == MurderController.Instance.currentMurderer?.humanID)
+            // "Yes, that is the suspicious person I saw earlier!"
+            // Only if the setting is enabled, the NPC saw something suss, and the NPC saw the murderer
+            else if (
+                DialogAdditionPlugin.ConfirmSuspiciousPhotos.Value &&
+                speaker.lastSightings.ContainsKey(askTarget) &&
+                askTarget.humanID == MurderController.Instance.currentMurderer?.humanID &&
+                InternalMethodClones.TestDialogForSuccess("SeenOrHeardUnusual", speaker)
+                )
             {
                 speaker.speechController.Speak("90f766cd-ae3f-482d-9cbb-5f72a69a0a4b", speakAbout: askTarget);
-                return false;
+                // Continue, so they can give a location
+                return true;
             }
 
             // Acquaintance
             return true;
         }
 
-        // If the questioned person is the murdered, they should pretend to not have seen the vic
+        // If the questioned person is the murderer, they should pretend to not have seen the vic
         [HarmonyPatch(typeof(Human), nameof(Human.RevealSighting), [typeof(Human), typeof(Human.Sighting)])]
         class Human_RevealSighting_Murderer
         {

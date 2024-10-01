@@ -1,8 +1,16 @@
+# 0.12.0
+
+* Modified "DoYouKnowThisPerson"
+  * Added "Yes, that is the suspicious person I saw earlier!" if someone says they saw something suspcious earlier and a correct photo is presented (Can be turned off in config)
+  * Removed "Murderers will no longer 'know' the person they murdered to prevent self-incrimination" as this was introduced into the base game
+
+# 0.11.6
+
+* Removed changes that were incomplete and broke gameplay
+
 # 0.11.5
 
 * Fixed for game version 1.0
-* "Do you know this person"
-  * Added a response - "Yes, that was the suspicous person I saw earlier!"
 
 # 0.11.4
 
