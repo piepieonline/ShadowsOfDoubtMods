@@ -1,0 +1,22 @@
+76860e42-914f-4b4f-addb-111e6abed2fb,,"|receiver.casualname|,",,,,11:14 03/10/2024
+35fe5619-4f5a-4525-bd91-5ba90b283f8a,,I need you to transfer |random.custom_pie_whitecollar_invoicecost|cr to |random.custom_pie_whitecollar_payee| to pay invoice #|random.custom_pie_whitecollar_invoicenumber|.,,,,13:01 03/10/2024
+d9878574-c5de-4ab4-86af-004a0bc13d63,,Don't delay or I'll have to get |receiver.job.employer.owner.firstname| involved!,,,,11:14 03/10/2024
+f7b0ed68-f653-4df9-8eef-0e58beeb2837,,"Thank you for your urgent attention to this matter,",,,,15:02 03/10/2024
+c2e898b9-7442-46aa-9e88-3ecafa81d232,,|firstname|,,,,11:45 03/10/2024
+41c735ad-9d15-4613-a5b1-d6a3dc8085c8,,Invoice Due,,,,09:18 03/10/2024
+4eaf2578-1ec4-451d-a99f-efb855179575,,I don't want to involve |receiver.job.employer.owner.firstname| in this!,,,,14:17 03/10/2024
+7c1d6f6d-7c5b-4139-9b29-028153f025c2,,Invoice #|random.custom_pie_whitecollar_invoicenumber| is due today. Please transfer |random.custom_pie_whitecollar_invoicecost|cr to |random.custom_pie_whitecollar_payee| to settle the account.,,,,15:00 03/10/2024
+d1af3b55-f5be-4a51-aabd-db137c904993,,Invoice due today!,,,,15:00 03/10/2024
+ff5fd73f-c466-4c0a-97ae-20dd5de5a70a,,Account needs settling,,,,15:01 03/10/2024
+79c691ff-9c5e-44d6-b28e-097766601301,,"Many Thanks,",,,,15:02 03/10/2024
+42ac4220-dc19-4903-a501-fce5048acea4,,DISCREET ACCOUNTANT\r\n\r\nwanted for investigation into corrupt business conduct\r\n\r\n|sidejob.reward| in exchange,,,,00:47 02/10/2024
+34cb095b-b77a-4487-ab7a-0df8a9c0832a,,NoteOnBoard_SideJobFinanceInvestigatorOffice,,,,11:53 04/10/2024
+c94d1d51-d9e4-4cf9-947f-639f02c13aa1,,Reminder: Invoice Formatting,,,,13:53 04/10/2024
+e554b94a-670a-4643-93f5-f7f6dc978244,,"Hey team,",,,,13:54 04/10/2024
+a2e9fbc2-8934-4096-a41b-f24148e46b8e,,Please be reminded that invoices here at |job.employer.name| are |random.custom_pie_whitecollar_invoicelength| digits long. Please make sure you are double checking your invoice numbers.,,,,14:01 04/10/2024
+1d55e841-dbda-4c3e-842d-1126a4e9652c,,"Regards,",,,,14:02 04/10/2024
+985a7aed-1342-46f2-8e7e-2c417d69fa48,,|firstname|,,,,14:02 04/10/2024
+71d10f65-90d7-44ee-b762-df90cd59fbf7,,|receiver.job.employer.owner.firstname| is too busy to worry with this.,,,,16:15 04/10/2024
+f3a7c5bd-65ed-426b-8e69-729345e6d0a7,,Can you please pay |random.custom_pie_whitecollar_invoicecost|cr to settle #|random.custom_pie_whitecollar_invoicenumber|.,,,,16:17 04/10/2024
+79332fd3-f2cc-40b6-be68-bdc58458bf16,,Please settle the account "|random.custom_pie_whitecollar_payee|" today. I think the invoice number was #|random.custom_pie_whitecollar_invoicenumber|.,,,,16:17 04/10/2024
+2ee4165c-a476-46e7-a230-1ba6fdc0f6c2,,Don't bother |receiver.job.employer.owner.firstname| with this.,,,,16:18 04/10/2024

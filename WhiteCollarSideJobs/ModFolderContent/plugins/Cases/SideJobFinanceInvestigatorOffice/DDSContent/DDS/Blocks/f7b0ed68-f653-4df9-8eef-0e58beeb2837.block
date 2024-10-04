@@ -1,0 +1,31 @@
+{
+  "name": "SideJobFinanceInvestigatorOffice-Thanksforyoururg",
+  "id": "f7b0ed68-f653-4df9-8eef-0e58beeb2837",
+  "replacements": [
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "f7b0ed68-f653-4df9-8eef-0e58beeb2837",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "Thank you for your urgent attention to this matter,"
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "79c691ff-9c5e-44d6-b28e-097766601301",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "Many Thanks"
+    }
+  ],
+  "_ENG Localisation_": "Thank you for your urgent attention to this matter,"
+}

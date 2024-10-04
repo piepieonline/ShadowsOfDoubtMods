@@ -1,0 +1,106 @@
+{
+  "document": {
+    "background": "Paper",
+    "fill": 1,
+    "size": {
+      "x": 342,
+      "y": 342
+    },
+    "colour": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+    }
+  },
+  "id": "c6672fa9-edef-462c-a095-af33ff426825",
+  "messages": [
+    {
+      "elementName": "",
+      "instanceID": "1423b38e-9023-4a4c-982e-d1576d5dd872",
+      "msgID": "30c2f92a-eaf5-4f95-b086-6341e84511db",
+      "saidBy": 0,
+      "saidTo": 1,
+      "pos": {
+        "x": 1.9502887725830078,
+        "y": -0.2828636169433594
+      },
+      "size": {
+        "x": 315,
+        "y": 307
+      },
+      "rot": 2,
+      "font": "Halogen SDF",
+      "col": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+      },
+      "fontSize": 22,
+      "charSpace": 0,
+      "wordSpace": 0,
+      "lineSpace": 16,
+      "paraSpace": 0,
+      "alignH": 0,
+      "alignV": 0,
+      "fontStyle": 0,
+      "order": 0,
+      "usePages": true,
+      "isHandwriting": true,
+      "links": []
+    }
+  ],
+  "name": "NoteOnBoard_SideJobFinanceInvestigatorOffice",
+  "participantA": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantB": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantC": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantD": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "priority": 3,
+  "repeat": 1,
+  "startingMessage": "1423b38e-9023-4a4c-982e-d1576d5dd872",
+  "stopMovement": true,
+  "treeChance": 1,
+  "treeType": 2,
+  "triggerPoint": 0
+}

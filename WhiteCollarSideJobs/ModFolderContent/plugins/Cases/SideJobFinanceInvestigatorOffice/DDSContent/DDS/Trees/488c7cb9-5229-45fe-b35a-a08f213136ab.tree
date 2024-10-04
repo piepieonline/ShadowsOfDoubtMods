@@ -1,0 +1,105 @@
+{
+  "document": {
+    "background": "",
+    "colour": {
+      "a": 0,
+      "b": 0,
+      "g": 0,
+      "r": 0
+    },
+    "fill": 1,
+    "size": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "id": "488c7cb9-5229-45fe-b35a-a08f213136ab",
+  "messages": [
+    {
+      "alignH": 0,
+      "alignV": 0,
+      "charSpace": 0,
+      "col": {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 0
+      },
+      "elementName": "",
+      "font": "",
+      "fontSize": 14,
+      "fontStyle": 0,
+      "instanceID": "3929c384-8fef-4f3d-9b53-f8e963fcb58f",
+      "lineSpace": 16,
+      "links": [],
+      "msgID": "ce86e4a2-6819-415c-8105-ee624d6f9593",
+      "order": 0,
+      "paraSpace": 0,
+      "pos": {
+        "x": -40,
+        "y": -175
+      },
+      "rot": 0,
+      "saidBy": 0,
+      "saidTo": 1,
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "usePages": false,
+      "wordSpace": 0
+    }
+  ],
+  "name": "SideJobFinanceInvestigatorOffice-BossReminderTree",
+  "participantA": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantB": {
+    "connection": 6,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantC": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantD": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "priority": 3,
+  "repeat": 7,
+  "startingMessage": "3929c384-8fef-4f3d-9b53-f8e963fcb58f",
+  "stopMovement": true,
+  "treeChance": 1,
+  "treeType": 1,
+  "triggerPoint": 5
+}

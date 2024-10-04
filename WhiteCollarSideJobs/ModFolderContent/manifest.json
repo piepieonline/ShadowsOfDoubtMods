@@ -1,0 +1,11 @@
+{
+  "name": "WhiteCollarSideJobs",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/WhiteCollarSideJobs",
+  "description": "",
+  "dependencies": [
+    "BepInEx-BepInExPack_IL2CPP-6.0.667",
+    "Piepieonline-CommunityCaseLoader-0.1.3",
+    "Venomaus-SODCommon-2.0.5"
+  ]
+}

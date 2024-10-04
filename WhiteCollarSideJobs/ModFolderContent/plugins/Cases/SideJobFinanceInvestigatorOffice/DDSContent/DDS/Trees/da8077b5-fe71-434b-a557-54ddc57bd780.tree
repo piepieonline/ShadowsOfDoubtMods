@@ -1,0 +1,262 @@
+{
+    "document": {
+        "background": "Paper",
+        "colour": {
+            "a": 1,
+            "b": 1,
+            "g": 1,
+            "r": 1
+        },
+        "fill": 1,
+        "size": {
+            "x": 342,
+            "y": 482
+        }
+    },
+    "id": "da8077b5-fe71-434b-a557-54ddc57bd780",
+    "messages": [
+        {
+			"instanceID": "8a419ff7-3316-4f56-b966-328c2e0181bd",
+			      "elementName": "",
+			"msgID": "bb998d72-7721-4e1e-903d-a89a49256e85",
+			"saidBy": 0,
+		  "saidTo": 1,
+		  "pos": {
+			"x": 1,
+			"y": -11
+		  },
+		  "size": {
+			"x": 334,
+			"y": 338
+		  },
+		  "rot": 0,
+		  "font": "TruetypewriterPolyglott SDF",
+		  "col": {
+			"r": 0,
+			"g": 0,
+			"b": 0,
+			"a": 1
+		  },
+		  "fontSize": 19,
+		  "charSpace": 0,
+		  "wordSpace": 0,
+		  "lineSpace": 15,
+		  "paraSpace": 0,
+		  "alignH": 0,
+		  "alignV": 0,
+		  "fontStyle": 0,
+		  "order": 0,
+		  "usePages": true,
+		  "isHandwriting": false,
+		  "links": []
+        },
+		{
+            "alignH": 0,
+            "alignV": 0,
+            "charSpace": 0,
+            "col": {
+                "a": 1,
+                "b": 0.886274516582489,
+                "g": 0.968627452850342,
+                "r": 1
+            },
+            "elementName": "Crease01",
+            "font": "FreeSerif SDF",
+            "fontSize": 22,
+            "fontStyle": 0,
+            "instanceID": "52291bce-ebd0-41d5-b1ce-4b73d6251956",
+            "isHandwriting": false,
+            "lineSpace": 16,
+            "links": [
+            ],
+            "msgID": "",
+            "order": 1,
+            "paraSpace": 0,
+            "pos": {
+                "x": 124,
+                "y": 207
+            },
+            "rot": 0,
+            "saidBy": 0,
+            "saidTo": 1,
+            "size": {
+                "x": 174,
+                "y": 66
+            },
+            "usePages": false,
+            "wordSpace": 0
+        },
+        {
+            "alignH": 0,
+            "alignV": 0,
+            "charSpace": 0,
+            "col": {
+                "a": 1,
+                "b": 1,
+                "g": 1,
+                "r": 1
+            },
+            "elementName": "JobControls",
+            "font": "FreeSerif SDF",
+            "fontSize": 22,
+            "fontStyle": 0,
+            "instanceID": "eedf1882-e7d9-4000-be17-a18f3273b58d",
+            "isHandwriting": false,
+            "lineSpace": 16,
+            "links": [
+            ],
+            "msgID": "",
+            "order": 2,
+            "paraSpace": 0,
+            "pos": {
+                "x": 1.5,
+                "y": -201
+            },
+            "rot": 0,
+            "saidBy": 0,
+            "saidTo": 1,
+            "size": {
+                "x": 320,
+                "y": 44
+            },
+            "usePages": false,
+            "wordSpace": 0
+        },
+        {
+            "alignH": 0,
+            "alignV": 0,
+            "charSpace": 0,
+            "col": {
+                "a": 1,
+                "b": 1,
+                "g": 1,
+                "r": 1
+            },
+            "elementName": "LogoStarch",
+            "font": "FreeSerif SDF",
+            "fontSize": 22,
+            "fontStyle": 0,
+            "instanceID": "aea527c3-b9b2-498b-81ff-4f3522798b04",
+            "isHandwriting": false,
+            "lineSpace": 16,
+            "links": [
+            ],
+            "msgID": "",
+            "order": 3,
+            "paraSpace": 0,
+            "pos": {
+                "x": -135.5,
+                "y": 203
+            },
+            "rot": 0,
+            "saidBy": 0,
+            "saidTo": 1,
+            "size": {
+                "x": 51,
+                "y": 68
+            },
+            "usePages": false,
+            "wordSpace": 0
+        },
+        {
+            "alignH": 0,
+            "alignV": 0,
+            "charSpace": 0,
+            "col": {
+                "a": 0.582608699798584,
+                "b": 0.0274509806185961,
+                "g": 0,
+                "r": 0.592156887054443
+            },
+            "elementName": "BlockColour",
+            "font": "FreeSerif SDF",
+            "fontSize": 22,
+            "fontStyle": 0,
+            "instanceID": "d25fb18d-7501-482d-97db-e6aeb1f716a9",
+            "isHandwriting": false,
+            "lineSpace": 16,
+            "links": [
+            ],
+            "msgID": "",
+            "order": 4,
+            "paraSpace": 0,
+            "pos": {
+                "x": -0.5,
+                "y": 167.5
+            },
+            "rot": 0,
+            "saidBy": 0,
+            "saidTo": 1,
+            "size": {
+                "x": 339,
+                "y": 9
+            },
+            "usePages": false,
+            "wordSpace": 0
+        }
+    ],
+    "name": "FinanceInvestigatorSideJob-JobNote",
+        "participantA": {
+        "connection": 15,
+        "disableInbox": false,
+        "jobs": [
+        ],
+        "required": false,
+        "traitConditions": 0,
+        "traits": [
+        ],
+        "triggers": [
+        ],
+        "useJobs": false,
+        "useTraits": false
+    },
+    "participantB": {
+        "connection": 15,
+        "disableInbox": false,
+        "jobs": [
+        ],
+        "required": false,
+        "traitConditions": 0,
+        "traits": [
+        ],
+        "triggers": [
+        ],
+        "useJobs": false,
+        "useTraits": false
+    },
+    "participantC": {
+        "connection": 15,
+        "disableInbox": false,
+        "jobs": [
+        ],
+        "required": false,
+        "traitConditions": 0,
+        "traits": [
+        ],
+        "triggers": [
+        ],
+        "useJobs": false,
+        "useTraits": false
+    },
+    "participantD": {
+        "connection": 15,
+        "disableInbox": false,
+        "jobs": [
+        ],
+        "required": false,
+        "traitConditions": 0,
+        "traits": [
+        ],
+        "triggers": [
+        ],
+        "useJobs": false,
+        "useTraits": false
+    },
+    "priority": 3,
+    "repeat": 1,
+    "startingMessage": "",
+    "stopMovement": true,
+    "treeChance": 1,
+    "treeType": 2,
+    "triggerPoint": 0
+}

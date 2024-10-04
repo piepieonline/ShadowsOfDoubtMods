@@ -1,0 +1,55 @@
+{
+  "name": "SideJobFinanceInvestigatorOffice-InvoiceDue-rand",
+  "id": "41c735ad-9d15-4613-a5b1-d6a3dc8085c8",
+  "replacements": [
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "41c735ad-9d15-4613-a5b1-d6a3dc8085c8",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "Invoice Due"
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "d1af3b55-f5be-4a51-aabd-db137c904993",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "Invoice due today!"
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "ff5fd73f-c466-4c0a-97ae-20dd5de5a70a",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "Account needs settling"
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "Please Pay",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "MISSING GUID IN dds.csv"
+    }
+  ],
+  "_ENG Localisation_": "Invoice Due"
+}

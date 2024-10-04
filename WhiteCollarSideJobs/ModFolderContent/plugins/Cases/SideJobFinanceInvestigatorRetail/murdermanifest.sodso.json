@@ -1,0 +1,11 @@
+{
+  "enabled": true,
+  "fileOrder": [
+    "REF:FAKE_DodgySalesRecord",
+    "REF:SideJobFinanceInvestigatorRetailIntroDialogPreset",
+    "REF:SideJobFinanceInvestigatorRetailMotivePreset",
+    "REF:SideJobFinanceInvestigatorRetailJobPreset"
+  ],
+  "loadBefore": "SideJobFinanceInvestigatorOffice",
+  "version": 1
+}

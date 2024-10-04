@@ -1,0 +1,1 @@
+{"blocks":[{"alwaysDisplay":true,"blockID":"42ac4220-dc19-4903-a501-fce5048acea4","forceScope":0,"group":0,"instanceID":"7a4e80e7-bd28-4d2a-8064-1ba19f50ff46","traitConditions":0,"traits":[],"useTraits":false}],"id":"bb998d72-7721-4e1e-903d-a89a49256e85","name":"FinanceInvestigatorSideJob-DefaultBlock"}

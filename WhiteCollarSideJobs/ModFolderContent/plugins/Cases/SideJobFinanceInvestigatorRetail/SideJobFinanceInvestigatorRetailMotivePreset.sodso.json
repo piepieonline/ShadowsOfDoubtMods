@@ -1,0 +1,68 @@
+{
+  "presetName": "SideJobFinanceInvestigatorRetailMotivePreset",
+  "allowHomelessPurps": false,
+  "allowJoblessPurps": 0,
+  "purpMustLiveAtDifferentAddressToPoster": true,
+  "allowEnforcers": true,
+  "disallowEchelonHome": false,
+  "purpTraitModifiers": [
+    {
+      "rule": 0,
+      "traitList": [
+        "REF:CharacterTrait|Char-Dishonest",
+        "REF:CharacterTrait|Char-Ambitious",
+        "REF:CharacterTrait|Char-Greedy",
+        "REF:CharacterTrait|Char-Reckless"
+      ],
+      "mustPassForApplication": 0,
+      "score": 2
+    },
+    {
+      "rule": "RuleType",
+      "traitList": [
+        "REF:CharacterTrait|Char-Boastful"
+      ],
+      "mustPassForApplication": false,
+      "score": 1,
+      "copyFrom": null
+    }
+  ],
+  "usePurpJobs": 1,
+  "purpJobs": [
+    "REF:OccupationPreset|RetailOwner",
+    "REF:OccupationPreset|ShopAssistant",
+    "REF:OccupationPreset|Shopkeeper"
+  ],
+  "allowHomelessPosters": false,
+  "allowJoblessPosters": 1,
+  "usePosterConnections": 0,
+  "acceptableConnections": [],
+  "usePosterTraits": 1,
+  "posterTraitModifiers": [
+    {
+      "rule": 0,
+      "traitList": [
+        "REF:CharacterTrait|Char-Honest",
+        "REF:CharacterTrait|Char-Attentive",
+        "REF:CharacterTrait|Char-HardWorking"
+      ],
+      "mustPassForApplication": false,
+      "score": 1,
+      "copyFrom": null
+    },
+    {
+      "rule": 0,
+      "traitList": [],
+      "mustPassForApplication": 0,
+      "score": 0
+    }
+  ],
+  "purpIsExemptFromPostingOtherJobs": 0,
+  "purpIsExemptFromPurpingOtherJobs": 0,
+  "posterIsExemptFromPostingOtherJobs": 0,
+  "posterIsExemptFromPurpingOtherJobs": 0,
+  "fileType": "MotivePreset",
+  "name": "SideJobFinanceInvestigatorRetailMotivePreset",
+  "type": "MotivePreset",
+  "copyFrom": null
+}

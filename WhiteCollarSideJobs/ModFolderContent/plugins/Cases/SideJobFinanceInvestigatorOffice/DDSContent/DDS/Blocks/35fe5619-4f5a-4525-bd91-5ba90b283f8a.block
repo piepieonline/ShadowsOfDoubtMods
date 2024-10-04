@@ -1,0 +1,55 @@
+{
+  "name": "SideJobFinanceInvestigatorOffice-Ineedyoutotransf",
+  "id": "35fe5619-4f5a-4525-bd91-5ba90b283f8a",
+  "replacements": [
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "35fe5619-4f5a-4525-bd91-5ba90b283f8a",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "I need you to transfer |random.custom_pie_whitecollar_invoicecost|cr to |random.custom_pie_whitecollar_payee| to pay invoice #|random.custom_pie_whitecollar_invoicenumber|."
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "7c1d6f6d-7c5b-4139-9b29-028153f025c2",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "Invoice #|random.custom_pie_whitecollar_invoicenumber| is due today. Please transfer |random.custom_pie_whitecollar_invoicecost|cr to |random.custom_pie_whitecollar_payee| to settle the account."
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "f3a7c5bd-65ed-426b-8e69-729345e6d0a7",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "Can you please pay |random.custom_pie_whitecollar_invoicecost|cr to settle #|random.custom_pie_whitecollar_invoicenumber|."
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "79332fd3-f2cc-40b6-be68-bdc58458bf16",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "Please settle the account \"|random.custom_pie_whitecollar_payee|\" today. I think the invoice number was #|random.custom_pie_whitecollar_invoicenumber|."
+    }
+  ],
+  "_ENG Localisation_": "I need you to transfer |random.custom_pie_whitecollar_invoicecost|cr to |random.custom_pie_whitecollar_payee| to pay invoice #|random.custom_pie_whitecollar_invoicenumber|."
+}

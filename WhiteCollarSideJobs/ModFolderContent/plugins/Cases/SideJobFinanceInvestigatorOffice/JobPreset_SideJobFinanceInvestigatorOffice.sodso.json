@@ -1,0 +1,139 @@
+{
+  "presetName": "SideJobFinanceInvestigatorOffice",
+  "disabled": 0,
+  "fileType": "JobPreset",
+  "name": "SideJobFinanceInvestigatorOffice",
+  "type": "JobPreset",
+  "copyFrom": "REF:JobPreset|SideJobFinanceInvestigatorRetail",
+  "spawnItems": [
+    {
+      "name": "\"VMail (Triggers distractor vmails in the office, too, from code)\"",
+      "findExisting": 0,
+      "compatibleWithMotives": [
+        "REF:MotivePreset|MotivePreset_SideJobFinanceInvestigatorOffice"
+      ],
+      "compatibleWithAllMotives": 1,
+      "chance": 1,
+      "useTraits": 0,
+      "traitModifiers": [],
+      "useIf": 0,
+      "ifTag": 0,
+      "useOrGroup": 0,
+      "orGroup": 0,
+      "chanceRatio": 0,
+      "disableOnDifficulties": [],
+      "itemTag": 1,
+      "spawnItem": null,
+      "vmailThread": "ad52f2e8-a66e-4670-a1e4-07f7f138279d",
+      "vmailProgressThreshold": {
+        "x": 1,
+        "y": 1
+      },
+      "where": 3,
+      "belongsTo": 2,
+      "writer": 2,
+      "receiver": 4,
+      "security": 0,
+      "priority": 1,
+      "ownershipRule": 3
+    },
+    {
+      "name": "Home note",
+      "findExisting": 0,
+      "compatibleWithMotives": [],
+      "compatibleWithAllMotives": 1,
+      "chance": 1,
+      "useTraits": 0,
+      "traitModifiers": [],
+      "useIf": 0,
+      "ifTag": 0,
+      "useOrGroup": 0,
+      "orGroup": 0,
+      "chanceRatio": 0,
+      "disableOnDifficulties": [],
+      "itemTag": 0,
+      "spawnItem": "REF:InteractablePreset|InteractablePreset_NoteOnBoard_SideJobFinanceInvestigatorOffice",
+      "vmailThread": "",
+      "vmailProgressThreshold": {
+        "x": 0,
+        "y": 0
+      },
+      "where": 2,
+      "belongsTo": 2,
+      "writer": 2,
+      "receiver": 2,
+      "security": 0,
+      "priority": 1,
+      "ownershipRule": 3
+    }
+  ],
+  "resolveQuestions": [
+    {
+      "name": "Who is the person on the inside?",
+      "displayObjective": 1,
+      "displayOnlyAtPhase": false,
+      "displayAtPhase": 0,
+      "objectiveDelay": 0,
+      "onlyCompatibleWithIntros": [],
+      "onlyCompatibleWithHandIns": [],
+      "inputType": 0,
+      "automaticAnswers": [
+        2
+      ],
+      "tag": 1,
+      "icon": 4,
+      "rewardRange": {
+        "x": 200,
+        "y": 300
+      },
+      "penaltyRange": {
+        "x": 200,
+        "y": 300
+      },
+      "isOptional": false,
+      "useAlternateName": false,
+      "useName": 0,
+      "target": 0,
+      "location": 0,
+      "revengeObjective": "",
+      "revengeObjTarget": 0,
+      "revengeObjLoc": 0,
+      "revengeObjPassed": 0
+    },
+    {
+      "name": "Provide evidence of a fraudulent transaction",
+      "displayObjective": 1,
+      "displayOnlyAtPhase": false,
+      "displayAtPhase": 0,
+      "objectiveDelay": 0,
+      "onlyCompatibleWithIntros": [],
+      "onlyCompatibleWithHandIns": [],
+      "inputType": 2,
+      "automaticAnswers": [
+        25
+      ],
+      "tag": 1,
+      "icon": 7,
+      "rewardRange": {
+        "x": 200,
+        "y": 300
+      },
+      "penaltyRange": {
+        "x": 0,
+        "y": 0
+      },
+      "isOptional": false,
+      "useAlternateName": false,
+      "useName": 1,
+      "target": 0,
+      "location": 0,
+      "revengeObjective": "",
+      "revengeObjTarget": 0,
+      "revengeObjLoc": 0,
+      "revengeObjPassed": 0
+    }
+  ],
+  "purpetratorMotives": [
+    "REF:MotivePreset|MotivePreset_SideJobFinanceInvestigatorOffice"
+  ]
+}

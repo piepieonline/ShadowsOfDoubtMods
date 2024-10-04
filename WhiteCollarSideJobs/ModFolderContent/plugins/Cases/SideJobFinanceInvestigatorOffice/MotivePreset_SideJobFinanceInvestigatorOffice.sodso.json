@@ -1,0 +1,18 @@
+{
+  "presetName": "MotivePreset_SideJobFinanceInvestigatorOffice",
+  "purpJobs": [
+    "REF:OccupationPreset|Accountant",
+    "REF:OccupationPreset|CustomerServiceTechnician",
+    "REF:OccupationPreset|DataAnalyst",
+    "REF:OccupationPreset|HeadOfHR",
+    "REF:OccupationPreset|HRAdministrator",
+    "REF:OccupationPreset|MarketingExecutive",
+    "REF:OccupationPreset|OfficeManager",
+    "REF:OccupationPreset|QATechnician",
+    "REF:OccupationPreset|Receptionist"
+  ],
+  "fileType": "MotivePreset",
+  "name": "MotivePreset_SideJobFinanceInvestigatorOffice",
+  "type": "MotivePreset",
+  "copyFrom": "REF:MotivePreset|SideJobFinanceInvestigatorRetailMotivePreset"
+}

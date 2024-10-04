@@ -1,0 +1,11 @@
+{
+  "presetName": "InteractablePreset_NoteOnBoard_SideJobFinanceInvestigatorOffice",
+  "writerIs": 0,
+  "receiverIs": 0,
+  "spawnEvidence": "REF:EvidencePreset|EvidencePreset_NoteOnBoard_SideJobFinanceInvestigatorOffice",
+  "summaryMessageSource": "",
+  "copyFrom": "REF:InteractablePreset|Murder_NoteOnBoard",
+  "fileType": "InteractablePreset",
+  "name": "InteractablePreset_NoteOnBoard_SideJobFinanceInvestigatorOffice",
+  "type": "InteractablePreset"
+}

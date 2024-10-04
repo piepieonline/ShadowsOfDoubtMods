@@ -1,0 +1,55 @@
+{
+  "name": "SideJobFinanceInvestigatorOffice-DontdelayorIll",
+  "id": "d9878574-c5de-4ab4-86af-004a0bc13d63",
+  "replacements": [
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "d9878574-c5de-4ab4-86af-004a0bc13d63",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "Don't delay or I'll have to get |receiver.job.employer.owner.firstname| involved!"
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "4eaf2578-1ec4-451d-a99f-efb855179575",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "I don't want to involve |receiver.job.employer.owner.firstname| in this!"
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "71d10f65-90d7-44ee-b762-df90cd59fbf7",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "|receiver.job.employer.owner.firstname| is too busy to worry with this."
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "2ee4165c-a476-46e7-a230-1ba6fdc0f6c2",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "Don't bother |receiver.job.employer.owner.firstname| with this."
+    }
+  ],
+  "_ENG Localisation_": "Don't delay or I'll have to get |receiver.job.employer.owner.firstname| involved!"
+}

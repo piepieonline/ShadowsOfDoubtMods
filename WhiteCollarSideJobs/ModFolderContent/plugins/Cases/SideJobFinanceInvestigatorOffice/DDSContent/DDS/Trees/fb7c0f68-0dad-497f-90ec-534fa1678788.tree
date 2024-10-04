@@ -1,0 +1,105 @@
+{
+  "document": {
+    "background": "",
+    "colour": {
+      "a": 0,
+      "b": 0,
+      "g": 0,
+      "r": 0
+    },
+    "fill": 1,
+    "size": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "id": "fb7c0f68-0dad-497f-90ec-534fa1678788",
+  "messages": [
+    {
+      "alignH": 0,
+      "alignV": 0,
+      "charSpace": 0,
+      "col": {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 0
+      },
+      "elementName": "",
+      "font": "",
+      "fontSize": 14,
+      "fontStyle": 0,
+      "instanceID": "b229f5c0-b42e-4cb6-bb62-a0905362fe66",
+      "lineSpace": 16,
+      "links": [],
+      "msgID": "749b0e6e-a86a-4d2f-a6cf-4ab08d4d570d",
+      "order": 0,
+      "paraSpace": 0,
+      "pos": {
+        "x": -40,
+        "y": -175
+      },
+      "rot": 0,
+      "saidBy": 0,
+      "saidTo": 1,
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "usePages": false,
+      "wordSpace": 0
+    }
+  ],
+  "name": "SideJobFinanceInvestigatorOffice-DistractorTree",
+  "participantA": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantB": {
+    "connection": 6,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantC": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantD": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "priority": 3,
+  "repeat": 7,
+  "startingMessage": "b229f5c0-b42e-4cb6-bb62-a0905362fe66",
+  "stopMovement": true,
+  "treeChance": 1,
+  "treeType": 1,
+  "triggerPoint": 5
+}

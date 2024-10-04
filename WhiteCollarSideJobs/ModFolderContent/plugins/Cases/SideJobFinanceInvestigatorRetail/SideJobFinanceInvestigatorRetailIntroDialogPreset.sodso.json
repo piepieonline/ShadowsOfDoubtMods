@@ -1,0 +1,31 @@
+{
+  "presetName": "SideJobFinanceInvestigatorRetailIntroDialogPreset",
+  "fileType": "DialogPreset",
+  "name": "SideJobFinanceInvestigatorRetailIntroDialogPreset",
+  "type": "DialogPreset",
+  "copyFrom": "REF:DialogPreset|Job_Direct_Arrest",
+  "responses": [
+    {
+      "dictionaryString": "Recieve Info",
+      "ddsMessageID": "bb998d72-7721-4e1e-903d-a89a49256e85",
+      "isSuccessful": 1,
+      "chance": 1,
+      "useParsing": 1,
+      "shout": 0,
+      "interupt": 0,
+      "onlyIfEnfocerOnDuty": 0,
+      "onlyIfNotEnforcerOnDuty": 0,
+      "mustFeatureTrait": [],
+      "cantFeatureTrait": [],
+      "mustBeKillerWithMotive": [],
+      "useMurderMOConfession": 0,
+      "tieKeys": [],
+      "applyDiscovery": [],
+      "endsDialog": 1,
+      "jobHandIn": 0,
+      "startCombat": 0,
+      "flee": 0,
+      "giveUpSelf": 0
+    }
+  ]
+}

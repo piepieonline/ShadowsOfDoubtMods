@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "fileOrder": [
+    "REF:EvidencePreset_NoteOnBoard_SideJobFinanceInvestigatorOffice",
+    "REF:InteractablePreset_NoteOnBoard_SideJobFinanceInvestigatorOffice",
+    "REF:MotivePreset_SideJobFinanceInvestigatorOffice",
+    "REF:JobPreset_SideJobFinanceInvestigatorOffice"
+  ],
+  "version": 1
+}

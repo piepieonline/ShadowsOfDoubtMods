@@ -1,0 +1,203 @@
+{
+  "presetName": "SideJobFinanceInvestigatorRetail",
+  "disabled": false,
+  "caseName": "FinanceInvestigator",
+  "subClass": "",
+  "allowSyncDiskRewards": 0,
+  "allowBlackMarketSyncDiskRewards": 0,
+  "physicalRewardLocation": 1,
+  "generateHidingLocation": false,
+  "activePerCitizen": 0.009999999776482582,
+  "maxJobs": 0,
+  "immediatePostCountThreshold": 2,
+  "difficultyTag": 0,
+  "changePosterDialogCompliancy": 0,
+  "changePerpDialogCompliancy": 2,
+  "penaltyForPurpAndPosterSameBuilding": 0,
+  "startingScenarios": [
+    {
+      "name": "TraceFinances",
+      "dds": "da8077b5-fe71-434b-a557-54ddc57bd780",
+      "leads": []
+    }
+  ],
+  "compatibleIntros": [
+    {
+      "preset": "REF:SideMissionIntroPreset|Direct-Immediate",
+      "frequency": 1,
+      "copyFrom": null
+    }
+  ],
+  "leadPoolData": 0,
+  "createFactsOnInformationAcquisition": [],
+  "informationAcquisitionLeads": [
+    {
+      "leadEvidence": 8,
+      "keys": [
+        0
+      ],
+      "useKeyFromLeadPool": false,
+      "autoPin": 1,
+      "addDialogOptions": [],
+      "factsReveal": [],
+      "mergeKeys": [
+        0
+      ],
+      "discoveryApplication": [],
+      "copyFrom": null
+    }
+  ],
+  "revengeObjectives": [],
+  "spawnItems": [
+    {
+      "name": "DodgySalesRecord",
+      "findExisting": false,
+      "compatibleWithMotives": [
+        "REF:MotivePreset|SideJobFinanceInvestigatorRetailMotivePreset"
+      ],
+      "compatibleWithAllMotives": 1,
+      "chance": 1,
+      "useTraits": false,
+      "traitModifiers": [],
+      "useIf": false,
+      "ifTag": "JobTag",
+      "useOrGroup": 0,
+      "orGroup": "JobTag",
+      "chanceRatio": 0,
+      "disableOnDifficulties": [],
+      "itemTag": 1,
+      "spawnItem": "REF:InteractablePreset|FAKE_DodgySalesRecord",
+      "vmailThread": "",
+      "vmailProgressThreshold": {
+        "x": 0,
+        "y": 0
+      },
+      "where": 3,
+      "belongsTo": 2,
+      "writer": 2,
+      "receiver": 2,
+      "security": 1,
+      "priority": 3,
+      "ownershipRule": 3,
+      "copyFrom": null
+    }
+  ],
+  "resolveQuestions": [
+    {
+      "name": "Who is the person on the inside?",
+      "displayObjective": 1,
+      "displayOnlyAtPhase": false,
+      "displayAtPhase": 0,
+      "objectiveDelay": 0,
+      "onlyCompatibleWithIntros": [],
+      "onlyCompatibleWithHandIns": [],
+      "inputType": 0,
+      "automaticAnswers": [
+        2
+      ],
+      "tag": "JobTag",
+      "icon": 4,
+      "rewardRange": {
+        "x": 200,
+        "y": 300
+      },
+      "penaltyRange": {
+        "x": 200,
+        "y": 300
+      },
+      "isOptional": false,
+      "useAlternateName": false,
+      "useName": 0,
+      "target": 0,
+      "location": 0,
+      "revengeObjective": "",
+      "revengeObjTarget": 0,
+      "revengeObjLoc": 0,
+      "revengeObjPassed": 0
+    },
+    {
+      "name": "Provide evidence of a fraudulent transaction",
+      "displayObjective": 1,
+      "displayOnlyAtPhase": false,
+      "displayAtPhase": 0,
+      "objectiveDelay": 0,
+      "onlyCompatibleWithIntros": [],
+      "onlyCompatibleWithHandIns": [],
+      "inputType": 2,
+      "automaticAnswers": [
+        25
+      ],
+      "tag": 1,
+      "icon": 7,
+      "rewardRange": {
+        "x": 200,
+        "y": 300
+      },
+      "penaltyRange": {
+        "x": 0,
+        "y": 0
+      },
+      "isOptional": false,
+      "useAlternateName": false,
+      "useName": 1,
+      "target": 0,
+      "location": 0,
+      "revengeObjective": "",
+      "revengeObjTarget": 0,
+      "revengeObjLoc": 0,
+      "revengeObjPassed": 0
+    }
+  ],
+  "additional": [],
+  "compatibleHandIns": [
+    {
+      "preset": "REF:SideMissionHandInPreset|SlipUnderDoor",
+      "frequency": 1
+    }
+  ],
+  "dialogReferences": [
+    {
+      "name": "IntroCall",
+      "dialog": "REF:DialogPreset|SideJobFinanceInvestigatorRetailIntroDialogPreset"
+    },
+    {
+      "name": "TelephoneHandIn",
+      "dialog": "REF:DialogPreset|Job_Generic_TelephoneHandIn"
+    }
+  ],
+  "debugCopyFrom": null,
+  "fileType": "JobPreset",
+  "name": "SideJobFinanceInvestigatorRetail",
+  "type": "JobPreset",
+  "copyFrom": null,
+  "purpetratorMotives": [
+    "REF:MotivePreset|SideJobFinanceInvestigatorRetailMotivePreset"
+  ],
+  "jobPosting": "REF:InteractablePreset|JobNote",
+  "socialCreditLevelMinSpawnFrequency": {
+    "serializedVersion": "2",
+    "m_Curve": [
+      {
+        "inTangent": 0,
+        "inWeight": 0,
+        "outTangents": 0,
+        "outWeight": 0,
+        "time": 0,
+        "value": 1,
+        "weightedMode": 0
+      },
+      {
+        "inTangent": 0,
+        "inWeight": 0,
+        "outTangents": 0,
+        "outWeight": 0,
+        "time": 10,
+        "value": 1,
+        "weightedMode": 0
+      }
+    ],
+    "m_PreInfinity": 2,
+    "m_PostInfinity": 2,
+    "m_RotationOrder": 4
+  }
+}
