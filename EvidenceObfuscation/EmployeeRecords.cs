@@ -53,7 +53,7 @@ namespace EvidenceObfuscation
             {
                 for (int i = tree.messages.Count - 1; i >= 0; i--)
                 {
-                    if (tree.messages[i].elementName != name)
+                    if (tree.messages[i].elementName == name)
                     {
                         tree.messages.RemoveAt(i);
                     }

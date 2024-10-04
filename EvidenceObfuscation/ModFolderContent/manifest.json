@@ -1,6 +1,6 @@
 {
   "name": "EvidenceLinkModifiers",
-  "version_number": "2.1.1",
+  "version_number": "2.1.2",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/CityDirectoryPhoneNumbers",
   "description": "Adds options to modify or remove evidence, increasing the complexity of solving cases. Optional changes include: The city directory lists phone numbers instead of addresses, employee records no longer have fingerprints attached",
   "dependencies": [

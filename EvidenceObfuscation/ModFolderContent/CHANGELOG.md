@@ -1,3 +1,7 @@
+# 2.1.2
+
+* Fixed broken employee records
+
 # 2.1.1
 
 * Fixed a bug with the city directory where NPCs with the same initialled name would share an evidence card when clicked on
