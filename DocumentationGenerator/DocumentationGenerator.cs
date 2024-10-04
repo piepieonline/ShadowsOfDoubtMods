@@ -2,12 +2,15 @@
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
+using Il2CppInterop.Runtime.Injection;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Loader;
+using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UniverseLib;
 using static AssetBundleLoader.JsonLoader;
 using static AssetBundleLoader.JsonLoader.NewtonsoftExtensions;
@@ -41,10 +44,13 @@ namespace DocumentationGenerator
         {
             public static void Postfix()
             {
+                Logger.LogWarning($"Documentation Regeneration Started");
+
                 // Codegen specific stuff
                 var codegenSOMap = new Dictionary<string, Dictionary<string, IEnumerable<string>>>();
                 codegenSOMap["ScriptableObject"] = new Dictionary<string, IEnumerable<string>>();
                 codegenSOMap["Enum"] = new Dictionary<string, IEnumerable<string>>();
+                codegenSOMap["IDMap"] = new Dictionary<string, IEnumerable<string>>();
                 var codegenTemplates = new Dictionary<string, dynamic>();
                 var codegenSOTypeMapping = new Dictionary<string, Dictionary<string, (string Class, bool Array, string Tooltip)>>();
 
@@ -65,11 +71,28 @@ namespace DocumentationGenerator
                     var soTypeName = soType.Name;
                     var soName = so.name;
 
-                    // Type map
-                    if (!codegenSOMap["ScriptableObject"].ContainsKey(soTypeName)) codegenSOMap["ScriptableObject"][soTypeName] = new SortedSet<string>();
+                    var tempListForSerialisation = new Il2CppSystem.Collections.Generic.List<ScriptableObject>();
+                    tempListForSerialisation.Add(so);
+                    var id = NewtonsoftJson.JToken_Parse(JsonUtilityArrays.ToJson(tempListForSerialisation.ToArray())).SelectToken("Items[0].m_FileID").ToString();
 
-                    if (soName != "" && !codegenSOMap["ScriptableObject"][soTypeName].Contains(soName))
-                        ((SortedSet<string>)codegenSOMap["ScriptableObject"][soTypeName]).Add(soName);
+                    // Skip custom objects that have been loaded, they get IDs below 0
+                    if (int.Parse(id) < 0) continue;
+
+                    // Type map
+                    if (!codegenSOMap["ScriptableObject"].ContainsKey(soTypeName))
+                    {
+                        codegenSOMap["ScriptableObject"][soTypeName] = new SortedSet<string>();
+                    }
+
+                    if (soName != "")
+                    {
+                        // There are a massive number of duplicates - maybe due to addressables?
+                        // Only add one copy to the SO list, but record both IDs (treating them as the same for now)
+                        if (!codegenSOMap["ScriptableObject"][soTypeName].Contains(soName)) ((SortedSet<string>)codegenSOMap["ScriptableObject"][soTypeName]).Add(soName);
+
+                        if(!codegenSOMap["IDMap"].ContainsKey(id)) codegenSOMap["IDMap"][id] = new List<string>();
+                        codegenSOMap["IDMap"][id].Add(soTypeName + "|" + soName);
+                    }
 
                     if(DocumentationGenerator.IsFullExportEnabled && soName != "")
                     {
@@ -80,6 +103,18 @@ namespace DocumentationGenerator
                         System.IO.File.WriteAllText(System.IO.Path.Combine(soExportBasePath, soTypeName, soName + ".json"), RestoredJsonUtility.ToJsonInternal(so, true));
                     }
                 }
+
+                /*
+                foreach(var rq in GameplayControls.Instance.murderResolveQuestions)
+                {
+                    char[] invalidFileNameChars = System.IO.Path.GetInvalidFileNameChars();
+
+                    // Builds a string out of valid chars and an _ for invalid ones
+                    var validFilename = new string(rq.name.Select(ch => invalidFileNameChars.Contains(ch) ? '_' : ch).ToArray());
+
+                    System.IO.File.WriteAllText(System.IO.Path.Combine("D:\\temp\\sod\\", validFilename + ".json"), RestoredJsonUtility.ToJsonInternal(rq, true));
+                }
+                */
 
                 // Load mono for tooltip info
                 var assemblyLoadContext = new AssemblyLoadContext("MonoAssembly");
@@ -150,6 +185,7 @@ namespace DocumentationGenerator
                             if (type.IsSubclassOf(typeof(ScriptableObject)))
                             {
                                 serializedObject = RestoredJsonUtility.ToJsonInternal(ScriptableObject.CreateInstance(type.Name), false);
+                                serializedObject = Regex.Replace(serializedObject, """{"m_FileID":\s?(\d+),\s?"m_PathID":\s?(\d+)}""", m => "null");
                                 codegenTemplates[type.Name] = NewtonsoftJson.JToken_Parse(serializedObject);
                             }
                         }
