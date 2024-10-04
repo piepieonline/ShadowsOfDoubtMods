@@ -1,1 +1,43 @@
-{"name":"New Block","id":"8dff9b13-996f-4f26-adda-84e51138983e","replacements":[]}
+{
+  "name": "TheftGoneWrongMonkiersBlock",
+  "id": "8dff9b13-996f-4f26-adda-84e51138983e",
+  "replacements": [
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "8dff9b13-996f-4f26-adda-84e51138983e",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "The Robbery Reaper"
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "936c4b38-24cd-4681-bd11-27703ca11ba8",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "The Checkout Butcher"
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "20ed1f60-2248-47ba-8aec-3076a71c38a7",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "The Stick-Up Slayer"
+    }
+  ],
+  "_ENG Localisation_": "The Robbery Reaper"
+}

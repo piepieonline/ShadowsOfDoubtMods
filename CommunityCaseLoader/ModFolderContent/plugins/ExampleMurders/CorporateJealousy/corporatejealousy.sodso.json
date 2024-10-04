@@ -46,9 +46,12 @@
         "x": 0,
         "y": 0
       },
-      "writer": 1,
+      "writer": 7,
       "receiver": 1,
-      "vmailOtherParticipants": [1, 2],
+      "vmailOtherParticipants": [
+        1,
+        2
+      ],
       "where": 0,
       "security": 0,
       "priority": 3,
