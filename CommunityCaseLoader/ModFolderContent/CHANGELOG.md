@@ -1,3 +1,7 @@
+# 0.2.1
+
+* Bugfix for error in console regarding case evidence
+
 # 0.2.0
 
 * NEW: Sidejob cases can now be created and loaded. See WhiteCollarSideJobs (https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/WhiteCollarSideJobs) for complicated examples, simple examples to come.

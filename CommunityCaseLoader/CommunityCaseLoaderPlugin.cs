@@ -152,6 +152,12 @@ namespace CommunityCaseLoader
                         }
                     }
                 }
+                else
+                {
+                    // For now, turn off the other debugging options if there is nothing specified
+                    CommunityCaseLoaderPlugin.DEBUG_ShowSideJobDebugMessages = false;
+                    CommunityCaseLoaderPlugin.DEBUG_ShowSideJobSpawnLocation = false;
+                }
 
                 // The side job controller caches a list, rebuild it
                 SideJobController.Instance.jobTracking.Clear();
@@ -284,7 +290,7 @@ namespace CommunityCaseLoader
         public static bool Prefix(Case.ResolveQuestion __instance, Case forCase, ref bool __result)
         {
             // Is this a job we are tracking?
-            if (Toolbox_Start.sideJobThreadIDMap.ContainsKey(forCase.job.jobID))
+            if (forCase?.job != null && Toolbox_Start.sideJobThreadIDMap.ContainsKey(forCase.job.jobID))
             {
                 var evidenceId = __instance.inputtedEvidence;           
                 foreach(var caseEle in forCase.caseElements)
