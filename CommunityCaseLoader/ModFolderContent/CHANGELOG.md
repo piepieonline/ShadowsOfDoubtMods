@@ -1,3 +1,9 @@
+# 0.2.0
+
+* NEW: Sidejob cases can now be created and loaded. See WhiteCollarSideJobs (https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/WhiteCollarSideJobs) for complicated examples, simple examples to come.
+* Improved text content in the example cases
+* Updated DDS (string) content in the example cases to work with how the game now does monkiers 
+
 # 0.1.2
 
 * Fixed an error that occurred when loading a game a second time in a session

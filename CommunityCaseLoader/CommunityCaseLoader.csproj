@@ -55,6 +55,9 @@
 		<Reference Include="$(BepInExPath)interop/UnityEngine.CoreModule.dll" />
 		<Reference Include="$(BepInExPath)interop/UnityEngine.UI.dll" />
 		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
+		<Reference Include="UniverseLib.IL2CPP.Interop">
+			<HintPath>..\..\..\..\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\plugins\GTFOModding-UnityExplorer_IL2CPP\UniverseLib.IL2CPP.Interop.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
