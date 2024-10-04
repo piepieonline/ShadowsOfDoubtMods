@@ -1,6 +1,7 @@
 # Piepieonline's WhiteCollarSideJobs
 
-Adding new side jobs that involve white collar or financial investigations
+Adding new side jobs that involve white collar or financial investigations.
+Currently adds one case, more in planning.
 
 # Manual Installation
 

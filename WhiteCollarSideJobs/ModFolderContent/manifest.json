@@ -2,10 +2,10 @@
   "name": "WhiteCollarSideJobs",
   "version_number": "1.0.0",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/WhiteCollarSideJobs",
-  "description": "",
+  "description": "Adding new side jobs that involve white collar or financial investigations",
   "dependencies": [
     "BepInEx-BepInExPack_IL2CPP-6.0.667",
-    "Piepieonline-CommunityCaseLoader-0.1.3",
+    "Piepieonline-CommunityCaseLoader-0.2.0",
     "Venomaus-SODCommon-2.0.5"
   ]
 }
