@@ -14,6 +14,7 @@ using UnityEngine.Rendering;
 using UniverseLib;
 using static AssetBundleLoader.JsonLoader;
 using static AssetBundleLoader.JsonLoader.NewtonsoftExtensions;
+using static lzma;
 
 namespace DocumentationGenerator
 {
@@ -22,6 +23,12 @@ namespace DocumentationGenerator
     {
         public static ManualLogSource Logger;
         public static bool IsFullExportEnabled = false;
+
+        private static string DDS_GAME_PATH = @"E:\SteamLibrary\steamapps\common\Shadows of Doubt base\Shadows of Doubt_Data\StreamingAssets\DDS\";
+        private static string MONO_ASSEMBLY_PATH = @"E:\SteamLibrary\steamapps\common\Shadows of Doubt mono\Shadows of Doubt_Data\Managed\Assembly-CSharp.dll";
+        private static string SO_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\Documentation\ExportedSOs\";
+        private static string DOC_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\PieMurderBuilder\scripts\ref\";
+        private static string DDS_EDITOR_DOC_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\SOD_DDS_Editor_Pie\scripts\ref\"; 
 
         public override void Load()
         {
@@ -54,11 +61,10 @@ namespace DocumentationGenerator
                 var codegenTemplates = new Dictionary<string, dynamic>();
                 var codegenSOTypeMapping = new Dictionary<string, Dictionary<string, (string Class, bool Array, string Tooltip)>>();
 
-                var soExportBasePath = "D:\\Game Modding\\ShadowsOfDoubt\\Documentation\\ExportedSOs\\";
                 if (DocumentationGenerator.IsFullExportEnabled)
                 {
-                    System.IO.Directory.Delete(soExportBasePath, true);
-                    System.IO.Directory.CreateDirectory(soExportBasePath);
+                    System.IO.Directory.Delete(SO_EXPORT_PATH, true);
+                    System.IO.Directory.CreateDirectory(SO_EXPORT_PATH);
                 }
 
                 foreach (var uo in RuntimeHelper.FindObjectsOfTypeAll(typeof(ScriptableObject)))
@@ -96,11 +102,11 @@ namespace DocumentationGenerator
 
                     if(DocumentationGenerator.IsFullExportEnabled && soName != "")
                     {
-                        if(!System.IO.Directory.Exists(System.IO.Path.Combine(soExportBasePath, soTypeName)))
+                        if(!System.IO.Directory.Exists(System.IO.Path.Combine(SO_EXPORT_PATH, soTypeName)))
                         {
-                            System.IO.Directory.CreateDirectory(System.IO.Path.Combine(soExportBasePath, soTypeName));
+                            System.IO.Directory.CreateDirectory(System.IO.Path.Combine(SO_EXPORT_PATH, soTypeName));
                         }
-                        System.IO.File.WriteAllText(System.IO.Path.Combine(soExportBasePath, soTypeName, soName + ".json"), RestoredJsonUtility.ToJsonInternal(so, true));
+                        System.IO.File.WriteAllText(System.IO.Path.Combine(SO_EXPORT_PATH, soTypeName, soName + ".json"), RestoredJsonUtility.ToJsonInternal(so, true));
                     }
                 }
 
@@ -118,7 +124,7 @@ namespace DocumentationGenerator
 
                 // Load mono for tooltip info
                 var assemblyLoadContext = new AssemblyLoadContext("MonoAssembly");
-                assemblyLoadContext.LoadFromAssemblyPath(@"E:\SteamLibrary\steamapps\common\Shadows of Doubt mono\Shadows of Doubt_Data\Managed\Assembly-CSharp.dll");
+                assemblyLoadContext.LoadFromAssemblyPath(MONO_ASSEMBLY_PATH);
                 var monoAssembly = assemblyLoadContext.Assemblies.Where(a => a.GetName().Name == "Assembly-CSharp").First();
 
                 foreach (var type in typeof(MurderMO).Assembly.DefinedTypes)
@@ -196,9 +202,64 @@ namespace DocumentationGenerator
                     }
                 }
 
-                System.IO.File.WriteAllText("D:\\Game Modding\\ShadowsOfDoubt\\PieMurderBuilder\\scripts\\ref\\soMap.json", NewtonsoftJson.JObject_FromObject(codegenSOMap).ToString());
-                System.IO.File.WriteAllText("D:\\Game Modding\\ShadowsOfDoubt\\PieMurderBuilder\\scripts\\ref\\templates.json", NewtonsoftJson.JObject_FromObject(codegenTemplates).ToString());
-                System.IO.File.WriteAllText("D:\\Game Modding\\ShadowsOfDoubt\\PieMurderBuilder\\scripts\\ref\\soChildTypes.json", NewtonsoftJson.JObject_FromObject(codegenSOTypeMapping).ToString());
+                // Map DDS content (So we tree each ID is in)
+                var ddsMap = new Dictionary<string, dynamic>();
+                ddsMap["ReverseIdMap"] = new Dictionary<string, List<string>>();
+                var reverseIdMap = ddsMap["ReverseIdMap"];
+                foreach (var directoryName in new string[] { "Trees", "Messages", "Blocks" })
+                {
+                    string folderPath = System.IO.Path.Combine(DDS_GAME_PATH, directoryName);
+                    ddsMap[directoryName] = new List<string>();
+
+                    foreach(var filePath in System.IO.Directory.EnumerateFiles(folderPath))
+                    {
+                        var id = filePath.Substring(filePath.LastIndexOf(System.IO.Path.DirectorySeparatorChar) + 1).Split(".")[0];
+                        ddsMap[directoryName].Add(id);
+
+                        var json = NewtonsoftJson.JToken_Parse(System.IO.File.ReadAllText(filePath));
+                        switch(directoryName)
+                        {
+                            case "Trees":
+                                foreach(var message in json["messages"])
+                                {
+                                    if (message["msgID"] == null) continue;
+                                    string msgId = message.Value<string>("msgID");
+                                    if (msgId == "") continue;
+                                    if (!reverseIdMap.ContainsKey(msgId)) reverseIdMap[msgId] = new List<string>();
+                                    reverseIdMap[msgId].Add(id);
+                                }
+                                break;
+                            case "Messages":
+                                foreach (var message in json["blocks"])
+                                {
+                                    if (message["blockID"] == null) continue;
+                                    string blockID = message.Value<string>("blockID");
+                                    if (blockID == "") continue;
+                                    if (!reverseIdMap.ContainsKey(blockID)) reverseIdMap[blockID] = new List<string>();
+                                    reverseIdMap[blockID].Add(id);
+                                }
+                                break;
+                            case "Blocks":
+                                foreach (var message in json["replacements"])
+                                {
+                                    if (message["replaceWithID"] == null) continue;
+                                    string replacementID = message.Value<string>("replaceWithID");
+                                    if (replacementID == "") continue;
+                                    if (!reverseIdMap.ContainsKey(replacementID)) reverseIdMap[replacementID] = new List<string>();
+                                    reverseIdMap[replacementID].Add(id);
+                                }
+                                break;
+                        }
+                    }
+                }
+
+                // Export the DDS map to both case editor and the DDS editor
+                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "ddsMap.json"), NewtonsoftJson.JObject_FromObject(ddsMap).ToString());
+                System.IO.File.WriteAllText(System.IO.Path.Join(DDS_EDITOR_DOC_EXPORT_PATH, "ddsMap.json"), NewtonsoftJson.JObject_FromObject(ddsMap).ToString());
+
+                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "soMap.json"), NewtonsoftJson.JObject_FromObject(codegenSOMap).ToString());
+                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "templates.json"), NewtonsoftJson.JObject_FromObject(codegenTemplates).ToString());
+                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "soChildTypes.json"), NewtonsoftJson.JObject_FromObject(codegenSOTypeMapping).ToString());
 
                 Logger.LogWarning($"Documentation Regenerated");
             }
