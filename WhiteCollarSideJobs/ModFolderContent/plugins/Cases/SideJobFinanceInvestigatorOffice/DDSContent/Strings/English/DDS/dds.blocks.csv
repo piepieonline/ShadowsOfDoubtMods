@@ -9,8 +9,8 @@ c2e898b9-7442-46aa-9e88-3ecafa81d232,,|firstname|,,,,11:45 03/10/2024
 d1af3b55-f5be-4a51-aabd-db137c904993,,Invoice due today!,,,,15:00 03/10/2024
 ff5fd73f-c466-4c0a-97ae-20dd5de5a70a,,Account needs settling,,,,15:01 03/10/2024
 79c691ff-9c5e-44d6-b28e-097766601301,,"Many Thanks,",,,,15:02 03/10/2024
-42ac4220-dc19-4903-a501-fce5048acea4,,DISCREET ACCOUNTANT\r\n\r\nwanted for investigation into corrupt business conduct\r\n\r\n|sidejob.reward| in exchange,,,,00:47 02/10/2024
-34cb095b-b77a-4487-ab7a-0df8a9c0832a,,NoteOnBoard_SideJobFinanceInvestigatorOffice,,,,11:53 04/10/2024
+42ac4220-dc19-4903-a501-fce5048acea4,,needed\r\n\r\nDISCREET ACCOUNTANT\r\n\r\nfor investigation into corrupt business conduct\r\n\r\n|sidejob.reward| as compensation,,,,23:18 04/10/2024
+34cb095b-b77a-4487-ab7a-0df8a9c0832a,,"I’m begging you, please. You have to pay them back. I know things are tight, but this isn’t just some overdue bill. These guys don’t mess around. You've heard what happens when people don't come through, right? That wasn’t an accident, and it could be you next.",,,,10:37 06/10/2024
 c94d1d51-d9e4-4cf9-947f-639f02c13aa1,,Reminder: Invoice Formatting,,,,13:53 04/10/2024
 e554b94a-670a-4643-93f5-f7f6dc978244,,"Hey team,",,,,13:54 04/10/2024
 a2e9fbc2-8934-4096-a41b-f24148e46b8e,,Please be reminded that invoices here at |job.employer.name| are |random.custom_pie_whitecollar_invoicelength| digits long. Please make sure you are double checking your invoice numbers.,,,,14:01 04/10/2024
@@ -20,3 +20,6 @@ a2e9fbc2-8934-4096-a41b-f24148e46b8e,,Please be reminded that invoices here at |
 f3a7c5bd-65ed-426b-8e69-729345e6d0a7,,Can you please pay |random.custom_pie_whitecollar_invoicecost|cr to settle #|random.custom_pie_whitecollar_invoicenumber|.,,,,16:17 04/10/2024
 79332fd3-f2cc-40b6-be68-bdc58458bf16,,Please settle the account "|random.custom_pie_whitecollar_payee|" today. I think the invoice number was #|random.custom_pie_whitecollar_invoicenumber|.,,,,16:17 04/10/2024
 2ee4165c-a476-46e7-a230-1ba6fdc0f6c2,,Don't bother |receiver.job.employer.owner.firstname| with this.,,,,16:18 04/10/2024
+6cc80a5d-70b9-4dca-a623-2e7d4f5a9e7e,,"I’ve scraped together some cash to help, but it’s not enough to cover everything. You need to find the rest. Pawn something, take another job, anything. Just don’t make them wait any longer.",,,,10:37 06/10/2024
+dcf09b3f-5444-407b-af26-2265e65dc628,,This isn’t just about the money anymore. It’s about keeping you in one piece.,,,,10:38 06/10/2024
+8721b735-61f1-4f25-b1aa-d29e69e5cee2,,"Please, don’t make me bury another friend. Do whatever you have to. Time’s running out.",,,,10:38 06/10/2024

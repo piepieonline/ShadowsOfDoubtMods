@@ -1,0 +1,31 @@
+{
+  "name": "SideJobFinanceInvestigatorOffice-Thisisntjustabou",
+  "id": "dcf09b3f-5444-407b-af26-2265e65dc628",
+  "replacements": [
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "dcf09b3f-5444-407b-af26-2265e65dc628",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "This isn’t just about the money anymore. It’s about keeping you in one piece."
+    },
+    {
+      "connection": 15,
+      "dislikeLike": 0.5,
+      "replaceWithID": "8721b735-61f1-4f25-b1aa-d29e69e5cee2",
+      "strangerKnown": 0.5,
+      "traitCondition": 0,
+      "traits": [],
+      "useConnection": false,
+      "useDislikeLike": false,
+      "useTraits": false,
+      "_ENG Localisation_": "Please"
+    }
+  ],
+  "_ENG Localisation_": "This isn’t just about the money anymore. It’s about keeping you in one piece."
+}

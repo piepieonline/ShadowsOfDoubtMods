@@ -60,7 +60,7 @@
       },
       "where": 2,
       "belongsTo": 2,
-      "writer": 2,
+      "writer": 4,
       "receiver": 2,
       "security": 0,
       "priority": 1,
@@ -135,5 +135,7 @@
   ],
   "purpetratorMotives": [
     "REF:MotivePreset|MotivePreset_SideJobFinanceInvestigatorOffice"
-  ]
+  ],
+  "maxJobs": 8,
+  "activePerCitizen": 0.009999999776482582
 }

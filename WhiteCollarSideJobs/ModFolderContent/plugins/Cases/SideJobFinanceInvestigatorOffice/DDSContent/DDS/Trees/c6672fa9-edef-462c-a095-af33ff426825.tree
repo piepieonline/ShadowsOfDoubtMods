@@ -19,8 +19,8 @@
       "elementName": "",
       "instanceID": "1423b38e-9023-4a4c-982e-d1576d5dd872",
       "msgID": "30c2f92a-eaf5-4f95-b086-6341e84511db",
-      "saidBy": 0,
-      "saidTo": 1,
+      "saidBy": 1,
+      "saidTo": 0,
       "pos": {
         "x": 1.9502887725830078,
         "y": -0.2828636169433594
@@ -29,15 +29,15 @@
         "x": 315,
         "y": 307
       },
-      "rot": 2,
-      "font": "Halogen SDF",
+      "rot": 0,
+      "font": "",
       "col": {
         "r": 0,
         "g": 0,
         "b": 0,
         "a": 1
       },
-      "fontSize": 22,
+      "fontSize": 16,
       "charSpace": 0,
       "wordSpace": 0,
       "lineSpace": 16,
@@ -46,7 +46,7 @@
       "alignV": 0,
       "fontStyle": 0,
       "order": 0,
-      "usePages": true,
+      "usePages": false,
       "isHandwriting": true,
       "links": []
     }
@@ -64,7 +64,7 @@
     "useTraits": false
   },
   "participantB": {
-    "connection": 15,
+    "connection": 16,
     "disableInbox": false,
     "jobs": [],
     "required": true,
@@ -102,5 +102,5 @@
   "stopMovement": true,
   "treeChance": 1,
   "treeType": 2,
-  "triggerPoint": 0
+  "triggerPoint": 5
 }
