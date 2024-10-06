@@ -6,6 +6,7 @@ using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using SOD.Common.Extensions;
+using UnityEngine.UIElements.Experimental;
 
 namespace WhiteCollarSideJobs
 {
@@ -49,21 +50,23 @@ namespace WhiteCollarSideJobs
                 case WhiteCollarSideJobs.VMailID_Guilty_JobPreset_SideJobFinanceInvestigatorOffice:
                     // TODO: Adjust timeStamp to within working hours. For both the original vmail and the others
                     // Default sidejob calculation: SessionData.Instance.gameTime + Toolbox.Instance.Rand(-48f, -12f)
-                    var employees = from.job.employer.companyRoster.Select(occ => occ.employee).ToList();
                     var seed = $"{treeID}_{from.humanID}";
-                    to1 = SelectRandomCoworker(employees, new List<int>() { from.humanID }, new List<string>() { "Receptionist" }, ref seed);
-                    CreateDistractionVmails(from, employees, timeStamp, ref seed);
+                    CreateVMails_JobPreset_SideJobFinanceInvestigatorOffice(from, ref to1, timeStamp, ref seed);
                     break;
             }
         }
 
-        private static void CreateDistractionVmails(Human perp, List<Human> coworkers, float timeStamp, ref string seed)
+        private static void CreateVMails_JobPreset_SideJobFinanceInvestigatorOffice(Human perp, ref Human to1, float timeStamp, ref string seed)
         {
+            // Filter out the nulls, because not every slot is actually filled
+            var employees = perp.job.employer.companyRoster.Select(occ => occ.employee).Where(employee => employee != null).ToList();
             var employer = perp.job.employer;
-            var excludedTitles = new List<string>() { "Receptionist" };
-            var excludedCoworkers = new List<int>() { perp.humanID, employer.director.humanID };
-            // TODO: Modify timestamp, potentially just send these vmails globally scheduled, rather than as distractors
+            var excludedCoworkers = new List<int>() { perp.humanID };
 
+            if(employees.Count > 3 && employer.director != null) excludedCoworkers.Add(employer.director.humanID);
+            if(employees.Count > 4 && employer.receptionist != null) excludedCoworkers.Add(employer.receptionist.humanID);
+
+            // TODO: Modify timestamp, potentially just send these vmails globally scheduled, rather than as distractors
             /*
             var daysOpen = employer.daysOpen;
             // We could calculate this, but it's not worth doing
@@ -76,24 +79,33 @@ namespace WhiteCollarSideJobs
             SessionData.Instance.ParseTimeData(timeStamp, out float hour,)
             */
 
+            // Change the original recepient to someone we deem elligible
+            to1 = SelectRandomCoworker(employees, excludedCoworkers, ref seed);
+
             // Send reminder email from boss
-            Toolbox.Instance.NewVmailThread(perp.job.employer.director, perp.job.employer.director, null, null, perp.job.employer.companyRoster.Select(occupation => occupation.employee).ToListIl2Cpp(), WhiteCollarSideJobs.VMailID_BossReminder_JobPreset_SideJobFinanceInvestigatorOffice, timeStamp + Toolbox.Instance.Rand(-48f, -12f));
+            Toolbox.Instance.NewVmailThread(perp.job.employer.director, perp.job.employer.director, null, null, employees.ToListIl2Cpp(), WhiteCollarSideJobs.VMailID_BossReminder_JobPreset_SideJobFinanceInvestigatorOffice, timeStamp + Toolbox.Instance.Rand(-48f, -12f));
 
             // Send other invoices around the office
-            int maxDistractors = Math.Min(3, ((coworkers.Count - excludedCoworkers.Count) / 2) - 1);
-            for(int i = 0; i < maxDistractors; i++)
+            int validEmployeeCount = (employees.Count - excludedCoworkers.Count);
+            int maxDistractors = 0;
+
+            // Half the number of distractors, because each has a sender and reciever
+            maxDistractors = UnityEngine.Mathf.FloorToInt(validEmployeeCount / 2);
+
+            for (int i = 0; i < maxDistractors; i++)
             {
-                var selectedSender = SelectRandomCoworker(coworkers, excludedCoworkers, excludedTitles, ref seed);
+                var selectedSender = SelectRandomCoworker(employees, excludedCoworkers, ref seed);
                 excludedCoworkers.Add(selectedSender.humanID);
-                var selectedReceiver = SelectRandomCoworker(coworkers, excludedCoworkers, excludedTitles, ref seed);
-                excludedCoworkers.Add(selectedReceiver.humanID);
+                var selectedReceiver = SelectRandomCoworker(employees, excludedCoworkers, ref seed);
+                // Allow people to recieve multiple
+                // excludedCoworkers.Add(selectedReceiver.humanID);
                 Toolbox.Instance.NewVmailThread(selectedSender, selectedReceiver, null, null, null, WhiteCollarSideJobs.VMailID_NotGuilty_JobPreset_SideJobFinanceInvestigatorOffice, timeStamp + Toolbox.Instance.Rand(-36f, 36f));
             }
         }
 
-        private static Human SelectRandomCoworker(List<Human> employees, List<int> ineligibleEmployeeIds, List<string> ineligibleTitles, ref string seed)
+        private static Human SelectRandomCoworker(List<Human> employees, List<int> ineligibleEmployeeIds, ref string seed)
         {
-            var filteredEmployees = employees.Where(employee => !ineligibleEmployeeIds.Contains(employee.humanID) && !ineligibleTitles.Contains(employee.job.preset.presetName)).ToList();
+            var filteredEmployees = employees.Where(employee => !ineligibleEmployeeIds.Contains(employee.humanID)).ToList();
             var selectedIndex = Toolbox.Instance.GetPsuedoRandomNumberContained(0, filteredEmployees.Count, ref seed);
             return filteredEmployees[selectedIndex];
         }
@@ -121,7 +133,7 @@ namespace WhiteCollarSideJobs
                         {
                             generatedInvoiceNumber = Toolbox.Instance.GetPsuedoRandomNumberContained(1000, 9999, ref seed), // Invalid invoice number TODO Make the valid/invalid a random length
                             generatedInvoiceCost = Toolbox.Instance.GetPsuedoRandomNumberContained(500, 2500, ref seed), // Lower cost
-                            generatedInvoicePayeeName = SelectRandomCompanyOfPreset("LoanShark", ref seed, CityData.Instance.citizenDictionary[thread.recievers[0]].job.employer.companyID).name
+                            generatedInvoicePayeeName = SelectRandomCompanyOfPreset("LoanShark", true, ref seed, CityData.Instance.citizenDictionary[thread.recievers[0]].job.employer.companyID).name
                         };
                     }
                     else
@@ -130,7 +142,7 @@ namespace WhiteCollarSideJobs
                         {
                             generatedInvoiceNumber = Toolbox.Instance.GetPsuedoRandomNumberContained(10000, 99999, ref seed),
                             generatedInvoiceCost = Toolbox.Instance.GetPsuedoRandomNumberContained(1000, 9999, ref seed),
-                            generatedInvoicePayeeName = SelectRandomCompanyOfPreset("MediumOffice", ref seed, CityData.Instance.citizenDictionary[thread.recievers[0]].job.employer.companyID).name
+                            generatedInvoicePayeeName = SelectRandomCompanyOfPreset("MediumOffice", false, ref seed, CityData.Instance.citizenDictionary[thread.recievers[0]].job.employer.companyID).name
                         };
                     }
                 }
@@ -155,10 +167,15 @@ namespace WhiteCollarSideJobs
             return true;
         }
 
-        private static Company SelectRandomCompanyOfPreset(string presetName, ref string seed, int notThisCompanyId = -1)
+        private static Company SelectRandomCompanyOfPreset(string presetName, bool fallbackIsIllegal, ref string seed, int notThisCompanyId = -1)
         {
             var companies = CityData.Instance.companyDirectory.Where(company => company.preset.presetName == presetName && company.companyID != notThisCompanyId).ToList();
-            var selectedIndex = Toolbox.Instance.GetPsuedoRandomNumberContained(0, companies.Count, ref seed);
+
+            // It's possible that the city doesn't have other companies of the type requested, fallback to just the legality as a catagory
+            if(companies.Count == 0)
+                companies = CityData.Instance.companyDirectory.Where(company => company.preset.isIllegal == fallbackIsIllegal && company.companyID != notThisCompanyId).ToList();
+
+            var selectedIndex = Toolbox.Instance.GetPsuedoRandomNumberContained(0, companies.Count - 1, ref seed);
             return companies[selectedIndex];
         }
     }

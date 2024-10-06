@@ -4,7 +4,7 @@
     "fill": 1,
     "size": {
       "x": 342,
-      "y": 342
+      "y": 482
     },
     "colour": {
       "r": 1,
@@ -22,22 +22,22 @@
       "saidBy": 1,
       "saidTo": 0,
       "pos": {
-        "x": 1.9502887725830078,
-        "y": -0.2828636169433594
+        "x": -1,
+        "y": 2
       },
       "size": {
-        "x": 315,
-        "y": 307
+        "x": 326,
+        "y": 470
       },
       "rot": 0,
-      "font": "",
+      "font": "Halogen SDF",
       "col": {
         "r": 0,
         "g": 0,
         "b": 0,
         "a": 1
       },
-      "fontSize": 16,
+      "fontSize": 22,
       "charSpace": 0,
       "wordSpace": 0,
       "lineSpace": 16,
@@ -46,7 +46,7 @@
       "alignV": 0,
       "fontStyle": 0,
       "order": 0,
-      "usePages": false,
+      "usePages": true,
       "isHandwriting": true,
       "links": []
     }

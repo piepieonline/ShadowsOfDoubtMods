@@ -8,8 +8,7 @@
     "REF:OccupationPreset|HRAdministrator",
     "REF:OccupationPreset|MarketingExecutive",
     "REF:OccupationPreset|OfficeManager",
-    "REF:OccupationPreset|QATechnician",
-    "REF:OccupationPreset|Receptionist"
+    "REF:OccupationPreset|QATechnician"
   ],
   "fileType": "MotivePreset",
   "name": "MotivePreset_SideJobFinanceInvestigatorOffice",
