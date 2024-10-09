@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 
-
-
 #if MONO
 using BepInEx.Unity.Mono;
 using UnityEngine;
@@ -32,6 +30,9 @@ public class BundleLoader : BasePlugin
         public static ManualLogSource PluginLogger;
 
         static Dictionary<string, AssetBundle> loadedBundles = new Dictionary<string, AssetBundle>();
+
+        public delegate List<UnityEngine.ScriptableObject> LoadObjects(Il2CppSystem.Collections.Generic.List<UnityEngine.ScriptableObject> loadedScriptableObjects);
+        public static List<LoadObjects> loadObjectDelegates = new List<LoadObjects>();
 
 #if MONO
         public void Awake()

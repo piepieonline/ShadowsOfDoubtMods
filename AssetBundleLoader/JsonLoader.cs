@@ -1,81 +1,39 @@
-﻿using Il2CppInterop.Runtime.InteropTypes;
-using Il2CppInterop.Runtime;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Runtime.Loader;
-using UnityEngine;
-using UniverseLib;
 using System.Reflection;
-using System.IO;
-using HarmonyLib;
-using static AssetBundleLoader.JsonLoader.NewtonsoftExtensions;
+using System.Collections.Generic;
+
+using UnityEngine;
+
+using Il2CppInterop.Runtime;
+using Il2CppInterop.Runtime.InteropTypes;
+
+using UniverseLib;
 
 namespace AssetBundleLoader
 {
     public static class JsonLoader
     {
-        static Dictionary<string, (ScriptableObject scriptableObject, string fileId)> soMapping = new System.Collections.Generic.Dictionary<string, (ScriptableObject scriptableObject, string fileId)>();
-
-        [HarmonyPriority(Priority.VeryHigh)]
-        [HarmonyPatch(typeof(Toolbox), "Start")]
-        public class Toolbox_Start
-        {
-            public static void Postfix()
-            {
-                // We need to create a list of all ScriptableObject in the game, and the fileID associated
-                // We use this to rewrite the "REF:*" text references before Unity deserialises for us
-                var mapping = new Il2CppSystem.Collections.Generic.List<ScriptableObject>();
-                var typeNameMapping = new List<(ScriptableObject so, string type, string name)>();
-                foreach (var uo in RuntimeHelper.FindObjectsOfTypeAll(typeof(ScriptableObject)))
-                {
-                    ScriptableObject so = ((dynamic)uo).Cast<ScriptableObject>();
-                    mapping.Add(so);
-                    var soType = so.GetActualType().Name;
-                    var soName = so.name;
-                    typeNameMapping.Add(((ScriptableObject)so, soType, soName));
-                }
-
-                dynamic jobject = NewtonsoftJson.JToken_Parse(JsonUtilityArrays.ToJson(mapping.ToArray(), false));
-
-
-                var soIndex = 0;
-                foreach (var child in jobject["Items"])
-                {
-                    child["name"] = typeNameMapping[soIndex].name;
-                    child["type"] = typeNameMapping[soIndex].type;
-
-                    string key = child["type"].ToString() + "|" + child["name"].ToString();
-
-                    ScriptableObject value1 = typeNameMapping[soIndex].so;
-                    string value2 = "{\"m_FileID\":" + child["m_FileID"].ToString() + ",\"m_PathID\":" + child["m_PathID"].ToString() + "}";
-
-                    soMapping[key] = (
-                        value1,
-                        value2
-                    );
-
-                    soIndex++;
-                }
-            }
-        }
+        public static Dictionary<string, (ScriptableObject scriptableObject, string fileId)> ScriptableObjectIDMap = new System.Collections.Generic.Dictionary<string, (ScriptableObject scriptableObject, string fileId)>();
 
         private static void SerializeTypes(ref Dictionary<string, Dictionary<string, string>> dict, Type soType)
         {
             if (soType.FullName == null || !soType.IsSubclassOf(typeof(ScriptableObject))) return;
             dict[soType.FullName] = new Dictionary<string, string>();
-            foreach(var field in soType.GetProperties())
+            foreach (var field in soType.GetProperties())
             {
-                if(field.PropertyType.IsValueType)
+                if (field.PropertyType.IsValueType)
                 {
                     dict[soType.FullName][field.Name] = field.PropertyType.FullName;
                 }
-                else if(field.PropertyType.IsArray)
+                else if (field.PropertyType.IsArray)
                 {
                     SerializeTypes(ref dict, field.PropertyType.GetElementType());
                     dict[soType.FullName][field.Name] = field.PropertyType.GetElementType().FullName;
                 }
-                else if(field.PropertyType.IsGenericType)
+                else if (field.PropertyType.IsGenericType)
                 {
                     SerializeTypes(ref dict, field.PropertyType.GetGenericTypeDefinition());
                     dict[soType.FullName][field.Name] = field.PropertyType.GetGenericTypeDefinition().FullName;
@@ -90,9 +48,18 @@ namespace AssetBundleLoader
 
         public static ScriptableObject LoadFileToGame(string json)
         {
-            var newSOJSON = NewtonsoftJson.JToken_Parse(json);
+            var newSOJSON = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(json);
 
+            var fileName = newSOJSON.Value<string>("name");
             var fileType = newSOJSON.Value<string>("fileType");
+
+            /*
+            // Doesn't work, use reflection
+            string replaced = Regex.Replace(json, $"\"REF:{fileType}\\|{fileName}\"", """{ "fileID": 11400000}""");
+            BundleLoader.PluginLogger.LogInfo(replaced);
+            newSOJSON = NewtonsoftJson.JToken_Parse(replaced);
+            */
+
             newSOJSON.SelectToken("fileType").Replace(null);
 
             string copyFrom = newSOJSON.Value<string>("copyFrom");
@@ -101,15 +68,25 @@ namespace AssetBundleLoader
                 newSOJSON.SelectToken("copyFrom").Replace(null);
             }
 
+            var newSOJSONWithRefs = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(newSOJSON.ToString());
+
             // Replace references to existing (or created before us) ScriptableObjets
-            ExtractAndReplaceTokens(JsonExtensions.FindTokensByValueMatch(newSOJSON, new System.Text.RegularExpressions.Regex("^REF")));
+            try
+            {
+                ExtractAndReplaceTokens(JsonExtensions.FindTokensByValueMatch(newSOJSON, new System.Text.RegularExpressions.Regex("^REF")), $"{fileType}|{fileName}");
+            }
+            catch (KeyNotFoundException keyNotFoundEx)
+            {
+                BundleLoader.PluginLogger.LogError($"{fileName} failed to load, missing reference.");
+                throw;
+            }
 
             ScriptableObject newSO;
 
             // Shortcut, so we don't have to create everything from scratch
             if (copyFrom != null && copyFrom.Contains("|"))
             {
-                newSO = ScriptableObject.Instantiate(soMapping[copyFrom.Replace("REF:", "").Trim()].scriptableObject);
+                newSO = ScriptableObject.Instantiate(ScriptableObjectIDMap[copyFrom.Replace("REF:", "").Trim()].scriptableObject);
             }
             else
             {
@@ -120,68 +97,158 @@ namespace AssetBundleLoader
             newSO = RestoredJsonUtility.FromJsonInternal(newSOJSON.ToString(), newSO);
             newSO.name = newSOJSON.SelectToken("name").ToString();
 
-            FixScriptableObjects(newSO, newSOJSON.ToString());
-
-            Toolbox.Instance.ProcessLoadedScriptableObject(newSO);
+            // Using the original json and the created SO, fix self-references
+            // TODO: Set all custom references with this, not just self? Would reduce the need for the fileOrder to only being required for copyFrom
+            FixSelfReferences(newSO, newSOJSONWithRefs);
 
             // Cache the ID of this new object, so following objects can refer to it
             string key = fileType + "|" + newSO.name;
             var arr = new Il2CppSystem.Collections.Generic.List<ScriptableObject>();
             arr.Add(newSO);
-            string value = NewtonsoftJson.JToken_Parse(JsonUtilityArrays.ToJson(arr.ToArray()))
+            string value = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(JsonUtilityArrays.ToJson(arr.ToArray()))
                 .SelectToken("Items[0]").ToString()
             ;
 
-            soMapping.Add(key, (newSO, value));
+            ScriptableObjectIDMap.Add(key, (newSO, value));
 
             return newSO;
         }
 
-        private static void ExtractAndReplace(dynamic json, string token)
+        private static void ExtractAndReplace(dynamic json, string token, string typeAndNameKey)
         {
-            ExtractAndReplaceTokens(json.SelectTokens(token).ToList());
+            ExtractAndReplaceTokens(json.SelectTokens(token).ToList(), typeAndNameKey);
         }
 
-        private static void ExtractAndReplaceTokens(System.Collections.Generic.List<dynamic> tokens)
+        private static void ExtractAndReplaceTokens(List<dynamic> tokens, string typeAndNameKey)
         {
             foreach (var token in tokens)
             {
-                var tokenType = NewtonsoftJson.JToken_Type(token);
-                if (tokenType == e_JToken_Type.Array)
+                var tokenType = NewtonsoftExtensions.NewtonsoftJson.JToken_Type(token);
+                if (tokenType == NewtonsoftExtensions.e_JToken_Type.Array)
                 {
                     var newArr = new Il2CppSystem.Collections.Generic.List<dynamic>();
 
                     foreach (var item in token.Children<dynamic>())
                     {
                         var tokenValue = item.ToString().Replace("REF:", "");
-                        newArr.Add(NewtonsoftJson.JToken_Parse(soMapping[tokenValue].Item2));
+                        if (tokenValue != typeAndNameKey)
+                        {
+                            if (ScriptableObjectIDMap.ContainsKey(tokenValue))
+                            {
+                                newArr.Add(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(ScriptableObjectIDMap[tokenValue].Item2));
+                            }
+                            else
+                            {
+                                BundleLoader.PluginLogger.LogError($"{typeAndNameKey} failed to load, {tokenValue} doesn't exist! (Check your fileOrder in your manifest)");
+                            }
+                        }
                     }
 
-                    token.Replace(NewtonsoftJson.JArray_FromObject(newArr));
+                    token.Replace(NewtonsoftExtensions.NewtonsoftJson.JArray_FromObject(newArr));
                 }
                 else
                 {
                     var tokenValue = token.ToString().Replace("REF:", "");
-                    token.Replace(NewtonsoftJson.JToken_Parse(soMapping[tokenValue].Item2));
+
+                    if (tokenValue == typeAndNameKey)
+                    {
+                        token.Replace(null);
+                    }
+                    else
+                    {
+                        if (ScriptableObjectIDMap.ContainsKey(tokenValue))
+                        {
+                            token.Replace(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(ScriptableObjectIDMap[tokenValue].Item2));
+                        }
+                        else
+                        {
+                            BundleLoader.PluginLogger.LogError($"{typeAndNameKey} failed to load, {tokenValue} doesn't exist! (Check your fileOrder in your manifest)");
+                        }
+                    }
                 }
             }
         }
 
-        private static void FixScriptableObjects(ScriptableObject so, string json)
+        private static void FixSelfReferences(ScriptableObject so, dynamic json)
         {
-            if(so.GetActualType() == typeof(MurderMO))
+            string selfReference = "REF:" + so.GetActualType() + "|" + so.name;
+
+            // Any reference to ourselves in the format "REF:FileType|FileName"
+            foreach (var self in (json.Descendants() as IEnumerable<dynamic>)
+                     .Where(val => val.GetType().FullName == "Newtonsoft.Json.Linq.JValue")
+                     .Where(val => val.ToString() == selfReference)
+                    .ToList())
             {
-                MurderMO murderMO = ((dynamic)so).Cast<MurderMO>();
-                foreach (var lead in murderMO.MOleads)
+                List<string> path = new List<string>();
+
+                // Split the path (doesn't handle arrays, will be done later)
+                string[] pathComponents = self.Path.Split(".");
+
+                // Loop through the path, keep a reference to the parent FieldInfo and object, and index if required
+                object parentObj = null;
+                PropertyInfo parentField = null;
+                object currentObj = so;
+                int lastIndex = -1;
+                foreach (var comp in pathComponents)
                 {
-                    for (int i = 0; i < lead.compatibleWithMotives.Count; i++)
+                    if (comp.IndexOf("[") > -1)
                     {
-                        if (lead.compatibleWithMotives[i] == null)
-                            lead.compatibleWithMotives[i] = murderMO;
+                        var splitComp = comp.Split("[");
+                        int index = Int32.Parse(splitComp[1].Split("]")[0]);
+
+                        try
+                        {
+                            parentField = currentObj.GetActualType().GetProperty(splitComp[0]);
+                            if (parentField == null)
+                                throw new NullReferenceException();
+                        }
+                        catch
+                        {
+                            BundleLoader.PluginLogger.LogError($"Unknown field '{splitComp[0]}' on type '{currentObj.GetActualType().FullName}'");
+                        }
+
+                        if (parentField.PropertyType.IsArray)
+                        {
+                            var objArray = (object[])(currentObj.GetActualType().GetProperty(splitComp[0]).GetValue(currentObj));
+
+                            lastIndex = index;
+                            parentObj = objArray;
+                            currentObj = objArray[index];
+                        }
+                        else
+                        {
+                            dynamic preset = currentObj.TryCast(currentObj.GetActualType());
+                            dynamic objArray = (currentObj.GetActualType().GetProperty(splitComp[0]).GetValue(preset));
+
+                            lastIndex = index;
+                            parentObj = objArray;
+                            currentObj = objArray[index];
+                        }
+                    }
+                    else
+                    {
+                        parentField = currentObj.GetActualType().GetProperty(comp);
+                        parentObj = currentObj;
+
+                        if (pathComponents.Length > 1)
+                            currentObj = currentObj.GetActualType().GetProperty(comp).GetValue(currentObj);
                     }
                 }
+
+                // Overwrite the value with our own scriptable object
+                if (parentField.PropertyType.IsArray)
+                {
+                    ((System.Array)parentObj).SetValue(so.TryCast(so.GetActualType()), lastIndex);
+                }
+                else if (parentField.PropertyType.Name.StartsWith("List"))
+                {
+                    parentObj.GetActualType().GetMethod("set_Item").Invoke(parentObj, new object[] { lastIndex, so.TryCast(so.GetActualType()) });
+                }
+                else
+                {
+                    parentField.SetValue(parentObj, so.TryCast(so.GetActualType()));
+                }
             }
-            
         }
 
         public static class JsonExtensions
@@ -195,23 +262,23 @@ namespace AssetBundleLoader
 
             private static void FindTokensByValueMatch(dynamic containerToken, System.Text.RegularExpressions.Regex value, ref System.Collections.Generic.List<dynamic> matches)
             {
-                var tokenType = NewtonsoftJson.JToken_Type(containerToken);
+                var tokenType = NewtonsoftExtensions.NewtonsoftJson.JToken_Type(containerToken);
 
-                if (tokenType == e_JToken_Type.Object)
+                if (tokenType == NewtonsoftExtensions.e_JToken_Type.Object)
                 {
                     foreach (dynamic child in containerToken)
                     {
                         FindTokensByValueMatch(child.Value, value, ref matches);
                     }
                 }
-                else if (tokenType == e_JToken_Type.Array)
+                else if (tokenType == NewtonsoftExtensions.e_JToken_Type.Array)
                 {
                     foreach (dynamic child in containerToken)
                     {
                         FindTokensByValueMatch(child, value, ref matches);
                     }
                 }
-                else if (tokenType == e_JToken_Type.String)
+                else if (tokenType == NewtonsoftExtensions.e_JToken_Type.String)
                 {
                     if (value.Match(containerToken.ToString()).Success)
                     {
@@ -262,10 +329,10 @@ namespace AssetBundleLoader
             }
 
             public static NewtonsoftExtensions NewtonsoftJson
-            { 
+            {
                 get
                 {
-                    if(_instance == null)
+                    if (_instance == null)
                         _instance = new NewtonsoftExtensions();
                     return _instance;
                 }
@@ -273,15 +340,15 @@ namespace AssetBundleLoader
 
             public dynamic JToken_Parse(string json)
             {
-                return m_JToken_Parse.Invoke(null, [json]);
+                return _instance.m_JToken_Parse.Invoke(null, [json]);
             }
 
             public e_JToken_Type JToken_Type(dynamic jtoken)
             {
-                if(!m_Type_Getter.ContainsKey(jtoken.GetType().FullName))
-                    m_Type_Getter[jtoken.GetType().FullName] = jtoken.GetType().GetProperty("Type").GetMethod;
+                if (!_instance.m_Type_Getter.ContainsKey(jtoken.GetType().FullName))
+                    _instance.m_Type_Getter[jtoken.GetType().FullName] = jtoken.GetType().GetProperty("Type").GetMethod;
 
-                dynamic result = m_Type_Getter[jtoken.GetType().FullName].Invoke(jtoken, null);
+                dynamic result = _instance.m_Type_Getter[jtoken.GetType().FullName].Invoke(jtoken, null);
 
                 int intResult = (int)result;
                 return (e_JToken_Type)intResult;
@@ -289,12 +356,12 @@ namespace AssetBundleLoader
 
             public dynamic JArray_FromObject(object obj)
             {
-                return m_JArray_FromObject.Invoke(null, [obj]);
+                return _instance.m_JArray_FromObject.Invoke(null, [obj]);
             }
 
             public dynamic JObject_FromObject(object obj)
             {
-                return m_JObject_FromObject.Invoke(null, [obj]);
+                return _instance.m_JObject_FromObject.Invoke(null, [obj]);
             }
         }
 

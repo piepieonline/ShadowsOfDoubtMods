@@ -1,3 +1,14 @@
+# 2.0.1
+
+* Removed some files that are no longer required
+
+# 2.0.0
+
+* Reworked JSON object loading with changes to allow for:
+  * Self referencing
+  * Introducing a delegate that removes the need to hook for all consumers
+  * The delegate also tries to ensure that objects are fully loaded by all game systems
+
 # 1.0.5
 
 * Added JSON object loading

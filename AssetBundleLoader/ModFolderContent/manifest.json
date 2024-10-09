@@ -1,8 +1,8 @@
 {
   "name": "Asset_Bundle_Loader",
-  "version_number": "1.0.5",
+  "version_number": "2.0.1",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/AssetBundleLoader",
-  "description": "Library. Load AssetBundles built against previous game versions, by correcting referenced PathIDs",
+  "description": "Library. Load AssetBundles built against previous game versions, by correcting referenced PathIDs. Also includes functions for creating ScriptableObjects from raw JSON files",
   "dependencies": [
     "BepInEx-BepInExPack_IL2CPP-6.0.667"
   ]
