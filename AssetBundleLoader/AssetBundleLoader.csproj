@@ -12,7 +12,7 @@
 		<Platforms>x64</Platforms>
 		<AssemblyName>AssetBundleLoader</AssemblyName>
 		<Description>Load AssetBundles built against previous game versions safely</Description>
-		<Version>1.0.2</Version>
+		<Version>2.0.3</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 		<RestoreAdditionalProjectSources>
@@ -51,7 +51,7 @@
 			<HintPath>$(BepInExPath)plugins/AssetBundleLoader/UniverseLib.IL2CPP.Interop.dll</HintPath>
 		</Reference>
 	</ItemGroup>
-
+	
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="mkdir &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" Condition="!Exists('$(BepInExPath)plugins/$(ProjectName)')" />
 		<Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />

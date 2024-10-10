@@ -1,3 +1,11 @@
+# 2.0.3
+
+* Added an in-game error popup when missing content is detected
+
+# 2.0.2
+
+* Fixed for 39.10
+
 # 2.0.1
 
 * Removed some files that are no longer required

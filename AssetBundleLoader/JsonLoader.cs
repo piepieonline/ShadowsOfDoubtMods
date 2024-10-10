@@ -75,7 +75,7 @@ namespace AssetBundleLoader
             {
                 ExtractAndReplaceTokens(JsonExtensions.FindTokensByValueMatch(newSOJSON, new System.Text.RegularExpressions.Regex("^REF")), $"{fileType}|{fileName}");
             }
-            catch (KeyNotFoundException keyNotFoundEx)
+            catch (KeyNotFoundException)
             {
                 BundleLoader.PluginLogger.LogError($"{fileName} failed to load, missing reference.");
                 throw;
