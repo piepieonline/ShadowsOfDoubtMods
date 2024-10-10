@@ -52,6 +52,7 @@
 	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">
 		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
 		<Reference Include="$(BepInExPath)interop/Il2Cppmscorlib.dll" />
+		<Reference Include="$(BepInExPath)interop/Il2CppSystem.Core.dll" />
 		<Reference Include="$(BepInExPath)interop/UnityEngine.CoreModule.dll" />
 		<Reference Include="$(BepInExPath)interop/UnityEngine.UI.dll" />
 		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />

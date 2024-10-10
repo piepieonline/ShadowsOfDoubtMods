@@ -115,9 +115,7 @@
     {
       "name": "RepoNotice",
       "compatibleWithMotives": [
-        {
-          "fileID": 11400000
-        }
+        "REF:MurderMO|TheftGoneWrong"
       ],
       "spawnOnPhase": 1,
       "belongsTo": 2,

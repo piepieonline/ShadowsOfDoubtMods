@@ -58,136 +58,71 @@ namespace CommunityCaseLoader
             var harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");
             harmony.PatchAll();
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is patched!");
+
+            AssetBundleLoader.BundleLoader.loadObjectDelegates.Add(LoadObjectsCallback);
         }
-    }
 
-    [HarmonyPatch(typeof(Toolbox), "Start")]
-    public class Toolbox_Start
-    {
-        static bool hasToolboxInit = false;
-
-        static List<dynamic> loadedManifests = new List<dynamic>();
-
-        // TODO: Side job mapping only works if the purp is the sender!
-        // Save safe, vmailTreeMap builds on the loader, sideJobThreadIDMap builds on vmail send or rebuilds after loading 
-        public static Dictionary<string, JobPresetAndTag> vmailTreeMap = new Dictionary<string, JobPresetAndTag>(); // TODO: Murders, too?
-        public static Dictionary<int, int> sideJobThreadIDMap = new Dictionary<int, int>();
-
-        public static void Postfix()
+        public List<ScriptableObject> LoadObjectsCallback(Il2CppSystem.Collections.Generic.List<ScriptableObject> loadedScriptableObjects)
         {
-            if (!hasToolboxInit)
+            var objectsToLoad = new List<ScriptableObject>();
+            var loadedManifests = new List<dynamic>();
+
+            // Search the plugins directory to find any and all murdermanifests, so that people can upload thunderstore mods that purely contain json without code
+            var modsToLoadFrom = Directory.GetDirectories(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), ".."), "*", SearchOption.AllDirectories)
+                .Select(dirPath => new DirectoryInfo(dirPath))
+                .Where(dir => File.Exists(Path.Combine(dir.FullName, "murdermanifest.sodso.json")))
+                .ToList();
+
+            foreach (var mod in modsToLoadFrom)
             {
-                // Search the plugins directory to find any and all murdermanifests, so that people can upload thunderstore mods that purely contain json without code
-                var modsToLoadFrom = Directory.GetDirectories(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), ".."), "*", SearchOption.AllDirectories)
-                    .Select(dirPath => new DirectoryInfo(dirPath))
-                    .Where(dir => File.Exists(Path.Combine(dir.FullName, "murdermanifest.sodso.json")))
-                    .ToList();
+                var manifest = AssetBundleLoader.JsonLoader.NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(System.IO.File.ReadAllText(System.IO.Path.Combine(mod.FullName, "murdermanifest.sodso.json")));
+                manifest["moName"] = mod.Name;
+                manifest["folderPath"] = mod.FullName;
 
-                foreach (var mod in modsToLoadFrom)
+                var loadBefore = manifest.Value<string>("loadBefore");
+                if (loadBefore == null && loadBefore == "")
                 {
-                    var manifest = AssetBundleLoader.JsonLoader.NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(System.IO.File.ReadAllText(System.IO.Path.Combine(mod.FullName, "murdermanifest.sodso.json")));
-                    manifest["moName"] = mod.Name;
-                    manifest["folderPath"] = mod.FullName;
-
-                    var loadBefore = manifest.Value<string>("loadBefore");
-                    if (loadBefore == null && loadBefore == "")
-                    {
-                        loadedManifests.Add(manifest);
-                    }
-                    else
-                    {
-                        var previousManifest = loadedManifests.Where(previousManifest => previousManifest.Value<string>("moName") == loadBefore).FirstOrDefault();
-                        if (previousManifest != null)
-                        {
-                            loadedManifests.Insert(loadedManifests.IndexOf(previousManifest), manifest);
-                        }
-                        else
-                        {
-                            loadedManifests.Add(manifest);
-                        }
-                    }
-                }
-
-                foreach (var manifest in loadedManifests)
-                {
-                    LoadManifest(manifest);
-                }
-
-                // Force single type for testing
-                if (CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder != "")
-                {
-                    bool foundSpecificMurder = false;
-                    CommunityCaseLoaderPlugin.PluginLogger.LogWarning($"Forcing MurderMO: {CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder}");
-                    for (int i = Toolbox.Instance.allMurderMOs.Count - 1; i >= 0; i--)
-                    {
-                        if (Toolbox.Instance.allMurderMOs[i].name != CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder)
-                            Toolbox.Instance.allMurderMOs[i].disabled = true; // TODO: Cache the current state to allow changing at runtime
-                        else
-                            foundSpecificMurder = true;
-                    }
-
-                    if (!foundSpecificMurder)
-                    {
-                        CommunityCaseLoaderPlugin.PluginLogger.LogError($"MurderMO not found: {CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder}");
-                        CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Loaded MurderMOs:");
-                        for (int i = Toolbox.Instance.allMurderMOs.Count - 1; i >= 0; i--)
-                        {
-                            CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"\t{Toolbox.Instance.allMurderMOs[i].name}");
-                        }
-                    }
-                }
-
-                if (CommunityCaseLoaderPlugin.DEBUG_LoadSpecificSideJob != "")
-                {
-                    CommunityCaseLoaderPlugin.PluginLogger.LogWarning($"Forcing SideJob: {CommunityCaseLoaderPlugin.DEBUG_LoadSpecificSideJob}");
-                    for (int i = Toolbox.Instance.allSideJobs.Count - 1; i >= 0; i--)
-                    {
-                        if (Toolbox.Instance.allSideJobs[i].name != CommunityCaseLoaderPlugin.DEBUG_LoadSpecificSideJob)
-                            Toolbox.Instance.allSideJobs.RemoveAt(i);
-                        else
-                        {
-                            Toolbox.Instance.allSideJobs[i].disabled = false;
-                            Toolbox.Instance.allSideJobs[i].maxJobs = 1;
-                            Toolbox.Instance.allSideJobs[i].immediatePostCountThreshold = 100;
-                        }
-                    }
+                    loadedManifests.Add(manifest);
                 }
                 else
                 {
-                    // For now, turn off the other debugging options if there is nothing specified
-                    CommunityCaseLoaderPlugin.DEBUG_ShowSideJobDebugMessages = false;
-                    CommunityCaseLoaderPlugin.DEBUG_ShowSideJobSpawnLocation = false;
+                    var previousManifest = loadedManifests.Where(previousManifest => previousManifest.Value<string>("moName") == loadBefore).FirstOrDefault();
+                    if (previousManifest != null)
+                    {
+                        loadedManifests.Insert(loadedManifests.IndexOf(previousManifest), manifest);
+                    }
+                    else
+                    {
+                        loadedManifests.Add(manifest);
+                    }
                 }
-
-                // The side job controller caches a list, rebuild it
-                SideJobController.Instance.jobTracking.Clear();
-                SideJobController.Instance.Start();
-
-                CommunityCaseLoaderPlugin.PluginLogger.LogInfo("Sidejobs recalculated");
-
-                hasToolboxInit = true;
             }
+
+            foreach (var manifest in loadedManifests)
+            {
+                LoadManifest(manifest, ref objectsToLoad);
+            }
+
+            return objectsToLoad;
         }
 
-
-        static GameObject atmPrefab;
-        private static void LoadManifest(dynamic manifest)
+        private static void LoadManifest(dynamic manifest, ref List<ScriptableObject> objectsToLoad)
         {
             var moName = manifest.Value<string>("moName");
             var folderPath = manifest.Value<string>("folderPath");
 
             if (manifest.Value<bool>("enabled"))
             {
-                CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Loading MurderMO: {moName}");
+                CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Loading manifest: {moName}");
             }
             else
             {
-                CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Not Loading MurderMO: {moName} (Disabled)");
+                CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Not loading manifest: {moName} (Disabled)");
                 return;
             }
 
-            // Reading into strings for now, hopefully we can automatically sort out the file order in future
             List<string> fileContents = new List<string>();
+
             foreach (var file in manifest["fileOrder"])
             {
                 string filePath = Path.Combine(folderPath, file.ToString().Replace("REF:", "") + ".sodso.json");
@@ -205,18 +140,18 @@ namespace CommunityCaseLoader
             foreach (var fileContent in fileContents)
             {
                 var outputFile = AssetBundleLoader.JsonLoader.LoadFileToGame(fileContent);
+                objectsToLoad.Add(outputFile);
 
-                // If it's a sidejob with, check to see if we need to link any vmails that might be used as evidence
-                //
+                // If it's a sidejob with 
                 if (outputFile.GetActualType() == typeof(JobPreset))
                 {
-                    var preset = outputFile.TryCast<JobPreset>();
+                    var preset = UniverseLib.ReflectionExtensions.TryCast<JobPreset>(outputFile);
                     foreach (var spawnItem in preset.spawnItems)
                     {
                         if (spawnItem.vmailThread != "")
                         {
                             // Note that the same thread can't be used across multiple SideJobs types
-                            vmailTreeMap[spawnItem.vmailThread] = new JobPresetAndTag() { JobPreset = preset, JobTag = spawnItem.itemTag };
+                            Toolbox_Start.vmailTreeMap[spawnItem.vmailThread] = new JobPresetAndTag() { JobPreset = preset, JobTag = spawnItem.itemTag };
                         }
                     }
                 }
@@ -225,6 +160,65 @@ namespace CommunityCaseLoader
                 {
                     CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Loading Object: {outputFile.name}");
                 }
+
+            }
+        }
+    }
+
+   [HarmonyPatch(typeof(Toolbox), "Start")]
+    public class Toolbox_Start
+    {
+        // TODO: Side job mapping only works if the purp is the sender!
+        // Save safe, vmailTreeMap builds on the loader, sideJobThreadIDMap builds on vmail send or rebuilds after loading 
+        public static Dictionary<string, JobPresetAndTag> vmailTreeMap = new Dictionary<string, JobPresetAndTag>(); // TODO: Murders, too?
+        public static Dictionary<int, int> sideJobThreadIDMap = new Dictionary<int, int>();
+
+        public static void Postfix()
+        {
+            // Force single type for testing
+            if (CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder != "")
+            {
+                bool foundSpecificMurder = false;
+                CommunityCaseLoaderPlugin.PluginLogger.LogWarning($"Forcing MurderMO: {CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder}");
+                for (int i = Toolbox.Instance.allMurderMOs.Count - 1; i >= 0; i--)
+                {
+                    if (Toolbox.Instance.allMurderMOs[i].name != CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder)
+                        Toolbox.Instance.allMurderMOs[i].disabled = true; // TODO: Cache the current state to allow changing at runtime
+                    else
+                        foundSpecificMurder = true;
+                }
+
+                if (!foundSpecificMurder)
+                {
+                    CommunityCaseLoaderPlugin.PluginLogger.LogError($"MurderMO not found: {CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder}");
+                    CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Loaded MurderMOs:");
+                    for (int i = Toolbox.Instance.allMurderMOs.Count - 1; i >= 0; i--)
+                    {
+                        CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"\t{Toolbox.Instance.allMurderMOs[i].name}");
+                    }
+                }
+            }
+
+            if (CommunityCaseLoaderPlugin.DEBUG_LoadSpecificSideJob != "")
+            {
+                CommunityCaseLoaderPlugin.PluginLogger.LogWarning($"Forcing SideJob: {CommunityCaseLoaderPlugin.DEBUG_LoadSpecificSideJob}");
+                for (int i = SideJobController.Instance.jobTracking.Count - 1; i >= 0; i--)
+                {
+                    if (SideJobController.Instance.jobTracking[i].name != CommunityCaseLoaderPlugin.DEBUG_LoadSpecificSideJob)
+                        SideJobController.Instance.jobTracking.RemoveAt(i);
+                    else
+                    {
+                        SideJobController.Instance.jobTracking[i].preset.disabled = false;
+                        SideJobController.Instance.jobTracking[i].preset.maxJobs = 1;
+                        SideJobController.Instance.jobTracking[i].preset.immediatePostCountThreshold = 100;
+                    }
+                }
+            }
+            else
+            {
+                // For now, turn off the other debugging options if there is nothing specified
+                CommunityCaseLoaderPlugin.DEBUG_ShowSideJobDebugMessages = false;
+                CommunityCaseLoaderPlugin.DEBUG_ShowSideJobSpawnLocation = false;
             }
         }
     }
@@ -248,7 +242,7 @@ namespace CommunityCaseLoader
                     if (job.Value.purpID == from.humanID && job.Value.presetStr == Toolbox_Start.vmailTreeMap[treeID].JobPreset.presetName)
                     {
                         Toolbox_Start.sideJobThreadIDMap[job.value.jobID] = __result.threadID;
-                        if(CommunityCaseLoaderPlugin.DEBUG_ShowSideJobDebugMessages)
+                        if (CommunityCaseLoaderPlugin.DEBUG_ShowSideJobDebugMessages)
                             CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Mapped jobID {job.value.jobID} to threadID {__result.threadID} on creation");
                         break;
                     }
@@ -268,7 +262,7 @@ namespace CommunityCaseLoader
                 {
                     var humanId = messageThreadPair.Value.senders[0];
 
-                    foreach(var job in SideJobController.Instance.allJobsDictionary.Values)
+                    foreach (var job in SideJobController.Instance.allJobsDictionary.Values)
                     {
                         if (Toolbox_Start.vmailTreeMap[messageThreadPair.Value.treeID].JobPreset.presetName == job.preset.presetName && job.purpID == humanId)
                         {
@@ -292,11 +286,11 @@ namespace CommunityCaseLoader
             // Is this a job we are tracking?
             if (forCase?.job != null && Toolbox_Start.sideJobThreadIDMap.ContainsKey(forCase.job.jobID))
             {
-                var evidenceId = __instance.inputtedEvidence;           
-                foreach(var caseEle in forCase.caseElements)
+                var evidenceId = __instance.inputtedEvidence;
+                foreach (var caseEle in forCase.caseElements)
                 {
                     // Find the case element that matches the submitted evidence
-                    if(caseEle.id == evidenceId)
+                    if (caseEle.id == evidenceId)
                     {
                         // Check it's a vmail
                         var vmailEvi = caseEle.pinnedController.evidence.TryCast<EvidencePrintedVmail>();
@@ -323,6 +317,24 @@ namespace CommunityCaseLoader
         public JobPreset JobPreset;
         public JobPreset.JobTag JobTag;
     }
+
+    /*
+    // Failing because of ref params
+    [HarmonyPatch(typeof(MurderController), "SpawnItemIsValid")]
+    public class MurderController_SpawnItemIsValid
+    {
+        public static void Postfix(bool __result, MurderPreset.MurderLeadItem spawn)
+        {
+            if(CommunityCaseLoaderPlugin.DEBUG_ShowDebugMessages)
+            {
+                if (!__result)
+                {
+                    CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Not spawning murder lead item: {spawn.name}");
+                }
+            }
+        }
+    }
+    */
 
     #region Debug helper hooks
 

@@ -1,3 +1,7 @@
+# 0.2.2
+
+* Updated to work with the latest AssetBundleLoader
+
 # 0.2.1
 
 * Bugfix for error in console regarding case evidence

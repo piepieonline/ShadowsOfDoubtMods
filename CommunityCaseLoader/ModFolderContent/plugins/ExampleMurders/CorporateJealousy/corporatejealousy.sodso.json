@@ -22,11 +22,9 @@
   "MOleads": [
     {
       "name": "VMAIL: Anon Threat",
-      "compatibleWithAllMotives": 0,
+      "compatibleWithAllMotives": true,
       "compatibleWithMotives": [
-        {
-          "fileID": 11400000
-        }
+        "REF:MurderMO|CorporateJealousy"
       ],
       "spawnOnPhase": 1,
       "tryToSpawnWithEachNewMurder": 1,

@@ -1,11 +1,11 @@
 {
   "name": "CommunityCaseLoader",
-  "version_number": "0.2.1",
+  "version_number": "0.2.2",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/CommunityCaseLoader",
   "description": "Load custom murder cases from JSON files made by the community.",
   "dependencies": [
     "BepInEx-BepInExPack_IL2CPP-6.0.667",
-    "Piepieonline-Asset_Bundle_Loader-1.0.5",
+    "Piepieonline-Asset_Bundle_Loader-2.0.1",
     "Piepieonline-DDSLoader-1.0.5"
   ]
 }
