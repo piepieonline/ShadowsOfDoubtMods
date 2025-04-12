@@ -1,3 +1,4 @@
+using CruncherSolitaire;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,7 +30,7 @@ public class PieSolitaire_CardDeck : MonoBehaviour
 
         if (cardsInPile > 0)
         {
-            for (var i = Mathf.Min(cardsInPile, 3); i > 0; i--)
+            for (var i = Mathf.Min(cardsInPile, (CruncherSolitairePlugin.OneCardDraw.Value ? 1 : 3)); i > 0; i--)
             {
                 var cardTransform = deckContainer.GetChild(deckContainer.childCount - 1);
                 cardTransform.SetParent(displayContainers[i - 1], false);

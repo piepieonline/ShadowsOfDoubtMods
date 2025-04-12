@@ -1,42 +1,65 @@
-﻿using AssetBundleLoader;
+﻿using System.Collections.Generic;
+using System.Linq;
+
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+
+#if MONO
+using BepInEx.Unity.Mono;
+#elif IL2CPP
 using BepInEx.Unity.IL2CPP;
-using CruncherSolitaire;
-using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
-using System.Collections.Generic;
-using System.Linq;
+#endif
+
 using UnityEngine;
+using HarmonyLib;
+using CruncherSolitaire;
+using AssetBundleLoader;
 
 namespace CruncherSolitaire
 {
+#if MONO
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-    public class CruncherSolitairePlugin : BasePlugin
+    public class CruncherSolitairePlugin : BaseUnityPlugin
+#elif IL2CPP
+[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+public class CruncherSolitairePlugin : BasePlugin
+#endif
     {
-        public static ManualLogSource Logger;
+        public static ManualLogSource PluginLogger;
 
         public static ConfigEntry<SessionData.TimeSpeed> TimeScaleWhilePlaying;
+        public static ConfigEntry<bool> OneCardDraw;
 
+
+#if MONO
+        public void Awake()
+        {
+            PluginLogger = Logger;
+#elif IL2CPP
         public override void Load()
         {
+            PluginLogger = Log;
+#endif
+
             if (!Config.Bind("General", "Enabled", true).Value)
             {
-                Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is disabled.");
+                PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is disabled.");
                 return;
             }
 
             TimeScaleWhilePlaying = Config.Bind("General", "Time speed in app", SessionData.TimeSpeed.normal);
+            OneCardDraw = Config.Bind("General", "Draw one card at a time?", false);
 
-            Logger = Log;
 
             // Plugin startup logic
-            Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+            PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
             var harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");
             harmony.PatchAll();
-            Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is patched!");
+            PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is patched!");
 
+#if IL2CPP
             ClassInjector.RegisterTypeInIl2Cpp<PieSolitaire_Card>();
             ClassInjector.RegisterTypeInIl2Cpp<PieSolitaire_CardHolder>();
             ClassInjector.RegisterTypeInIl2Cpp<PieSolitaire_Game>();
@@ -44,21 +67,29 @@ namespace CruncherSolitaire
 
             ClassInjector.RegisterTypeInIl2Cpp<PieSolitaire_Loader>();
             ClassInjector.RegisterTypeInIl2Cpp<SolitaireCruncherAppPrefab>();
+#endif
 
-            Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} has added custom types!");
+
+            PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} has added custom types!");
         }
 
         public static void SetInAppTimeScale(bool inApp)
         {
             if (inApp && TimeScaleWhilePlaying.Value != SessionData.TimeSpeed.normal)
             {
-                if (SessionData._instance.currentTimeSpeed != TimeScaleWhilePlaying.Value)
-                    SessionData._instance.SetTimeSpeed(TimeScaleWhilePlaying.Value);
+                if (SessionData.Instance.currentTimeSpeed != TimeScaleWhilePlaying.Value)
+                {
+                    PluginLogger.LogInfo($"Cruncher Solitare: Changing time speed to {System.Enum.GetName(typeof(SessionData.TimeSpeed), TimeScaleWhilePlaying.Value)}");
+                    SessionData.Instance.SetTimeSpeed(TimeScaleWhilePlaying.Value);
+                }
             }
             else
             {
-                if (SessionData._instance.currentTimeSpeed != SessionData.TimeSpeed.normal)
-                    SessionData._instance.SetTimeSpeed(SessionData.TimeSpeed.normal);
+                if (SessionData.Instance.currentTimeSpeed != SessionData.TimeSpeed.normal)
+                {
+                    PluginLogger.LogInfo($"Cruncher Solitare: Changing time speed to normal");
+                    SessionData.Instance.SetTimeSpeed(SessionData.TimeSpeed.normal);
+                }
             }
         }
     }
@@ -75,8 +106,7 @@ namespace CruncherSolitaire
                 if (hasInit) return;
                 hasInit = true;
 
-                // var moddedAssetBundle = UniverseLib.AssetBundle.LoadFromFile(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "realestatelistingcruncherappbundle"));
-                var moddedAssetBundle = BundleLoader.LoadBundle(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "crunchersolitaire"), true);
+                var moddedAssetBundle = BundleLoader.LoadBundle(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "crunchersolitaire"), true, true);
 
                 // This is literally the scriptableobject the game stores these in, so that works
                 var newCruncherApp = moddedAssetBundle.LoadAsset<CruncherAppPreset>("Solitaire");
@@ -90,7 +120,31 @@ namespace CruncherSolitaire
                     cruncher.additionalApps.Insert(cruncher.additionalApps.Count - 2, newCruncherApp);
                 }
 
-                CruncherSolitairePlugin.Logger.LogInfo("Loading custom asset bundle complete");
+                CruncherSolitairePlugin.PluginLogger.LogInfo("Loading custom asset bundle complete");
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(ComputerController), "OnAppLoaded")]
+    public class ComputerController_OnAppLoaded
+    {
+        public static void Postfix(ComputerController __instance)
+        {
+            if (__instance.playerControlled)
+            {
+                CruncherSolitairePlugin.SetInAppTimeScale(__instance.currentApp.name == "Solitaire");
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(ComputerController), "OnAppExit")]
+    public class ComputerController_OnAppExit
+    {
+        public static void Prefix(ComputerController __instance)
+        {
+            if (__instance.playerControlled)
+            {
+                CruncherSolitairePlugin.SetInAppTimeScale(false);
             }
         }
     }
@@ -98,18 +152,24 @@ namespace CruncherSolitaire
     [HarmonyPatch(typeof(ComputerController), "OnPlayerControlChange")]
     public class ComputerController_OnPlayerControlChange
     {
-        public static void Postfix(ComputerController __instance)
-        {
-            CruncherSolitairePlugin.SetInAppTimeScale(__instance.playerControlled && __instance.currentApp.name == "Solitaire");
-        }
-    }
+        static bool wasPlayerControlled = false;
 
-    [HarmonyPatch(typeof(ComputerController), "SetComputerApp")]
-    public class ComputerController_SetComputerApp
-    {
+        public static void Prefix(ComputerController __instance)
+        {
+            wasPlayerControlled = __instance.playerControlled;
+        }
+
         public static void Postfix(ComputerController __instance)
         {
-            CruncherSolitairePlugin.SetInAppTimeScale(__instance.playerControlled && __instance.currentApp.name == "Solitaire");
+            if(wasPlayerControlled)
+            {
+                CruncherSolitairePlugin.SetInAppTimeScale(false);
+                wasPlayerControlled = false;
+            }
+            else if (__instance.playerControlled)
+            {
+                CruncherSolitairePlugin.SetInAppTimeScale(__instance.currentApp.name == "Solitaire");
+            }
         }
     }
 }
@@ -122,12 +182,9 @@ public class PieSolitaire_Loader : MonoBehaviour
 
     void Awake()
     {
-        var bundle = BundleLoader.LoadBundle(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "crunchersolitaire"), true);
+        var bundle = BundleLoader.LoadBundle(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "crunchersolitaire"), true, stable: true);
 
         CardPrefab = bundle.LoadAsset<GameObject>("Card");
-
-        CruncherSolitairePlugin.Logger.LogInfo($"Loaded card: {CardPrefab.name}");
-
         CardSprites = new Dictionary<string, Sprite>();
 
         Dictionary<int, string> numToName = new Dictionary<int, string>()
