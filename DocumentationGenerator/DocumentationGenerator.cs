@@ -1,20 +1,18 @@
-﻿using BepInEx;
-using BepInEx.Logging;
-using BepInEx.Unity.IL2CPP;
-using HarmonyLib;
-using Il2CppInterop.Runtime.Injection;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Runtime.Loader;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+
 using UnityEngine;
-using UnityEngine.Rendering;
+
+using BepInEx;
+using BepInEx.Logging;
+using BepInEx.Unity.IL2CPP;
+
+using HarmonyLib;
 using UniverseLib;
 using static AssetBundleLoader.JsonLoader;
-using static AssetBundleLoader.JsonLoader.NewtonsoftExtensions;
-using static lzma;
 
 namespace DocumentationGenerator
 {
@@ -27,6 +25,7 @@ namespace DocumentationGenerator
         private static string DDS_GAME_PATH = @"E:\SteamLibrary\steamapps\common\Shadows of Doubt base\Shadows of Doubt_Data\StreamingAssets\DDS\";
         private static string MONO_ASSEMBLY_PATH = @"E:\SteamLibrary\steamapps\common\Shadows of Doubt mono\Shadows of Doubt_Data\Managed\Assembly-CSharp.dll";
         private static string SO_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\Documentation\ExportedSOs\";
+        private static string TEXTASSET_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\Documentation\ExportedTextAssets\";
         private static string DOC_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\PieMurderBuilder\scripts\ref\";
         private static string DDS_EDITOR_DOC_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\SOD_DDS_Editor_Pie\scripts\ref\"; 
 
@@ -57,7 +56,7 @@ namespace DocumentationGenerator
                 var codegenSOMap = new Dictionary<string, Dictionary<string, IEnumerable<string>>>();
                 codegenSOMap["ScriptableObject"] = new Dictionary<string, IEnumerable<string>>();
                 codegenSOMap["Enum"] = new Dictionary<string, IEnumerable<string>>();
-                codegenSOMap["IDMap"] = new Dictionary<string, IEnumerable<string>>();
+                var codegenIDMap = new Dictionary<string, IEnumerable<string>>();
                 var codegenTemplates = new Dictionary<string, dynamic>();
                 var codegenSOTypeMapping = new Dictionary<string, Dictionary<string, (string Class, bool Array, string Tooltip)>>();
 
@@ -67,7 +66,7 @@ namespace DocumentationGenerator
                     System.IO.Directory.CreateDirectory(SO_EXPORT_PATH);
                 }
 
-                var typesToForceInclude = new string[] { "UnityEngine.Sprite", "UnityEngine.GameObject" };
+                var typesToForceInclude = new string[] { "UnityEngine.Sprite", "UnityEngine.GameObject", "UnityEngine.TextAsset" };
                 foreach (var uo in RuntimeHelper.FindObjectsOfTypeAll(typeof(UnityEngine.Object)))
                 {
                     UnityEngine.Object so = ((dynamic)uo).Cast<UnityEngine.Object>();
@@ -76,14 +75,14 @@ namespace DocumentationGenerator
                     // Namespace null for things defined in Assembly-CSharp, but add exclusions for things we care about outside of that
                     if (soType.Namespace != null && !typesToForceInclude.Contains(soType.FullName)) continue;
 
-                    Logger.LogWarning($"{so.name} is actual type {soType.Name} (Assignable: {soType.IsAssignableTo(typeof(ScriptableObject))})");
+                    // Logger.LogWarning($"{so.name} is actual type {soType.Name} (Assignable: {soType.IsAssignableTo(typeof(ScriptableObject))})");
 
                     var soTypeName = soType.Name;
                     var soName = so.name;
 
                     var tempListForSerialisation = new Il2CppSystem.Collections.Generic.List<UnityEngine.Object>();
                     tempListForSerialisation.Add(so);
-                    var id = NewtonsoftJson.JToken_Parse(JsonUtilityArrays.ToJson(tempListForSerialisation.ToArray())).SelectToken("Items[0].m_FileID").ToString();
+                    var id = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(JsonUtilityArrays.ToJson(tempListForSerialisation.ToArray())).SelectToken("Items[0].m_FileID").ToString();
 
                     // Skip custom objects that have been loaded, they get IDs below 0
                     if (int.Parse(id) < 0) continue;
@@ -115,8 +114,8 @@ namespace DocumentationGenerator
 
                     if (soName != "")
                     {
-                        if(!codegenSOMap["IDMap"].ContainsKey(id)) codegenSOMap["IDMap"][id] = new List<string>();
-                        codegenSOMap["IDMap"][id].Add(soTypeName + "|" + soName);
+                        if(!codegenIDMap.ContainsKey(id)) codegenIDMap[id] = new List<string>();
+                        codegenIDMap[id].Add(soTypeName + "|" + soName);
                     }
                 }
 
@@ -202,7 +201,7 @@ namespace DocumentationGenerator
                             {
                                 serializedObject = RestoredJsonUtility.ToJsonInternal(ScriptableObject.CreateInstance(type.Name), false);
                                 serializedObject = Regex.Replace(serializedObject, """{"m_FileID":\s?(\d+),\s?"m_PathID":\s?(\d+)}""", m => "null");
-                                codegenTemplates[type.Name] = NewtonsoftJson.JToken_Parse(serializedObject);
+                                codegenTemplates[type.Name] = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(serializedObject);
                             }
                         }
                         catch (Exception ex)
@@ -228,7 +227,7 @@ namespace DocumentationGenerator
                         var id = filePath.Substring(filePath.LastIndexOf(System.IO.Path.DirectorySeparatorChar) + 1).Split(".")[0];
                         ddsMap[directoryName].Add(id);
 
-                        var json = NewtonsoftJson.JToken_Parse(System.IO.File.ReadAllText(filePath));
+                        var json = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(System.IO.File.ReadAllText(filePath));
 
                         if (json["name"] != null)
                         {
@@ -271,13 +270,25 @@ namespace DocumentationGenerator
                     }
                 }
 
-                // Export the DDS map to both case editor and the DDS editor
-                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "ddsMap.json"), NewtonsoftJson.JObject_FromObject(ddsMap).ToString());
-                System.IO.File.WriteAllText(System.IO.Path.Join(DDS_EDITOR_DOC_EXPORT_PATH, "ddsMap.json"), NewtonsoftJson.JObject_FromObject(ddsMap).ToString());
+                // Export all text assets if we are doing a full export
+                if(IsFullExportEnabled)
+                {
+                    foreach(var textAsset in RuntimeHelper.FindObjectsOfTypeAll<TextAsset>())
+                    {
+                        if(textAsset == null || textAsset.dataSize == 0) continue;
 
-                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "soMap.json"), NewtonsoftJson.JObject_FromObject(codegenSOMap).ToString());
-                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "templates.json"), NewtonsoftJson.JObject_FromObject(codegenTemplates).ToString());
-                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "soChildTypes.json"), NewtonsoftJson.JObject_FromObject(codegenSOTypeMapping).ToString());
+                        System.IO.File.WriteAllText(System.IO.Path.Combine(TEXTASSET_EXPORT_PATH, textAsset.name + ".txt"), textAsset.text);
+                    }
+                }
+
+                // Export the DDS map to both case editor and the DDS editor
+                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "ddsMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(ddsMap).ToString());
+                System.IO.File.WriteAllText(System.IO.Path.Join(DDS_EDITOR_DOC_EXPORT_PATH, "ddsMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(ddsMap).ToString());
+
+                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "soMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenSOMap).ToString());
+                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "soIdMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenIDMap).ToString());
+                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "templates.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenTemplates).ToString());
+                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "soChildTypes.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenSOTypeMapping).ToString());
 
                 Logger.LogWarning($"Documentation Regenerated. Turn off documentation generation and restart the game!");
             }
