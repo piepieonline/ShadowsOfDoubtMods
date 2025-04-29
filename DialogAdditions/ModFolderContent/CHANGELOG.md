@@ -1,3 +1,14 @@
+# 0.14.0
+* Updated to work with game version v40.02
+
+# 0.13.0
+
+* Updated to AssetBundleLoader 2.0
+* Introduced "What is your passcode?"
+  * It has a very low pass rate by default, though restraining someone changes that
+  * It can be bribed, but is expensive
+  * Can be turned off in configuration, but requires launching the game once to do so (and a restart when changed)
+
 # 0.12.0
 
 * Modified "DoYouKnowThisPerson"

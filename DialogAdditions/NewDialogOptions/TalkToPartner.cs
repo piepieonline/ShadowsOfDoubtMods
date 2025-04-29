@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace DialogAdditions
+namespace DialogAdditions.NewDialogOptions
 {
     class TalkToPartner : CustomDialogPreset
     {
@@ -13,7 +13,7 @@ namespace DialogAdditions
             preset.name = Name;
             preset.msgID = "cfa7463c-a03d-4c2c-87e9-124a39290716";
             preset.defaultOption = true;
-            preset.tiedToKey = Evidence.DataKey.photo;
+            preset.tiedToKey = Evidence.DataKey.voice;
             preset.useSuccessTest = true;
             preset.baseChance = canFail ? chanceToSucceed : 1;
             preset.ranking = 1;
@@ -23,7 +23,7 @@ namespace DialogAdditions
             // If it's not a 100% success, influence it with traits.
             if(canFail)
             {
-                preset.modifySuccessChanceTraits = DialogAdditionPlugin.dialogPresets["Introduce"].modifySuccessChanceTraits;
+                preset.modifySuccessChanceTraits = DialogAdditionPlugin.dialogPresetRefs["Introduce"].modifySuccessChanceTraits;
             }
 
             preset.responses.Add(new AIActionPreset.AISpeechPreset()

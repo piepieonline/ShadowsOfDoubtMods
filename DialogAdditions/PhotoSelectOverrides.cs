@@ -1,20 +1,21 @@
 ﻿using HarmonyLib;
 using System;
-using Il2CppSystem.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using SOD.Common.Extensions;
+using SOD.Common.Helpers;
+using Il2CppSystem.Collections.Generic;
 
 namespace DialogAdditions
 {
     [HarmonyPatch(typeof(PhotoSelectButtonController), nameof(PhotoSelectButtonController.OnLeftClick))]
     public class PhotoSelectButtonController_OnLeftClick
     {
-        public static CallType callType = CallType.DoYouKnowThisPerson;
-
-        public enum CallType { DoYouKnowThisPerson, SeenThisPersonWithOthers }
+        // Converted to strings so other mods can extend
+        public static System.Collections.Generic.Dictionary<string, Func<Human, Human, Il2CppSystem.Collections.Generic.List<Evidence.DataKey>, bool>> CallTypes = new System.Collections.Generic.Dictionary<string, Func<Human, Human, Il2CppSystem.Collections.Generic.List<Evidence.DataKey>, bool>>() { { "DoYouKnowThisPerson", DoYouKnowThisPersonAdditions }, { "SeenThisPersonWithOthers", SeenThisPersonWithOthersCallback } };
+        public static string callType = "DoYouKnowThisPerson";
 
         internal static bool Prefix(PhotoSelectButtonController __instance)
         {
@@ -24,18 +25,12 @@ namespace DialogAdditions
             Human askTarget = __instance.citizen;
             Il2CppSystem.Collections.Generic.List<Evidence.DataKey> askTargetKeys = __instance.citizen.evidenceEntry.GetTiedKeys(__instance.element.dk);
 
-            switch (callType)
-            {
-                case CallType.SeenThisPersonWithOthers:
-                    SeenThisPersonWithOthersCallback(speaker, askTarget, askTargetKeys);
-                    letMethodContinue = false;
-                    break;
-                default:
-                    letMethodContinue = DoYouKnowThisPersonAdditions(speaker, askTarget, askTargetKeys);
-                    break;
-            }
+            CallTypes[callType](speaker, askTarget, askTargetKeys);
 
-            callType = CallType.DoYouKnowThisPerson;
+            // We only continue on the normal "DoYouKnowThisPerson" version, otherwise we short circuit
+            letMethodContinue = callType == "DoYouKnowThisPerson";
+
+            callType = "DoYouKnowThisPerson";
 
             if(!letMethodContinue)
             {
@@ -47,7 +42,7 @@ namespace DialogAdditions
             return letMethodContinue;
         }
 
-        static void SeenThisPersonWithOthersCallback(Human speaker, Human askTarget, Il2CppSystem.Collections.Generic.List<Evidence.DataKey> askTargetKeys)
+        static bool SeenThisPersonWithOthersCallback(Human speaker, Human askTarget, Il2CppSystem.Collections.Generic.List<Evidence.DataKey> askTargetKeys)
         {
             List<GroupsController.SocialGroup> overlappingGroups = new List<GroupsController.SocialGroup>();
 
@@ -56,7 +51,7 @@ namespace DialogAdditions
             {
                 // That's not enough info for me to help you
                 speaker.speechController.Speak("a6815309-f9d4-40b0-8a1e-3ec3550c64a2", speakAbout: askTarget);
-                return;
+                return false;
             }
 
             // Check all groups
@@ -99,19 +94,19 @@ namespace DialogAdditions
             {
                 // No, I haven't seen them come in with anybody else
                 speaker.speechController.Speak("b37bf9be-fd05-4000-af08-8eef590f54c2", speakAbout: askTarget);
-                return;
+                return false;
             }
             else if (overlappingGroups.Count == 1)
             {
                 SpeakAboutGroup(overlappingGroups[0], speaker, askTarget);
-                return;
+                return false;
             }
             else
             {
                 // Pick a random group to talk about
                 var nameAsIntValue = speaker.name.ToCharArray().Aggregate(0, (result, c) => result + c);
                 SpeakAboutGroup(overlappingGroups[nameAsIntValue % overlappingGroups.Count], speaker, askTarget);
-                return;
+                return false;
             }
         }
 
@@ -232,15 +227,10 @@ namespace DialogAdditions
         {
             if (!speaker) return true;
 
-            DialogAdditionPlugin.PluginLogger.LogWarning($"Setting: {DialogAdditionPlugin.ConfirmSuspiciousPhotos.Value}");
-            DialogAdditionPlugin.PluginLogger.LogWarning($"Has seen: { speaker.lastSightings.ContainsKey(askTarget)}");
-            DialogAdditionPlugin.PluginLogger.LogWarning($"Asking about murderer {askTarget.humanID == MurderController.Instance.currentMurderer?.humanID}");
-            DialogAdditionPlugin.PluginLogger.LogWarning($"SeenOrHeard success: {InternalMethodClones.TestDialogForSuccess("SeenOrHeardUnusual", speaker)}");
-
             // Self, check if they would normally give their name
             if (speaker.humanID == askTarget.humanID && (askTargetKeys.Contains(Evidence.DataKey.name) || askTargetKeys.Contains(Evidence.DataKey.photo)))
             {
-                var success = InternalMethodClones.TestDialogForSuccess("Introduce", speaker);
+                var success = InternalMethodClones.TestDialogForSuccess_useSuccessTest("Introduce", speaker);
 
                 DialogController.Instance.askTarget = askTarget;
                 DialogController.Instance.askTargetKeys = askTargetKeys;
@@ -265,7 +255,9 @@ namespace DialogAdditions
                 DialogAdditionPlugin.ConfirmSuspiciousPhotos.Value &&
                 speaker.lastSightings.ContainsKey(askTarget) &&
                 askTarget.humanID == MurderController.Instance.currentMurderer?.humanID &&
-                InternalMethodClones.TestDialogForSuccess("SeenOrHeardUnusual", speaker)
+                speaker.humanID != MurderController.Instance.currentMurderer?.humanID &&
+                InternalMethodClones.TestDialogForSuccess_useSuccessTest("SeenOrHeardUnusual", speaker) &&
+                InternalMethodClones.SeenOrHeardUnusual_LastSightingCheckOnly(speaker, askTarget)
                 )
             {
                 speaker.speechController.Speak("90f766cd-ae3f-482d-9cbb-5f72a69a0a4b", speakAbout: askTarget);
@@ -275,25 +267,6 @@ namespace DialogAdditions
 
             // Acquaintance
             return true;
-        }
-
-        // If the questioned person is the murderer, they should pretend to not have seen the vic
-        [HarmonyPatch(typeof(Human), nameof(Human.RevealSighting), [typeof(Human), typeof(Human.Sighting)])]
-        class Human_RevealSighting_Murderer
-        {
-            static bool Prefix(Human __instance, Human prospectCitizen)
-            {
-                if (__instance.humanID == MurderController.Instance.currentMurderer?.humanID)
-                {
-                    if (MurderController.Instance.activeMurders.Exists((Il2CppSystem.Predicate<MurderController.Murder>)(murder => murder.victimID == prospectCitizen.humanID)))
-                    {
-                        __instance.speechController.Speak("aeba5683-cb14-4df7-a95c-04025dfcd5d0", speakAbout: prospectCitizen);
-                        return false;
-                    }
-                }
-
-                return true;
-            }
         }
     }
 
@@ -371,26 +344,26 @@ namespace DialogAdditions
             return !flag1 ? 0.0f : Mathf.Clamp01(baseChance);
         }
 
-        public static bool TestDialogForSuccess(string presetName, Human cit)
+        public static bool TestDialogForSuccess_useSuccessTest(string presetName, Human cit)
         {
-            var introduceDialogPreset = DialogAdditionPlugin.dialogPresets[presetName];
+            var dialogPreset = DialogAdditionPlugin.dialogPresetRefs[presetName];
             bool success = true;
 
             // Start copied from game: DialogController.ExecuteDialog
-            float baseChance = introduceDialogPreset.baseChance;
-            if (cit && introduceDialogPreset.modifySuccessChanceTraits.Count > 0)
-                baseChance = InternalMethodClones.GetChance(((dynamic)cit).Cast<Citizen>(), introduceDialogPreset.modifySuccessChanceTraits, baseChance);
+            float baseChance = dialogPreset.baseChance;
+            if (cit && dialogPreset.modifySuccessChanceTraits.Count > 0)
+                baseChance = InternalMethodClones.GetChance(((dynamic)cit).Cast<Citizen>(), dialogPreset.modifySuccessChanceTraits, baseChance);
             // Can't use cit.GetChance because of the ref parameter
             // baseChance = cit.GetChance(ref modifySuccessTraits, baseChance);
 
             if (cit && cit.ai.restrained)
-                baseChance += introduceDialogPreset.affectChanceIfRestrained;
+                baseChance += dialogPreset.affectChanceIfRestrained;
 
-            if (introduceDialogPreset.specialCase == DialogPreset.SpecialCase.lookAroundHome)
+            if (dialogPreset.specialCase == DialogPreset.SpecialCase.lookAroundHome)
                 baseChance += UpgradeEffectController.Instance.GetUpgradeEffect(SyncDiskPreset.Effect.guestPassIssueModifier);
 
             float num = Mathf.Clamp01(baseChance + UpgradeEffectController.Instance.GetUpgradeEffect(SyncDiskPreset.Effect.dialogChanceModifier));
-            if (introduceDialogPreset.specialCase == DialogPreset.SpecialCase.mustBeMurdererForSuccess && MurderController.Instance.currentMurderer?.humanID != cit?.humanID)
+            if (dialogPreset.specialCase == DialogPreset.SpecialCase.mustBeMurdererForSuccess && MurderController.Instance.currentMurderer?.humanID != cit?.humanID)
             {
                 num = 0.0f;
                 success = false;
@@ -400,6 +373,27 @@ namespace DialogAdditions
             // End copied from game
 
             return success;
+        }
+
+        public static bool SeenOrHeardUnusual_LastSightingCheckOnly(Human speaker, Human saysTo)
+        {
+            float num = -99999f;
+            Human.Sighting sighting = null;
+            Human human = null;
+            if (MurderController.Instance == null || MurderController.Instance.activeMurders == null)
+            {
+                foreach (KeyValuePair<Human, Human.Sighting> lastSighting in saysTo.lastSightings)
+                {
+                    if (!(lastSighting.Key == saysTo) && lastSighting.Value.poi && !lastSighting.Value.phone && (double)lastSighting.Value.time > (double)num && lastSighting.Value.sound == 0)
+                    {
+                        num = lastSighting.Value.time;
+                        human = lastSighting.Key;
+                        sighting = lastSighting.Value;
+                    }
+                }
+            }
+
+            return sighting != null;
         }
     }
 }

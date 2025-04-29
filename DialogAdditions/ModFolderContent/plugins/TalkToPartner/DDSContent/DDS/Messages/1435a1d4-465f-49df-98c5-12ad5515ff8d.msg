@@ -8,15 +8,6 @@
       "traitConditions": 0,
       "traits": [],
       "useTraits": false
-    },
-    {
-      "alwaysDisplay": true,
-      "blockID": "|partner.casualname|! Somebody is at the door for you!",
-      "group": 0,
-      "instanceID": "bd2e2a9e-2201-4ef8-8bdd-11123763eca2",
-      "traitConditions": 0,
-      "traits": [],
-      "useTraits": false
     }
   ],
   "id": "1435a1d4-465f-49df-98c5-12ad5515ff8d",

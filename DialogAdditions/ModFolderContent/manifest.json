@@ -1,11 +1,12 @@
 {
   "name": "PlayerDialogAdditions",
-  "version_number": "0.12.0",
+  "version_number": "0.14.0",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/DialogAdditions",
   "description": "Adds dialog options for the player to say to NPCs, as well as modifying some responses.",
   "dependencies": [
     "BepInEx-BepInExPack_IL2CPP-6.0.667",
+    "Piepieonline-Asset_Bundle_Loader-2.0.3",
     "Piepieonline-DDSLoader-1.0.4",
-    "Venomaus-SODCommon-1.1.8"
+    "Venomaus-SODCommon-2.0.8"
   ]
 }

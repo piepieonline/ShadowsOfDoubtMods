@@ -1,0 +1,109 @@
+{
+  "presetName": "WhatIsYourPasscodeTemplate",
+  "msgID": "13af9b0e-f6ba-484b-9556-1daa7bce9415",
+  "defaultOption": 0,
+  "telephoneCallOption": false,
+  "hospitalDecisionOption": false,
+  "tiedToKey": 1,
+  "ranking": 3,
+  "removeAfterSaying": 0,
+  "dailyReplenish": false,
+  "isJobDetails": false,
+  "ignoreActiveJobRequirement": false,
+  "specialCase": 0,
+  "cost": 0,
+  "usePercentageCost": false,
+  "useAllWealthIfNotEnough": false,
+  "displayIfPasswordUnknown": false,
+  "inputBox": 0,
+  "displayAsIllegal": false,
+  "preceedingSyntax": "",
+  "followingSyntax": "",
+  "useSuccessTest": 1,
+  "requiresPassword": false,
+  "baseChance": 0,
+  "affectChanceIfRestrained": 1,
+  "modifySuccessChanceTraits": [
+    {
+      "rule": 0,
+      "traitList": [
+        "REF:CharacterTrait|Char-Friendly",
+        "REF:CharacterTrait|Char-Trusting",
+        "REF:CharacterTrait|Char-Gentle"
+      ],
+      "mustPassForApplication": 0,
+      "addChance": 0.2
+    },
+    {
+      "rule": 0,
+      "traitList": [
+        "REF:CharacterTrait|Char-Guarded",
+        "REF:CharacterTrait|Char-Cautious",
+        "REF:CharacterTrait|Char-Paranoid",
+        "REF:CharacterTrait|Char-Abrasive",
+        "REF:CharacterTrait|Char-Suspicious",
+        "REF:CharacterTrait|Char-Arrogant"
+      ],
+      "mustPassForApplication": 0,
+      "addChance": -0.5
+    }
+  ],
+  "responses": [
+    {
+      "dictionaryString": "Passcode Success",
+      "ddsMessageID": "4aae0911-0121-42f3-917f-221155d5aa02",
+      "isSuccessful": 1,
+      "chance": 1,
+      "useParsing": 1,
+      "shout": 0,
+      "interupt": 0,
+      "onlyIfEnfocerOnDuty": 0,
+      "onlyIfNotEnforcerOnDuty": 0,
+      "mustFeatureTrait": [],
+      "cantFeatureTrait": [],
+      "mustBeKillerWithMotive": [],
+      "useMurderMOConfession": 0,
+      "tieKeys": [
+        3,
+        1
+      ],
+      "applyDiscovery": [],
+      "endsDialog": 0,
+      "jobHandIn": 0,
+      "startCombat": 0,
+      "flee": 0,
+      "giveUpSelf": 0
+    },
+    {
+      "dictionaryString": "Passcode Fail",
+      "ddsMessageID": "1254ab36-64c3-471c-beb9-ad7459fcac81",
+      "isSuccessful": 0,
+      "chance": 1,
+      "useParsing": 1,
+      "shout": 0,
+      "interupt": 0,
+      "onlyIfEnfocerOnDuty": 0,
+      "onlyIfNotEnforcerOnDuty": 0,
+      "mustFeatureTrait": [],
+      "cantFeatureTrait": [],
+      "mustBeKillerWithMotive": [],
+      "useMurderMOConfession": 0,
+      "tieKeys": [],
+      "applyDiscovery": [],
+      "endsDialog": 0,
+      "jobHandIn": 0,
+      "startCombat": 0,
+      "flee": 0,
+      "giveUpSelf": 0
+    }
+  ],
+  "followUpDialogSuccess": [],
+  "followUpDialogFail": [],
+  "removeDialog": [],
+  "removeDialogOnSuccess": [],
+  "removeDialogOnFail": [],
+  "fileType": "DialogPreset",
+  "name": "WhatIsYourPasscodeTemplate",
+  "type": "DialogPreset",
+  "copyFrom": null
+}

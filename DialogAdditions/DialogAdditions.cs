@@ -1,13 +1,13 @@
-﻿using BepInEx;
-using BepInEx.Logging;
-using HarmonyLib;
+﻿using System.IO;
 using System.Collections.Generic;
+using BepInEx;
+using BepInEx.Logging;
 using Il2CppSystem.Reflection;
 using BepInEx.Configuration;
-using Cpp2IL.Core.Api;
-using System.Linq;
-
-
+using HarmonyLib;
+using UniverseLib;
+using UnityEngine;
+using DialogAdditions.NewDialogOptions;
 
 #if MONO
 using BepInEx.Unity.Mono;
@@ -17,6 +17,7 @@ using BepInEx.Unity.IL2CPP;
 
 /*
  * TODO:
+ *  - A good interface for external mods to implement
  *  - Ask to talk to the partner:
  *      - Don't let someone cycle between people at the door
  *      - Tidy up lines used when rejecting
@@ -33,7 +34,9 @@ namespace DialogAdditions
     public class DialogAdditionPlugin : BasePlugin
 #endif
     {
-        public static Dictionary<string, DialogPreset> dialogPresets = new Dictionary<string, DialogPreset>();
+        public static List<CustomDialogPreset> LoadedCustomDialogPresets = new List<CustomDialogPreset>();
+
+        public static Dictionary<string, DialogPreset> dialogPresetRefs = new Dictionary<string, DialogPreset>();
         public static Dictionary<string, CustomDialogPreset> customDialogInterceptors = new Dictionary<string, CustomDialogPreset>();
         public static ManualLogSource PluginLogger;
 
@@ -41,6 +44,9 @@ namespace DialogAdditions
         public static ConfigEntry<float> TalkToPartnerBaseSuccess;
         public static ConfigEntry<float> SeenUnusualLikeBlock;
         public static ConfigEntry<bool> ConfirmSuspiciousPhotos;
+        public static ConfigEntry<bool> AddAskForPasscode;
+
+        public static MethodInfo WarnNotewriterMI;
 
         private static DialogAdditionPlugin instance;
 #if MONO
@@ -60,11 +66,94 @@ namespace DialogAdditions
             TalkToPartnerBaseSuccess = Config.Bind("Talk to Partner", "Base chance of success (before trait modifications, in the range 0 to 1)?", 0.25f);
             SeenUnusualLikeBlock = Config.Bind("Have you seen anything?", "How well liked does the perp have to be before acquaintances protect them? (in the range 0 to 1)?", 0.45f);
             ConfirmSuspiciousPhotos = Config.Bind("Do you know this person?", "If the NPC has seen something someone suspicous, and you present a photo, will they confirm it?", true);
+            AddAskForPasscode = Config.Bind("What is your passcode?", "Should asking for passcodes be enabled?", true, new ConfigDescription("Restart Required"));
 
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
             var harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");
             harmony.PatchAll();
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is patched!");
+
+            AssetBundleLoader.BundleLoader.loadObjectDelegates.Add(LoadObjectsCallback);
+        }
+
+        public List<ScriptableObject> LoadObjectsCallback(Il2CppSystem.Collections.Generic.List<ScriptableObject> loadedScriptableObjects)
+        {
+            var objectsToLoad = new List<ScriptableObject>();
+
+            foreach (var so in loadedScriptableObjects)
+            {
+                if(so.GetActualType() == typeof(DialogPreset))
+                {
+                    DialogPreset dialogPreset = so.TryCast<DialogPreset>();
+                    dialogPresetRefs[dialogPreset.name] = dialogPreset;
+                }
+            }
+
+            var talkToPartnerDialog = new TalkToPartner(TalkToPartnerCanFail.Value, TalkToPartnerBaseSuccess.Value);
+            var seenThisPersonWithOthersDialog = new SeenThisPersonWithOthers();
+            LoadedCustomDialogPresets.Add(talkToPartnerDialog);
+            LoadedCustomDialogPresets.Add(seenThisPersonWithOthersDialog);
+
+            // Add custom dialog that needs code execution
+            foreach (var customDialog in LoadedCustomDialogPresets)
+            {
+                AddDialogInterceptor(customDialog);
+                objectsToLoad.Add(customDialog.Preset);
+            }
+
+            // Account for both Thunderstore install and manual install
+            string basePath = Directory.GetParent(System.Reflection.Assembly.GetExecutingAssembly().Location).FullName;
+            if (Directory.Exists(Path.Combine(basePath, "plugins")))
+            {
+                basePath = Path.Combine(basePath, "plugins");
+            }
+
+            var dialogFilesToLoad = new List<string>();
+
+            if(AddAskForPasscode.Value)
+            {
+                dialogFilesToLoad.Add("WhatIsYourPasscode/WhatIsYourPasscodeTemplate");
+                dialogFilesToLoad.Add("WhatIsYourPasscode/WhatIsYourPasscodeBribe2");
+                dialogFilesToLoad.Add("WhatIsYourPasscode/WhatIsYourPasscodeBribe1");
+                dialogFilesToLoad.Add("WhatIsYourPasscode/WhatIsYourPasscode");
+            }
+
+            // Add custom dialog that doesn't need code execution
+            foreach (var dialogPresetFileName in dialogFilesToLoad)
+            {
+                string filePath = Path.Combine(basePath, dialogPresetFileName + ".sodso.json");
+                if (File.Exists(filePath))
+                {
+                    var fileContent = File.ReadAllText(filePath);
+
+                    DialogPreset loadedPreset = AssetBundleLoader.JsonLoader.LoadFileToGame(fileContent).TryCast<DialogPreset>();
+
+                    objectsToLoad.Add(loadedPreset);
+                }
+                else
+                {
+                    DialogAdditionPlugin.PluginLogger.LogError($"File {dialogPresetFileName} not found, looking {filePath}");
+                }
+            }
+
+            return objectsToLoad;
+        }
+
+        public static void AddDialogInterceptor(CustomDialogPreset customDialogPreset)
+        {
+            if(!customDialogInterceptors.ContainsKey(customDialogPreset.Name))
+            {
+                customDialogInterceptors[customDialogPreset.Name] = customDialogPreset;
+            }
+
+            // Short circuit, we'll add them once the WarnNotewriter dialog is loaded and cached
+            if (WarnNotewriterMI == null)
+                return;
+
+            if (!DialogController.Instance.dialogRef.ContainsKey(customDialogPreset.Preset))
+            {
+                DialogController.Instance.dialogRef.Add(customDialogPreset.Preset, WarnNotewriterMI);
+            }
         }
     }
 
@@ -80,37 +169,24 @@ namespace DialogAdditions
         public abstract DialogController.ForceSuccess ShouldDialogSucceedOverride(DialogController instance, EvidenceWitness.DialogOption dialog, Citizen saysTo, NewNode where, Actor saidBy);
     }
 
-    // Patch to add the dialog to the list of available options
     [HarmonyPatch(typeof(DialogController), nameof(DialogController.Start))]
     public class DialogController_Start
     {
         [HarmonyPostfix]
-        internal static void Postfix(DialogController __instance)
+        static void Postfix(DialogController __instance)
         {
-            MethodInfo warnNotewriterMI = null;
-            foreach (var dialogPreset in Toolbox.Instance.allDialog)
+            foreach (var dialogKV in __instance.dialogRef)
             {
-                if (dialogPreset.name == "WarnNotewriter")
+                if (dialogKV.Key.name == "WarnNotewriter")
                 {
-                    warnNotewriterMI = __instance.dialogRef[dialogPreset];
+                    DialogAdditionPlugin.WarnNotewriterMI = dialogKV.Value;
+                    break;
                 }
-                DialogAdditionPlugin.dialogPresets[dialogPreset.name] = dialogPreset;
             }
-
-            foreach (var customDialog in new CustomDialogPreset[]
+            
+            foreach (var customDialogKV in DialogAdditionPlugin.customDialogInterceptors)
             {
-                new TalkToPartner(DialogAdditionPlugin.TalkToPartnerCanFail.Value, DialogAdditionPlugin.TalkToPartnerBaseSuccess.Value),
-                new SeenThisPersonWithOthers()
-            })
-            {
-                Toolbox.Instance.allDialog.Add(customDialog.Preset);
-                
-                if(customDialog.Preset.defaultOption)
-                    Toolbox.Instance.defaultDialogOptions.Add(customDialog.Preset);
-
-                __instance.dialogRef.Add(customDialog.Preset, warnNotewriterMI);
-
-                DialogAdditionPlugin.customDialogInterceptors[customDialog.Name] = customDialog;
+                DialogAdditionPlugin.AddDialogInterceptor(customDialogKV.Value);
             }
         }
     }
@@ -123,7 +199,7 @@ namespace DialogAdditions
         [HarmonyPrefix]
         internal static bool Prefix(DialogController __instance, Citizen saysTo, Interactable saysToInteractable, NewNode where, Actor saidBy, bool success, NewRoom roomRef, SideJob jobRef)
         {
-            if (DialogAdditionPlugin.customDialogInterceptors.ContainsKey(__instance.preset.name))
+            if (DialogAdditionPlugin.customDialogInterceptors.ContainsKey(__instance.preset.name) && DialogAdditionPlugin.customDialogInterceptors[__instance.preset.name] != null)
             {
                 DialogAdditionPlugin.customDialogInterceptors[__instance.preset.name].RunDialogMethod(__instance, saysTo, saysToInteractable, where, saidBy, success, roomRef, jobRef);
                 return false;
@@ -140,7 +216,7 @@ namespace DialogAdditions
         [HarmonyPrefix]
         internal static bool Prefix(ref bool __result, DialogPreset preset, Citizen saysTo, SideJob jobRef)
         {
-            if (DialogAdditionPlugin.customDialogInterceptors.ContainsKey(preset.name))
+            if (DialogAdditionPlugin.customDialogInterceptors.ContainsKey(preset.name) && DialogAdditionPlugin.customDialogInterceptors[preset.name] != null)
             {
                 if(!saysTo)
                 {
@@ -164,9 +240,17 @@ namespace DialogAdditions
         [HarmonyPrefix]
         internal static void Prefix(DialogController __instance, EvidenceWitness.DialogOption dialog, Interactable saysTo, NewNode where, Actor saidBy, ref DialogController.ForceSuccess forceSuccess)
         {
-            if (forceSuccess == DialogController.ForceSuccess.none && DialogAdditionPlugin.customDialogInterceptors.ContainsKey(dialog.preset.name))
+            if (forceSuccess == DialogController.ForceSuccess.none && DialogAdditionPlugin.customDialogInterceptors.ContainsKey(dialog.preset.name) && DialogAdditionPlugin.customDialogInterceptors[dialog.preset.name] != null)
             {
-                Citizen saysToCit = ((dynamic)saysTo.isActor).Cast<Citizen>();
+                Citizen saysToCit = null;
+                try
+                {
+                    // No saysTo on the phone, for eg
+                    saysToCit = ((dynamic)saysTo.isActor).Cast<Citizen>();
+                }
+                catch
+                { }
+
                 forceSuccess = DialogAdditionPlugin.customDialogInterceptors[dialog.preset.name].ShouldDialogSucceedOverride(__instance, dialog, saysToCit, where, saidBy);
             }
         }

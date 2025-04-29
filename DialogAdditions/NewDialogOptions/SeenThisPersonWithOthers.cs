@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace DialogAdditions
+namespace DialogAdditions.NewDialogOptions
 {
     internal class SeenThisPersonWithOthers : CustomDialogPreset
     {
@@ -19,7 +19,7 @@ namespace DialogAdditions
             preset.name = Name;
             preset.msgID = "a8267eeb-1d40-442f-9edb-1176bfd51986";
             preset.defaultOption = true;
-            preset.tiedToKey = Evidence.DataKey.photo;
+            preset.tiedToKey = Evidence.DataKey.voice;
             preset.useSuccessTest = true;
             preset.baseChance = canFail ? chanceToSucceed : 1;
             preset.ranking = 6;
@@ -29,7 +29,7 @@ namespace DialogAdditions
             // If it's not a 100% success, influence it with traits.
             if (canFail)
             {
-                preset.modifySuccessChanceTraits = DialogAdditionPlugin.dialogPresets["DoYouKnowThisPerson"].modifySuccessChanceTraits;
+                preset.modifySuccessChanceTraits = DialogAdditionPlugin.dialogPresetRefs["DoYouKnowThisPerson"].modifySuccessChanceTraits;
             }
 
             preset.responses.Add(new AIActionPreset.AISpeechPreset()
@@ -53,11 +53,11 @@ namespace DialogAdditions
         {
             if (success)
             {
-                PhotoSelectButtonController_OnLeftClick.callType = PhotoSelectButtonController_OnLeftClick.CallType.SeenThisPersonWithOthers;
+                PhotoSelectButtonController_OnLeftClick.callType = "SeenThisPersonWithOthers";
                 SessionData.Instance.PauseGame(true);
                 instance.askTarget = null;
                 instance.askTargetKeys.Clear();
-                instance.askWindow = InterfaceController.Instance.SpawnWindow((Evidence)null, presetName: "SelectPhoto", worldInteraction: true, autoPosition: false, forcePosition: InterfaceControls.Instance.handbookWindowPosition, passDialogSuccess: success);
+                instance.askWindow = InterfaceController.Instance.SpawnWindow(null, presetName: "SelectPhoto", worldInteraction: true, autoPosition: false, forcePosition: InterfaceControls.Instance.handbookWindowPosition, passDialogSuccess: success);
             }
         }
 

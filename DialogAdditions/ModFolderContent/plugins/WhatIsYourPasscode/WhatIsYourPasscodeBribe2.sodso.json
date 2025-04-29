@@ -1,0 +1,13 @@
+{
+  "presetName": "WhatIsYourPasscodeBribe2",
+  "fileType": "DialogPreset",
+  "name": "WhatIsYourPasscodeBribe2",
+  "type": "DialogPreset",
+  "copyFrom": "REF:DialogPreset|WhatIsYourPasscodeTemplate",
+  "defaultOption": false,
+  "cost": 300,
+  "baseChance": 0.25,
+  "removeDialogOnSuccess": [
+    "REF:DialogPreset|WhatIsYourPasscodeBribe2"
+  ]
+}
