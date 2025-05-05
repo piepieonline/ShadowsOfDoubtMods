@@ -7,6 +7,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using UniverseLib;
 
+
 #if MONO
 using BepInEx.Unity.Mono;
 #elif IL2CPP
@@ -24,6 +25,9 @@ namespace CommunityCaseLoader
 #endif
     {
         public static ManualLogSource PluginLogger;
+
+        public static bool OverrideMurderDifficulty;
+        public static bool OverrideJobDifficulty;
 
         public static string DEBUG_LoadSpecificMurder;
 
@@ -45,6 +49,9 @@ namespace CommunityCaseLoader
         {
             PluginLogger = Log;
 #endif
+            OverrideMurderDifficulty = Config.Bind("Case Generation", "Override max murder difficulty (Ensures all cases can spawn on a fresh game)", false).Value;
+            OverrideJobDifficulty = Config.Bind("Case Generation", "Override max job difficulty (Ensures all jobs can spawn on a fresh game)", false).Value;
+
             DEBUG_ListAllLoadedObjects = Config.Bind("Debug", "List all loaded objects", false).Value;
             DEBUG_LoadSpecificMurder = Config.Bind("Debug", "Force specific MurderMO", "").Value;
             DEBUG_ShowMurderDebugMessages = Config.Bind("Debug", "Show murder debug messages", false).Value;
@@ -126,9 +133,10 @@ namespace CommunityCaseLoader
             foreach (var file in manifest["fileOrder"])
             {
                 string filePath = Path.Combine(folderPath, file.ToString().Replace("REF:", "") + ".sodso.json");
-                if (File.Exists(filePath))
+                // \\?\ is used to bypass MAX_PATH
+                if (File.Exists("\\\\?\\" + filePath))
                 {
-                    var fileContent = File.ReadAllText(filePath);
+                    var fileContent = File.ReadAllText("\\\\?\\" + filePath);
                     fileContents.Add(fileContent);
                 }
                 else
@@ -304,11 +312,30 @@ namespace CommunityCaseLoader
                                 return false;
                             }
                         }
-                        break;
+
+                        // caseEle.pinnedController.evidence.evID
+                        // Check for specific evidence that we wanted
                     }
                 }
             }
             return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(CityConstructor), nameof(CityConstructor.StartGame))]
+    public class CityConstructor_StartGame
+    {
+        public static void Prefix()
+        {
+            if(CommunityCaseLoaderPlugin.OverrideMurderDifficulty)
+            {
+                MurderController.Instance.maxDifficultyLevel = 10;
+            }
+
+            if (CommunityCaseLoaderPlugin.OverrideJobDifficulty)
+            {
+                GameplayController.Instance.SetJobDifficultyLevel(5);
+            }
         }
     }
 
@@ -320,12 +347,26 @@ namespace CommunityCaseLoader
 
     /*
     // Failing because of ref params
-    [HarmonyPatch(typeof(MurderController), "SpawnItemIsValid")]
+    [HarmonyPatch]
     public class MurderController_SpawnItemIsValid
     {
+        public static System.Reflection.MethodBase TargetMethod()
+        {
+            return AccessTools.Method(
+                typeof(MurderController),
+                nameof(MurderController.SpawnItemIsValid),
+                new System.Type[]
+                {
+                    typeof(JobPreset.StartingSpawnItem),
+                    typeof(Il2CppSystem.Collections.Generic.List<JobPreset.StartingSpawnItem>).MakeByRefType(),
+                    typeof(bool)
+                });
+        }
+
         public static void Postfix(bool __result, MurderPreset.MurderLeadItem spawn)
         {
-            if(CommunityCaseLoaderPlugin.DEBUG_ShowDebugMessages)
+            CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Ref type");
+            if (CommunityCaseLoaderPlugin.DEBUG_ShowMurderDebugMessages)
             {
                 if (!__result)
                 {
@@ -425,17 +466,27 @@ namespace CommunityCaseLoader
         }
     }
 
-    /*
     // Doesn't work due to ref parameters
-    [HarmonyPatch(typeof(SideJob), nameof(SideJob.SpawnItemIsValid))]
+    /*
+    [HarmonyPatch]
     public class SideJob_SpawnItemIsValid
     {
-        public static void Postfix(SideJob __instance, bool __result, JobPreset.StartingSpawnItem spawn)
+        public static System.Reflection.MethodBase TargetMethod()
         {
-            if (CommunityCaseLoaderPlugin.DEBUG_ShowSideJobDebugMessages)
-            {
-                CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"SideJob: {spawn.name} spawn valid: {__result}");
-            }
+            return AccessTools.Method(
+                typeof(SideJob),
+                nameof(SideJob.SpawnItemIsValid),
+                new System.Type[]
+                {
+                    typeof(JobPreset.StartingSpawnItem),
+                    typeof(Il2CppSystem.Collections.Generic.List<>).MakeByRefType(),
+                    typeof(bool)
+                });
+        }
+
+        public static void Postfix(SideJob __instance, bool __result, JobPreset.StartingSpawnItem spawn, ref Il2CppSystem.Collections.Generic.List<JobPreset.StartingSpawnItem> successsfullySpawned, bool useChance)
+        {
+            CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"postfix");
         }
     }
     */

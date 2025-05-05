@@ -1,6 +1,6 @@
 {
   "name": "CommunityCaseLoader",
-  "version_number": "0.2.2",
+  "version_number": "0.2.3",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/CommunityCaseLoader",
   "description": "Load custom murder cases from JSON files made by the community.",
   "dependencies": [

@@ -1,3 +1,7 @@
+# 0.2.3
+
+* Added options to ensure that the hardest cases and side jobs always spawn, preventing as much repetition in new games.
+
 # 0.2.2
 
 * Updated to work with the latest AssetBundleLoader

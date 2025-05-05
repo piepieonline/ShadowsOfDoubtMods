@@ -4,6 +4,10 @@ Load custom cases and side jobs from JSON files, which can be constructed either
 
 Technically, it can load any kind of scriptable object from JSON, but only cases and side jobs are supported right now.
 
+## Overriding max murder and job level
+
+By default, when starting a new game, only the easiest cases and jobs are able to spawn until some have been completed. These options (off by default) bypass this behaviour and ensure that the full range is always available.
+
 ## Using VMails as evidence for SideJobs
 
 VMails spawned by SideJobs using `spawnItems` can now be used as resolve evidence
