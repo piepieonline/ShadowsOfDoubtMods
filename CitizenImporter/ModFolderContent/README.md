@@ -6,7 +6,7 @@ Follow the steps in the Config Generation section to create a citizen list.
 # Config Generation
 
 * Visit the Google Sheets spreadsheet, follow the instructions on the first sheet
-	* https://docs.google.com/spreadsheets/d/11OvB572ezm2j-iO2rd89XHInrTNXey83eLdw2VJcujE/edit#gid=90891271
+	* https://docs.google.com/spreadsheets/d/11OvB572ezm2j-iO2rd89XHInrTNXey83eLdw2VJcujE/edit?gid=1379962932
 * Once you have modifed the sheet to your liking, download a CSV version from File > Download > Comma Seperated Values (.csv)
 * Copy the downloaded file to your installation directory, ".\BepInEx\plugins\CitizenImporter\citizens.csv"
 

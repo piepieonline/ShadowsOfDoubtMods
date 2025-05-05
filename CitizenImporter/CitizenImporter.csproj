@@ -28,13 +28,14 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
-		<BepInExPath>D:/Game Modding/r2modman/_Data/ShadowsofDoubt/profiles/LocalModding/BepInEx/</BepInExPath>
+		<BepInExPath>D:/Game Modding/r2modman/_Data/ShadowsofDoubt/profiles/CitizenImporter/BepInEx/</BepInExPath>
 	</PropertyGroup>
 	
 	<ItemGroup>
+		<PackageReference Include="UnityEngine.Modules" Version="2021.3.26" IncludeAssets="compile" />
 		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-		<PackageReference Include="UnityEngine.Modules" Version="2021.3.26" IncludeAssets="compile" />
+		<PackageReference Include="SOD.Common" Version="2.0.6" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='MONO'">

@@ -1,3 +1,17 @@
+# 2.0.1
+
+* Better error messages when there is an invalid row in the CSV 
+
+# 2.0.0
+
+BREAKING CHANGE: Requires the new format CSV file
+* Overhauled to fix issues where selections were not respected
+* Characters can have traits added, which controls glasses and facial hair, among other unsupported options
+
+# 0.1.4
+
+* Fixed for game version 1.0
+
 # 0.1.3
 
 * If a partner is specified, they will now always spawn

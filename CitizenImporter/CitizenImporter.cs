@@ -1,14 +1,21 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Collections.Generic;
+
 using UnityEngine;
+
 using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 using Cpp2IL.Core.Extensions;
 
-using static Descriptors;
-using System.Linq;
 using UniverseLib;
+
+using static Descriptors;
+using SOD.Common.Extensions;
+using System.Text.RegularExpressions;
+
+
 
 #if MONO
 using BepInEx.Unity.Mono;
@@ -18,6 +25,10 @@ using BepInEx.Unity.IL2CPP;
 
 /*
     * Not using prefix shortcircuits even when possible, to try and be more survivable across updates
+    * 
+    * TODO:
+        - Ages wrong
+        - Test glasses again
 */
 
 namespace CitizenImporter
@@ -29,7 +40,11 @@ namespace CitizenImporter
     public class CitizenImporterPlugin : BasePlugin
 #endif
     {
+        public static List<MatchCollection> testMatches = new List<MatchCollection>();
+
         public static ManualLogSource PluginLogger;
+
+        public static int failedToLoadCount = 0;
 
         // People from file loading
         class HumanOverride
@@ -60,9 +75,8 @@ namespace CitizenImporter
             public string hairType;
             public string eyeColour;
 
-            public string glasses;
-            public string beard;
-            public string moustache;
+            public string[] traits;
+            public string[] notTraits;
 
             public string partner;
 
@@ -124,33 +138,59 @@ namespace CitizenImporter
             loadedHumanOverrides[Human.Gender.nonBinary].Clear();
 
             HumanOverride.ResetIdCounter();
+            failedToLoadCount = 0;
 
             // Header
             for (int i = 1; i < citizensCSV.Length; i++)
             {
-                string[] vals = citizensCSV[i].Split(",");
-                var newHumanOverride = new HumanOverride()
+                var regexMatches = Regex.Matches(citizensCSV[i], """(?:^|,)(?=[^"]|(")?)"?((?(1)(?:[^"]|"")*|[^,"]*))"?(?=,|$)""");
+                testMatches.Add(regexMatches);
+
+                HumanOverride newHumanOverride;
+
+                int expectedColCount = 18;
+                if(regexMatches.Count != expectedColCount)
                 {
-                    firstName = vals.ElementAtOrDefault(0),
-                    lastName = vals.ElementAtOrDefault(1),
-                    casualName = vals.ElementAtOrDefault(2),
-                    dayOfBirth = vals.ElementAtOrDefault(3),
-                    monthOfBirth = vals.ElementAtOrDefault(4),
-                    age = vals.ElementAtOrDefault(5),
-                    gender = vals.ElementAtOrDefault(6),
-                    attractedTo = vals.ElementAtOrDefault(7),
-                    ethnicity1 = vals.ElementAtOrDefault(8),
-                    ethnicity2 = vals.ElementAtOrDefault(9),
-                    height = vals.ElementAtOrDefault(10),
-                    buildType = vals.ElementAtOrDefault(11),
-                    hairColour = vals.ElementAtOrDefault(12),
-                    hairType = vals.ElementAtOrDefault(13),
-                    eyeColour = vals.ElementAtOrDefault(14),
-                    glasses = vals.ElementAtOrDefault(15),
-                    beard = vals.ElementAtOrDefault(16),
-                    moustache = vals.ElementAtOrDefault(17),
-                    partner = vals.ElementAtOrDefault(18)
-                };
+                    PluginLogger.LogError($"Failed to read line {i + 1} from citizens.csv. Expected {expectedColCount} columns, found {regexMatches.Count}");
+                    failedToLoadCount++;
+                    continue;
+                }
+
+                try
+                {
+                    newHumanOverride = new HumanOverride()
+                    {
+                        firstName = regexMatches[0].Groups[2].Value,
+                        lastName = regexMatches[1].Groups[2].Value,
+                        casualName = regexMatches[2].Groups[2].Value,
+                        dayOfBirth = regexMatches[3].Groups[2].Value,
+                        monthOfBirth = regexMatches[4].Groups[2].Value,
+                        age = regexMatches[5].Groups[2].Value,
+                        gender = regexMatches[6].Groups[2].Value,
+                        attractedTo = regexMatches[7].Groups[2].Value,
+                        ethnicity1 = regexMatches[8].Groups[2].Value,
+                        ethnicity2 = regexMatches[9].Groups[2].Value,
+                        height = regexMatches[10].Groups[2].Value,
+                        buildType = regexMatches[11].Groups[2].Value,
+                        hairColour = regexMatches[12].Groups[2].Value,
+                        hairType = regexMatches[13].Groups[2].Value,
+                        eyeColour = regexMatches[14].Groups[2].Value,
+                        traits = regexMatches[15].Groups[2].Value.Split(",").Select(trait => trait.Trim().ToLowerInvariant()).Where(trait => trait != "").ToArray(),
+                        notTraits = regexMatches[16].Groups[2].Value.Split(",").Select(trait => trait.Trim().ToLowerInvariant()).Where(trait => trait != "").ToArray(),
+                        partner = regexMatches[17].Groups[2].Value
+                    };
+                }
+                catch (System.ArgumentOutOfRangeException ex)
+                {
+                    PluginLogger.LogError($"Failed to read line {i + 1} from citizens.csv");
+                    failedToLoadCount++;
+                    continue;
+                }
+
+
+                // Mutually exclusive traits
+                if (newHumanOverride.traits.Contains("affliction-farsighted") && !newHumanOverride.notTraits.Contains("affliction-shortsighted")) newHumanOverride.notTraits.AddItem("affliction-shortsighted");
+                if (newHumanOverride.traits.Contains("affliction-shortsighted") && !newHumanOverride.notTraits.Contains("affliction-farsighted")) newHumanOverride.notTraits.AddItem("affliction-farsighted");
 
                 // Don't use non-binary here, because it's just too rare - citizens likely won't generate 
                 Human.Gender genderToAssign = (Human.Gender)Random.Range(0, 2);
@@ -173,6 +213,21 @@ namespace CitizenImporter
                 return false;
             }
             return true;
+        }
+
+        public static void DebugPrintHuman(Human human)
+        {
+            PluginLogger.LogInfo($"");
+
+            PluginLogger.LogInfo($"Name: {human.name}");
+
+            foreach (var t in human.characterTraits)
+                PluginLogger.LogInfo($"\tTrait: {t.name}");
+
+            PluginLogger.LogInfo($"");
+
+            foreach(var e in human.descriptors.ethnicities)
+                PluginLogger.LogInfo($"\tEth: {e.group}");
         }
 
         [HarmonyPatch(typeof(CitizenCreator), "Populate")]
@@ -200,26 +255,13 @@ namespace CitizenImporter
                 if (citizensLoadedFromFile && __instance.GetActualType() == typeof(CitizenCreator))
                 {
                     PluginLogger.LogWarning($"Citizen overrides applied. {loadedHumanOverrides.Aggregate(0, (total, tuple) => total + tuple.Value.Count) + unusedPartnersCount} overrides were not used ({Creator_SetComplete.unusedPartnersCount} were unused partners)");
-                    /*
-                    foreach (var keyValue in overridenHumans)
+
+                    if(failedToLoadCount > 0)
                     {
-                        var h = keyValue.Value.Item1;
-                        PluginLogger.LogInfo($"Citizen override: {h.citizenName} ({h.gender}, attracted to {h.attractedTo.ToArray().Join()}). {(h.partner != null ? ("Partner: " + h.partner.citizenName) : "")}");
+                        PluginLogger.LogError($"{failedToLoadCount} citizens failed to load. Scroll up to see any errors.");
                     }
 
-                    PluginLogger.LogWarning($"Citizens not attracted to partners:");
-
-                    foreach(var cit in CityData.Instance.citizenDirectory)
-                    {
-                        if (cit.partner != null)
-                        {
-                            if (!cit.attractedTo.Contains(cit.partner.gender))
-                            {
-                                PluginLogger.LogInfo($"{cit.citizenName} ({cit.gender}, attracted to {cit.attractedTo.ToArray().Join()}) is not attracted to partner {cit.partner.citizenName} ({cit.partner.gender})");
-                            }
-                        }
-                    }
-                    */
+                    TestOverriddenHumans();
 
                     foreach (var cit in CityData.Instance.citizenDirectory)
                     {
@@ -243,13 +285,51 @@ namespace CitizenImporter
             PluginLogger.LogWarning($"Human {human?.humanID} (Override name: {humanOverride.firstName} {humanOverride.lastName}) failed to parse {field}");
         }
 
+        static void TestOverriddenHumans()
+        {
+            PluginLogger.LogInfo("Checking overrides for inconsistencies...");
+
+            foreach (var keyValue in overridenHumans)
+            {
+                var human = keyValue.Value.Item1;
+                var humanOverride = keyValue.Value.Item2;
+                
+                if(humanOverride.firstName != "" && human.firstName != humanOverride.firstName) PluginLogger.LogWarning($"Citizen override: {human.citizenName} doesn't match 'firstName'");
+                if(humanOverride.lastName != "" && human.surName != humanOverride.lastName) PluginLogger.LogWarning($"Citizen override: {human.citizenName} doesn't match 'surName'");
+                if(humanOverride.casualName != "" && human.casualName != humanOverride.casualName) PluginLogger.LogWarning($"Citizen override: {human.citizenName} doesn't match 'casualName'");
+
+                if(humanOverride.dayOfBirth != "" && human.birthday.Split("/")[0] != humanOverride.dayOfBirth) PluginLogger.LogWarning($"Citizen override: {human.citizenName} doesn't match 'dayOfBirth'");
+                if(humanOverride.monthOfBirth != "" && human.birthday.Split("/")[1] != humanOverride.monthOfBirth) PluginLogger.LogWarning($"Citizen override: {human.citizenName} doesn't match 'monthOfBirth'");
+                if(humanOverride.age != "" && human.GetAge().ToString() != humanOverride.age) PluginLogger.LogInfo($"Citizen override: {human.citizenName} doesn't match 'age'");
+
+                if (humanOverride.gender != "" && human.gender.ToString().ToLower() != humanOverride.gender) PluginLogger.LogWarning($"Citizen override: {human.citizenName} doesn't match 'gender'");
+                if (human.partner != null && humanOverride.attractedTo != "" && (!humanOverride.attractedTo.Contains(human.partner.gender.ToString().ToLower()))) PluginLogger.LogWarning($"Citizen override: {human.citizenName} doesn't match 'attractedTo'");
+                
+                if (humanOverride.height != "" && human.descriptors.heightCM.ToString() != humanOverride.height) PluginLogger.LogWarning($"Citizen override: {human.citizenName} doesn't match 'height'");
+                if (humanOverride.buildType != "" && human.descriptors.build.ToString() != humanOverride.buildType) PluginLogger.LogWarning($"Citizen override: {human.citizenName} doesn't match 'buildType'");
+                if (humanOverride.hairColour != "" && human.descriptors.hairColourCategory.ToString() != humanOverride.hairColour) PluginLogger.LogWarning($"Citizen override: {human.citizenName} doesn't match 'hairColour' ({human.descriptors.hairColourCategory.ToString()})");
+                if (humanOverride.hairType != "" && human.descriptors.hairType.ToString() != humanOverride.hairType) PluginLogger.LogWarning($"Citizen override: {human.citizenName} doesn't match 'hairType'");
+                if (humanOverride.eyeColour != "" && human.descriptors.eyeColour.ToString() != humanOverride.eyeColour) PluginLogger.LogWarning($"Citizen override: {human.citizenName} doesn't match 'eyeColour'");
+
+                foreach(var overrideTrait in humanOverride.traits)
+                {
+                    if (human.characterTraits.Where(trait => trait.trait.presetName.ToLowerInvariant() == overrideTrait).Count() != 1) PluginLogger.LogWarning($"Citizen override: {human.citizenName} missing required trait {overrideTrait}");
+                }
+
+                foreach (var overrideNotTrait in humanOverride.notTraits)
+                {
+                    if (human.characterTraits.Where(trait => trait.trait.presetName.ToLowerInvariant() == overrideNotTrait).Count() != 0) PluginLogger.LogWarning($"Citizen override: {human.citizenName} has banned trait {overrideNotTrait}");
+                }
+            }
+        }
+        
         // Partner is set after this, random dice roll.. How can we force them to spawn if requested?
         [HarmonyPatch(typeof(Human), "SetSexualityAndGender")]
         public class Human_SetSexualityAndGender
         {
             public static void Postfix(ref Human __instance)
             {
-                if (SessionData.Instance.isFloorEdit || CityConstructor.Instance.generateNew)
+                // if (SessionData.Instance.isFloorEdit || CityConstructor.Instance.generateNew)
                 {
                     if (loadedHumanOverrides.Count > 0)
                     {
@@ -270,13 +350,15 @@ namespace CitizenImporter
                                 }
                             }
 
-                            if(HumanOverride.createdHumans.ContainsKey(partnerId) && System.Enum.TryParse(HumanOverride.createdHumans[partnerId].gender, true, out Human.Gender partnerGender))
+                            // PluginLogger.LogWarning($"Citizen override: {testingHuman.firstName} {testingHuman.lastName} is ");
+                            if (HumanOverride.createdHumans.ContainsKey(partnerId) && System.Enum.TryParse(HumanOverride.createdHumans[partnerId].gender, true, out Human.Gender partnerGender))
                             {
-                                // Our partner has a fixed gender
+                                // Our partner has a fixed gender and already exists
                                 if (__instance.attractedTo.Contains(partnerGender))
                                 {
                                     __instance.attractedTo.Clear();
                                     __instance.attractedTo.Add(partnerGender);
+
                                     break;
                                 }
                             }
@@ -287,6 +369,7 @@ namespace CitizenImporter
                                 {
                                     __instance.attractedTo.Clear();
                                     __instance.attractedTo.Add(attractedTo);
+
                                     break;
                                 }
                             }
@@ -324,42 +407,82 @@ namespace CitizenImporter
         [HarmonyPatch(typeof(Human), "GenerateSuitableGenderAndSexualityForParnter")]
         public class Human_GenerateSuitableGenderAndSexualityForParnter
         {
-            public static void Postfix(Human __instance, Citizen newPartner)
+            public static bool Prefix(Human __instance, Citizen newPartner)
             {
                 SocialStatistics.Instance.seriousRelationshipsRatio = seriousRelationshipsRatioCache;
-                if (SessionData.Instance.isFloorEdit || CityConstructor.Instance.generateNew)
-                {
-                    if (overridenHumans.ContainsKey(newPartner.humanID) && int.TryParse(overridenHumans[newPartner.humanID].Item2.partner, out var partnerHumanId))
-                    {
-                        int partnerId = -1;
-                        Human.Gender foundAttractedTo = __instance.gender;
-                        foreach (var gender in new Human.Gender[] { Human.Gender.male, Human.Gender.female, Human.Gender.nonBinary })
-                        {
-                            partnerId = loadedHumanOverrides[gender].FindIndex(ho => ho.id == partnerHumanId);
-                            foundAttractedTo = gender;
-                            if (partnerId > -1) break;
-                        }
 
-                        if (partnerId >= 0)
+                if (overridenHumans.ContainsKey(newPartner.humanID) && int.TryParse(overridenHumans[newPartner.humanID].Item2.partner, out var partnerHumanId))
+                {
+                    if (SessionData.Instance.isFloorEdit || CityConstructor.Instance.generateNew)
+                    {
+                        __instance.humanID = Human.assignID;
+                        ++Human.assignID;
+                        __instance.seed = Toolbox.Instance.SeedRand(0, 999999999).ToString();
+                    }
+
+                    if (overridenHumans[newPartner.humanID].Item2.gender != overridenHumans[newPartner.humanID].Item2.attractedTo)
+                    {
+                        __instance.sexuality = 1;
+                        __instance.homosexuality = 0;
+                    }
+                    else
+                    {
+                        __instance.sexuality = 0;
+                        __instance.homosexuality = 1;
+                    }
+
+                    if(__instance.homosexuality > 0.5f)
+                    {
+                        __instance.gender = newPartner.gender;
+                        __instance.genderScale = newPartner.genderScale;
+                    }
+                    else
+                    {
+                        if (newPartner.gender == Human.Gender.male)
                         {
-                            var partnerOverride = loadedHumanOverrides[foundAttractedTo].RemoveAndReturn(partnerId);
-                            if (partnerOverride.gender == "" || (System.Enum.TryParse(partnerOverride.gender, true, out Human.Gender partnerGender) && newPartner.attractedTo.Contains(partnerGender)))
-                            {
-                                overridenHumans[__instance.humanID] = (__instance, partnerOverride);
-                                overridenHumans[__instance.humanID].Item2.gameId = __instance.humanID;
-                                PluginLogger.LogInfo($"Setting override: {overridenHumans[__instance.humanID].Item2.firstName} {overridenHumans[__instance.humanID].Item2.lastName} will replace {__instance.humanID} as a partner of {newPartner.humanID}");
-                            }
-                            else
-                            {
-                                PluginLogger.LogInfo($"Invalid partner for {partnerHumanId} (Gender)");// , needed {} found {})");
-                            }
+                            __instance.gender = Human.Gender.female;
+                            __instance.genderScale = 0;
                         }
                         else
                         {
-                            PluginLogger.LogInfo($"Invalid partner for {partnerHumanId}");
+                            __instance.gender = Human.Gender.male;
+                            __instance.genderScale = 1;
                         }
                     }
+                    
+                    switch(__instance.gender)
+                    {
+                        case Human.Gender.male:
+                            __instance.AddCharacterTrait(SocialStatistics.Instance.maleTrait);
+                            break;
+                        case Human.Gender.female:
+                            __instance.AddCharacterTrait(SocialStatistics.Instance.femaleTrait);
+                            break;
+                        case Human.Gender.nonBinary:
+                            __instance.AddCharacterTrait(SocialStatistics.Instance.nbTrait);
+                            break;
+                    }
+
+                    __instance.SetBirthGender();
+
+                    int partnerId = -1;
+                    Human.Gender foundAttractedTo = __instance.gender;
+                    foreach (var gender in new Human.Gender[] { Human.Gender.male, Human.Gender.female, Human.Gender.nonBinary })
+                    {
+                        partnerId = loadedHumanOverrides[gender].FindIndex(ho => ho.id == partnerHumanId);
+                        foundAttractedTo = gender;
+                        if (partnerId > -1) break;
+                    }
+
+                    var partnerOverride = loadedHumanOverrides[foundAttractedTo].RemoveAndReturn(partnerId);
+                    overridenHumans[__instance.humanID] = (__instance, partnerOverride);
+
+                    PluginLogger.LogInfo($"Setting override: {overridenHumans[__instance.humanID].Item2.firstName} {overridenHumans[__instance.humanID].Item2.lastName} ({overridenHumans[__instance.humanID].Item2.id}) will replace {__instance.humanID} as a partner of {newPartner.humanID}");
+
+                    return false;
                 }
+
+                return true;
             }
         }
 
@@ -371,47 +494,89 @@ namespace CitizenImporter
                 if (overridenHumans.ContainsKey(__instance.humanID))
                 {
                     var overrideHuman = overridenHumans[__instance.humanID].Item2;
-                    if (
-                        int.TryParse(overrideHuman.dayOfBirth, out int dayOfBirth) && dayOfBirth > 0 && dayOfBirth <= 31 &&
-                        int.TryParse(overrideHuman.monthOfBirth, out int monthOfBirth) && monthOfBirth > 0 && monthOfBirth <= 12 &&
-                        int.TryParse(overrideHuman.age, out int age)
-                    )
+
+                    int dayOfBirth = int.TryParse(overrideHuman.dayOfBirth, out dayOfBirth) && dayOfBirth > 0 && dayOfBirth <= 31 ? dayOfBirth : int.Parse(__instance.birthday.Split("/")[0]);
+                    int monthOfBirth = int.TryParse(overrideHuman.monthOfBirth, out monthOfBirth) && monthOfBirth > 0 && monthOfBirth <= 12 ? monthOfBirth : int.Parse(__instance.birthday.Split("/")[1]);
+                    int yearOfBirth = int.Parse(__instance.birthday.Split("/")[2]);
+
+                    __instance.birthday = dayOfBirth.ToString() + "/" + monthOfBirth.ToString() + "/" + yearOfBirth.ToString();
+
+                    if (int.TryParse(overrideHuman.age, out int age))
                     {
-                        int yearOfBirth = (SessionData.Instance.publicYear - age) + 1;
-                        if (monthOfBirth > SessionData.Instance.monthInt)
+                        if(__instance.GetAge() != age)
                         {
-                            yearOfBirth--;
+                            yearOfBirth -= (age - __instance.GetAge());
+                            __instance.birthday = dayOfBirth.ToString() + "/" + monthOfBirth.ToString() + "/" + yearOfBirth.ToString();
                         }
-                        else if (monthOfBirth == SessionData.Instance.monthInt)
+                    }
+                    
+                }
+            }
+        }
+
+        // Can't patch the constructor, so patch the child methods instead
+        // Patches to override social stats and reset them after generating
+        public class Descriptors_ConstructorCalls
+        {
+            static Vector2 cachedStats_height;
+            static float cachedStates_heightAvg;
+            static int cachedStates_menWithBeards;
+            static int cachedStates_menWithMoustaches;
+            static int cachedStates_glassesRatio;
+
+            [HarmonyPatch(typeof(Descriptors), "GenerateEthnicity")]
+            public class Descriptors_ConstructorFirst_GenerateEthnicity
+            {
+                static void Prefix(Descriptors __instance)
+                {
+                    // For those values we can't directly change, change the social stats after caching
+                    cachedStats_height = SocialStatistics.Instance.heightMinMax;
+                    cachedStates_heightAvg = SocialStatistics.Instance.averageHeight;
+                    /*
+                    // These don't actually work - the game actually uses traits for this, not these statistics 
+                    cachedStates_menWithBeards = SocialStatistics.Instance.menWithBeards;
+                    cachedStates_menWithMoustaches = SocialStatistics.Instance.menWithMoustaches;
+                    cachedStates_glassesRatio = SocialStatistics.Instance.glassesRatio;
+                    */
+
+                    if (overridenHumans.ContainsKey(__instance.citizen.humanID))
+                    {
+                        var overrideHuman = overridenHumans[__instance.citizen.humanID].Item2;
+
+                        // Setup the height override if set
+                        if (overrideHuman.height != "" && float.TryParse(overrideHuman.height, out var height))
                         {
-                            if (dayOfBirth > SessionData.Instance.dayInt)
-                            {
-                                yearOfBirth--;
-                            }
+                            SocialStatistics.Instance.heightMinMax = new Vector2(height, height);
+                            SocialStatistics.Instance.averageHeight = height;
                         }
 
-                        __instance.birthday = monthOfBirth.ToString() + "/" + dayOfBirth.ToString() + "/" + yearOfBirth.ToString();
+                        /*
+                        if (overrideHuman.beard == "true") SocialStatistics.Instance.menWithBeards = 100; else if (overrideHuman.beard == "false") SocialStatistics.Instance.menWithBeards = 0;
+                        if (overrideHuman.moustache == "true") SocialStatistics.Instance.menWithMoustaches = 100; else if (overrideHuman.moustache == "false") SocialStatistics.Instance.menWithMoustaches = 0;
+                        if (overrideHuman.glasses == "true") SocialStatistics.Instance.glassesRatio = 100; else if (overrideHuman.glasses == "false") SocialStatistics.Instance.glassesRatio = 0;
+                        */
                     }
                 }
             }
-        }
 
-        // We can't easily set height, so intecept the random roll. Capture and replace the seed when set by GenerateBuild (the previous call in the function)
-        [HarmonyPatch(typeof(Toolbox), "RandomRangeWeightedSeedContained")]
-        public class Toolbox_RandomRangeWeightedSeedContained
-        {
-            public static void Postfix(ref string inputSeed, ref float __result)
+            [HarmonyPatch(typeof(Descriptors), "GenerateFacialFeatures")]
+            public class Descriptors_ConstructorLast_GenerateFacialFeatures
             {
-                if (inputSeed.StartsWith("piecitizenoverride"))
+                static void Postfix()
                 {
-                    var vals = inputSeed.Split('_');
-                    inputSeed = vals[2];
-                    __result = float.Parse(vals[1]);
+                    SocialStatistics.Instance.heightMinMax = cachedStats_height;
+                    SocialStatistics.Instance.averageHeight = cachedStates_heightAvg;
+                    /*
+                    SocialStatistics.Instance.menWithBeards = cachedStates_menWithBeards;
+                    SocialStatistics.Instance.menWithMoustaches = cachedStates_menWithMoustaches;
+                    SocialStatistics.Instance.glassesRatio = cachedStates_menWithMoustaches;
+                    */
                 }
             }
         }
-
+        
         // If ethnicity is set only once, set it twice (otherwise the game might roll a random secondary)
+        // The game will still add a third ethnicity, so we remove it before generating a skin colour
         [HarmonyPatch(typeof(Descriptors), "GenerateEthnicity")]
         public class Descriptors_GenerateEthnicity
         {
@@ -490,6 +655,21 @@ namespace CitizenImporter
         [HarmonyPatch(typeof(Descriptors), "GenerateNameAndSkinColour")]
         public class Descriptors_GenerateNameAndSkinColour
         {
+            public static void Prefix(Descriptors __instance)
+            {
+                if (overridenHumans.ContainsKey(__instance.citizen.humanID))
+                {
+                    var overrideHuman = overridenHumans[__instance.citizen.humanID].Item2;
+
+                    // If they have an ethnicity, an extra one would have been added by the end of GenerateEthnicity
+                    // Remove it before we generate colour
+                    if (overrideHuman.ethnicity1 != null && overrideHuman.ethnicity1 != "")
+                    {
+                        __instance.ethnicities.RemoveAt(__instance.ethnicities.Count - 1);
+                    }
+                }
+            }
+
             public static void Postfix(Descriptors __instance)
             {
                 if (overridenHumans.ContainsKey(__instance.citizen.humanID))
@@ -584,80 +764,31 @@ namespace CitizenImporter
                             LogParseFailure(__instance.citizen, overrideHuman, "buildType");
                         }
                     }
-
-                    // Setup the height override if set
-                    if (overrideHuman.height != "" && float.TryParse(overrideHuman.height, out var height))
-                    {
-                        __instance.citizen.seed = $"piecitizenoverride_{height}_{__instance.citizen.seed}";
-                    }
                 }
             }
         }
 
-        [HarmonyPatch(typeof(Descriptors), "GenerateFacialFeatures")]
-        public class Descriptors_GenerateFacialFeatures
+        [HarmonyPatch(typeof(Human), nameof(Human.GetTraitChance))]
+        public class Human_GetTraitChance
         {
-            enum OverrideFeature
+            public static bool Prefix(Human __instance, CharacterTrait trait, ref float __result)
             {
-                None,
-                On,
-                Off
-            }
-
-            public static void Postfix(Descriptors __instance)
-            {
-                // TODO: Disabled, not working
-                return;
-
-                if (overridenHumans.ContainsKey(__instance.citizen.humanID))
+                if (overridenHumans.TryGetValue(__instance.humanID, out var overrideHumanTuple))
                 {
-                    var overrideHuman = overridenHumans[__instance.citizen.humanID].Item2;
-
-                    var glasses = OverrideFeature.None;
-                    var beard = OverrideFeature.None;
-                    var moustache = OverrideFeature.None;
-
-                    if (overrideHuman.glasses != null && overrideHuman.glasses != "")
+                    if(overrideHumanTuple.Item2.traits.Contains(trait.presetName.ToLowerInvariant()))
                     {
-                        if (overrideHuman.glasses == "true") glasses = OverrideFeature.On;
-                        else if (overrideHuman.glasses == "false") glasses = OverrideFeature.Off;
+                        __result = 1;
+                        return false;
                     }
 
-                    if (overrideHuman.beard != null && overrideHuman.beard != "")
+                    if (overrideHumanTuple.Item2.notTraits.Contains(trait.presetName.ToLowerInvariant()))
                     {
-                        if (overrideHuman.beard == "true") beard = OverrideFeature.On;
-                        else if (overrideHuman.beard == "false") beard = OverrideFeature.Off;
+                        __result = 0;
+                        return false;
                     }
-
-                    if (overrideHuman.moustache != null && overrideHuman.moustache != "")
-                    {
-                        if (overrideHuman.moustache == "true") moustache = OverrideFeature.On;
-                        else if (overrideHuman.moustache == "false") moustache = OverrideFeature.Off;
-                    }
-
-                    for (int i = __instance.facialFeatures.Count - 1; i >= 0; i--)
-                    {
-                        if (__instance.facialFeatures[i].feature == FacialFeature.glasses)
-                        {
-                            if (glasses == OverrideFeature.On) glasses = OverrideFeature.None;
-                            else if (glasses == OverrideFeature.Off) __instance.facialFeatures.RemoveAt(i);
-                        }
-                        else if (__instance.facialFeatures[i].feature == FacialFeature.beard)
-                        {
-                            if (beard == OverrideFeature.On) beard = OverrideFeature.None;
-                            else if (beard == OverrideFeature.Off) __instance.facialFeatures.RemoveAt(i);
-                        }
-                        else if (__instance.facialFeatures[i].feature == FacialFeature.moustache)
-                        {
-                            if (moustache == OverrideFeature.On) moustache = OverrideFeature.None;
-                            else if (moustache == OverrideFeature.Off) __instance.facialFeatures.RemoveAt(i);
-                        }
-                    }
-
-                    if (glasses == OverrideFeature.On) __instance.facialFeatures.Add(new FacialFeaturesSetting() { feature = FacialFeature.glasses, id = 0 });
-                    if (beard == OverrideFeature.On) __instance.facialFeatures.Add(new FacialFeaturesSetting() { feature = FacialFeature.beard, id = 0 });
-                    if (moustache == OverrideFeature.On) __instance.facialFeatures.Add(new FacialFeaturesSetting() { feature = FacialFeature.moustache, id = 0 });
                 }
+
+                return true;
             }
         }
     }
