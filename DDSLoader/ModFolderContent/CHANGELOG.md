@@ -1,3 +1,7 @@
+# 1.0.6
+
+* Fixed patches, removed dlls from this library (Now requires the bundle loader instead)
+
 # 1.0.5
 
 * Better warning messages for empty files

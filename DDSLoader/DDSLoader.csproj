@@ -30,8 +30,7 @@
 		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
 		<PackageReference Include="UnityEngine.Modules" Version="2021.3.26" IncludeAssets="compile" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Tavis.JsonPatch" Version="0.5.2-beta" />
+		<ProjectReference Include="../AssetBundleLoader/AssetBundleLoader.csproj" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='MONO'">

@@ -1,9 +1,8 @@
-﻿using HarmonyLib;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using HarmonyLib;
 
 namespace DDSLoader
 {
@@ -200,7 +199,7 @@ namespace DDSLoader
                     // var StringsLoadIntoDictionaryMI = typeof(Strings).GetMethod("LoadIntoDictionary", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
                     var StringsLoadIntoDictionaryMI = Il2CppInterop.Runtime.Il2CppType.From(typeof(Strings)).GetMethod("LoadIntoDictionary", Il2CppSystem.Reflection.BindingFlags.NonPublic | Il2CppSystem.Reflection.BindingFlags.Static);
 
-                    if(StringsLoadIntoDictionaryMI == null)
+                    if (StringsLoadIntoDictionaryMI == null)
                     {
                         DDSLoaderPlugin.PluginLogger.LogError("Strings.LoadIntoDictionary not found!");
                     }
@@ -238,12 +237,10 @@ namespace DDSLoader
                 var patchFileInfo = new FileInfo(patchPath);
                 var patchDirInfo = new DirectoryInfo(patchFileInfo.DirectoryName);
 
-                var existingDDSContent = JToken.Parse(File.ReadAllText(Path.Combine(Application.streamingAssetsPath, "DDS", patchDirInfo.Name, patchFileInfo.Name.Split('_')[0])));
-                var patchDDSContent = Tavis.PatchDocument.Parse(File.ReadAllText(patchPath));
-
-                patchDDSContent.ApplyTo(existingDDSContent);
-
-                return existingDDSContent.ToString();
+                return JSONPatch.ApplyPatch(
+                    File.ReadAllText(Path.Combine(Application.streamingAssetsPath, "DDS", patchDirInfo.Name, patchFileInfo.Name.Split('_')[0])),
+                    File.ReadAllText(patchPath)
+                ).ToString();
             }
 
             static void LoadNewspaperArticle(DDSSaveClasses.DDSTreeSave tree, string messagesPath)
