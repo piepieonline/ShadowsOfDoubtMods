@@ -302,6 +302,7 @@ namespace AssetBundleLoader
             public enum e_JToken_Type { None, Object, Array, Constructor, Property, Comment, Integer, Float, String, Boolean, Null, Undefined, Date, Raw, Bytes, Guid, Uri, TimeSpan };
 
             Type t_JObject;
+            ConstructorInfo m_JObject_Ctr;
             MethodInfo m_JObject_Parse;
             MethodInfo m_JObject_FromObject;
             PropertyInfo m_JObject_Type;
@@ -320,6 +321,7 @@ namespace AssetBundleLoader
                 m_Type_Getter = new Dictionary<string, MethodInfo>();
 
                 t_JObject = newtonsoftJson.GetType("Newtonsoft.Json.Linq.JObject");
+                m_JObject_Ctr = t_JObject.GetConstructor([]);
                 m_JObject_Parse = t_JObject.GetMethod("Parse", [typeof(string)]);
                 m_JObject_FromObject = t_JObject.GetMethod("FromObject", [typeof(object)]);
                 m_JObject_Type = t_JObject.GetProperty("Type");
@@ -336,6 +338,11 @@ namespace AssetBundleLoader
                         _instance = new NewtonsoftExtensions();
                     return _instance;
                 }
+            }
+
+            public dynamic JToken_Ctr()
+            {
+                return _instance.m_JObject_Ctr.Invoke(null);
             }
 
             public dynamic JToken_Parse(string json)

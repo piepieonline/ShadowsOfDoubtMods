@@ -1,10 +1,6 @@
-﻿using AssetsTools.NET;
-using AssetsTools.NET.Extra;
+﻿using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Logging;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Linq;
 using HarmonyLib;
 
 #if MONO

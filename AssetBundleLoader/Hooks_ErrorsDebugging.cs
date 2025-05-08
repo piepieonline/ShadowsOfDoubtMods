@@ -84,7 +84,6 @@ namespace AssetBundleLoader
             {
                 if (print.ToTypedString().Contains("Resources load error"))
                 {
-                    BundleLoader.PluginLogger.LogError($"ToString '{print.ToTypedString()}'");
                     ContentThatFailedToLoad.Add(
                         new Regex("name or ID (.+?),").Match(print.ToTypedString()).Groups[1].Value
                     );

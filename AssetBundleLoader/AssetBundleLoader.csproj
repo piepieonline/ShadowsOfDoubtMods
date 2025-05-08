@@ -31,7 +31,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AssetsTools.NET" Version="3.0.0-preview3" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
 	</ItemGroup>
 

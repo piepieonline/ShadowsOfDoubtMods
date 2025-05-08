@@ -1,3 +1,7 @@
+# 2.0.4
+
+* Updated to support fixes for DDSLoader patching
+
 # 2.0.3
 
 * Added an in-game error popup when missing content is detected
