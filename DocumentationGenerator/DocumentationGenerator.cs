@@ -22,11 +22,13 @@ namespace DocumentationGenerator
         public static ManualLogSource Logger;
         public static bool IsFullExportEnabled = false;
 
-        private static string DDS_GAME_PATH = @"E:\SteamLibrary\steamapps\common\Shadows of Doubt base\Shadows of Doubt_Data\StreamingAssets\DDS\";
-        private static string MONO_ASSEMBLY_PATH = @"E:\SteamLibrary\steamapps\common\Shadows of Doubt mono\Shadows of Doubt_Data\Managed\Assembly-CSharp.dll";
+        private static string DDS_GAME_PATH = @"E:\Program Files (x86)\Steam\steamapps\common\Shadows of Doubt\Shadows of Doubt_Data\StreamingAssets\DDS\";
+        private static string MONO_ASSEMBLY_PATH = @"F:\SteamLibrary\steamapps\common\shadows of doubt mono\Shadows of Doubt_Data\Managed\Assembly-CSharp.dll";
+        private static string DOC_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\Documentation\";
+        private static string MEDIAWIKI_DOC_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\Documentation\MediaWikiExports\";
         private static string SO_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\Documentation\ExportedSOs\";
         private static string TEXTASSET_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\Documentation\ExportedTextAssets\";
-        private static string DOC_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\PieMurderBuilder\scripts\ref\";
+        private static string MURDER_BUILDER_DOC_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\PieMurderBuilder\scripts\ref\";
         private static string DDS_EDITOR_DOC_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\SOD_DDS_Editor_Pie\scripts\ref\"; 
 
         public override void Load()
@@ -118,6 +120,9 @@ namespace DocumentationGenerator
                         codegenIDMap[id].Add(soTypeName + "|" + soName);
                     }
                 }
+
+                // Export trait list to the wiki table format
+                Generator_Traits.GenerateTraitsWiki(MEDIAWIKI_DOC_EXPORT_PATH, codegenSOMap["ScriptableObject"]["CharacterTrait"]);
 
                 /*
                 foreach(var rq in GameplayControls.Instance.murderResolveQuestions)
@@ -212,66 +217,11 @@ namespace DocumentationGenerator
                 }
 
                 // Map DDS content (So we tree each ID is in)
-                var ddsMap = new Dictionary<string, dynamic>();
-                ddsMap["ReverseIdMap"] = new Dictionary<string, List<string>>();
-                ddsMap["IdNameMap"] = new Dictionary<string, string>();
-                var reverseIdMap = ddsMap["ReverseIdMap"];
-                var idNameMap = ddsMap["IdNameMap"];
-                foreach (var directoryName in new string[] { "Trees", "Messages", "Blocks" })
-                {
-                    string folderPath = System.IO.Path.Combine(DDS_GAME_PATH, directoryName);
-                    ddsMap[directoryName] = new List<string>();
-
-                    foreach(var filePath in System.IO.Directory.EnumerateFiles(folderPath))
-                    {
-                        var id = filePath.Substring(filePath.LastIndexOf(System.IO.Path.DirectorySeparatorChar) + 1).Split(".")[0];
-                        ddsMap[directoryName].Add(id);
-
-                        var json = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(System.IO.File.ReadAllText(filePath));
-
-                        if (json["name"] != null)
-                        {
-                            idNameMap[id] = json.Value<string>("name");
-                        }
-
-                        switch(directoryName)
-                        {
-                            case "Trees":
-                                foreach(var message in json["messages"])
-                                {
-                                    if (message["msgID"] == null) continue;
-                                    string msgId = message.Value<string>("msgID");
-                                    if (msgId == "") continue;
-                                    if (!reverseIdMap.ContainsKey(msgId)) reverseIdMap[msgId] = new List<string>();
-                                    reverseIdMap[msgId].Add(id);
-                                }
-                                break;
-                            case "Messages":
-                                foreach (var message in json["blocks"])
-                                {
-                                    if (message["blockID"] == null) continue;
-                                    string blockID = message.Value<string>("blockID");
-                                    if (blockID == "") continue;
-                                    if (!reverseIdMap.ContainsKey(blockID)) reverseIdMap[blockID] = new List<string>();
-                                    reverseIdMap[blockID].Add(id);
-                                }
-                                break;
-                            case "Blocks":
-                                foreach (var message in json["replacements"])
-                                {
-                                    if (message["replaceWithID"] == null) continue;
-                                    string replacementID = message.Value<string>("replaceWithID");
-                                    if (replacementID == "") continue;
-                                    if (!reverseIdMap.ContainsKey(replacementID)) reverseIdMap[replacementID] = new List<string>();
-                                    reverseIdMap[replacementID].Add(id);
-                                }
-                                break;
-                        }
-                    }
-                }
+                var ddsMap = Generator_DDS.GenerateLookup(DDS_GAME_PATH);
+                Generator_DDS.GenerateScopes(DOC_EXPORT_PATH, MEDIAWIKI_DOC_EXPORT_PATH);
 
                 // Export all text assets if we are doing a full export
-                if(IsFullExportEnabled)
+                if (IsFullExportEnabled)
                 {
                     foreach(var textAsset in RuntimeHelper.FindObjectsOfTypeAll<TextAsset>())
                     {
@@ -282,13 +232,13 @@ namespace DocumentationGenerator
                 }
 
                 // Export the DDS map to both case editor and the DDS editor
-                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "ddsMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(ddsMap).ToString());
+                System.IO.File.WriteAllText(System.IO.Path.Join(MURDER_BUILDER_DOC_EXPORT_PATH, "ddsMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(ddsMap).ToString());
                 System.IO.File.WriteAllText(System.IO.Path.Join(DDS_EDITOR_DOC_EXPORT_PATH, "ddsMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(ddsMap).ToString());
 
-                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "soMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenSOMap).ToString());
-                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "soIdMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenIDMap).ToString());
-                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "templates.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenTemplates).ToString());
-                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "soChildTypes.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenSOTypeMapping).ToString());
+                System.IO.File.WriteAllText(System.IO.Path.Join(MURDER_BUILDER_DOC_EXPORT_PATH, "soMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenSOMap).ToString());
+                System.IO.File.WriteAllText(System.IO.Path.Join(MURDER_BUILDER_DOC_EXPORT_PATH, "soIdMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenIDMap).ToString());
+                System.IO.File.WriteAllText(System.IO.Path.Join(MURDER_BUILDER_DOC_EXPORT_PATH, "templates.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenTemplates).ToString());
+                System.IO.File.WriteAllText(System.IO.Path.Join(MURDER_BUILDER_DOC_EXPORT_PATH, "soChildTypes.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenSOTypeMapping).ToString());
 
                 Logger.LogWarning($"Documentation Regenerated. Turn off documentation generation and restart the game!");
             }
