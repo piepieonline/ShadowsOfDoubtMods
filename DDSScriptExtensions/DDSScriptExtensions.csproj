@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup Condition="'$(Configuration)'=='MONO'">
+		<TargetFramework>net472</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<Platforms>x64</Platforms>
+		<AssemblyName>DDSScriptExtensions</AssemblyName>
+		<Description>Lua driven script extensions for the DDS system to enable dynamic scripted text</Description>
+		<Version>1.0.0</Version>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>latest</LangVersion>
+		<RestoreAdditionalProjectSources>
+			https://api.nuget.org/v3/index.json;
+			https://nuget.bepinex.dev/v3/index.json
+		</RestoreAdditionalProjectSources>
+		<RootNamespace>DDSScriptExtensions</RootNamespace>
+		<Configurations>Mono;IL2CPP</Configurations>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='MONO'">
+		<BepInExPath>E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/BepInEx/</BepInExPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
+		<BepInExPath>D:/Game Modding/r2modman/_Data/ShadowsofDoubt/profiles/LocalModding/BepInEx/</BepInExPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+		<PackageReference Include="UnityEngine.Modules" Version="2021.3.26" IncludeAssets="compile" />
+		<PackageReference Include="MoonSharp" Version="2.0.0" />
+		<PackageReference Include="System.CodeDom" Version="9.0.4" />
+		<ProjectReference Include="../AssetBundleLoader/AssetBundleLoader.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='MONO'">
+		<PackageReference Include="BepInEx.Unity.Mono" Version="6.0.0-be.*" IncludeAssets="compile" />
+		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/Assembly-CSharp.dll" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">
+		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+		<Reference Include="$(BepInExPath)interop/Il2Cppmscorlib.dll" />
+		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="mkdir &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" Condition="!Exists('$(BepInExPath)plugins/$(ProjectName)')" />
+		<Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
+		<Exec Command="xcopy /S /Y /d &quot;$(ProjectDir)ModFolderContent\*&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
+	</Target>
+</Project>

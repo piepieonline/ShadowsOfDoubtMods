@@ -1,0 +1,26 @@
+{
+  "citizen": {
+    "selected_random": {
+      "seed": "tonumber(inputObject.seed)",
+      "script": "return 'Random number is: ' .. math.random(0, 10)"
+    },
+    "owner": {
+      "script": "return 'Current location owner is: ' .. inputObject.currentGameLocation.thisAsAddress.owners[0].citizenName"
+    }
+  },
+  "random": {
+    "alpha6": {
+      "script": "return string.format('#%06X', math.random(0, 0xFFFFFF))"
+    }
+  },
+  "city": {
+    "player_name": {
+      "script": "return Player.citizenName"
+    }
+  },
+  "time": {
+    "twohourslater": {
+      "script": "return SessionData.TimeString(tonumber(CSToString(inputObject)) + 2, true)"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "DDS_Script_Extensions",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/DDSScriptExtensions",
+  "description": "Lua driven script extensions for the DDS system to enable dynamic scripted text",
+  "dependencies": [
+    "BepInEx-BepInExPack_IL2CPP-6.0.733",
+    "Piepieonline-Asset_Bundle_Loader-2.0.3"
+  ]
+}
