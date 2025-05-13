@@ -1,6 +1,7 @@
 ﻿using AssetBundleLoader;
 using HarmonyLib;
 using Il2CppSystem.IO;
+using Microsoft.VisualBasic;
 using MoonSharp.Interpreter;
 using System.Collections.Generic;
 using System.IO;
@@ -28,11 +29,34 @@ namespace DDSScriptExtensions
         {
             public static void Postfix()
             {
-                // TODO: Do we need to expose all globals here? Might be worth doing
-                DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["CityData"] = UserData.Create(CityData.Instance);
-                DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["Player"] = UserData.Create(Player.Instance);
-                DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["SessionData"] = UserData.Create(SessionData.Instance);
-                DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["Toolbox"] = UserData.Create(Toolbox.Instance);
+                // Map all types that have a static "Instance" member so we can access them in lua
+                // TODO: Some are still null at this point - is it worth moving this later in the load chain?
+                foreach(var t in typeof(Toolbox).Assembly.GetTypes())
+                {
+                    if(t.Namespace == null && !t.ContainsGenericParameters)
+                    {
+                        var instanceMemberInfo = t.GetMember("Instance", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).FirstOrDefault();
+                        if (instanceMemberInfo != null)
+                        {
+                            try
+                            {
+                                var instanceMember = instanceMemberInfo.GetActualType() == typeof(System.Reflection.FieldInfo) ?
+                                    ((System.Reflection.FieldInfo)instanceMemberInfo).GetValue(null) :
+                                    ((System.Reflection.PropertyInfo)instanceMemberInfo).GetValue(null);
+                                // DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"Mapping Instance member: {t.Name} - {(instanceMember != null ? ToTypedStringExtension.ToTypedString(instanceMember) : "null")}");
+
+                                if ( instanceMember != null )
+                                    DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals[t.Name] = UserData.Create(instanceMember);
+                            }
+                            catch (System.Exception ex)
+                            {
+                                DDSScriptExtensionsPlugin.PluginLogger.LogError($"Failed Mapping Instance member: {t.Name}");
+                                DDSScriptExtensionsPlugin.PluginLogger.LogError(ex);
+                            }
+                        }
+                    }
+                }
+
                 DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["CSToString"] = (System.Func<string, object>)ToTypedStringExtension.ToTypedString;
             }
         }
