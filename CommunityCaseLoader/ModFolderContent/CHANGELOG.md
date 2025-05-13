@@ -1,3 +1,9 @@
+# 0.2.4
+
+* Enabled debug logging of VMails sent as part of a Murder case
+* Patched a base-game issue with how vmail participants are assigned
+* Fixed a number of potential null reference errors in the debug helpers
+
 # 0.2.3
 
 * Added options to ensure that the hardest cases and side jobs always spawn, preventing as much repetition in new games.

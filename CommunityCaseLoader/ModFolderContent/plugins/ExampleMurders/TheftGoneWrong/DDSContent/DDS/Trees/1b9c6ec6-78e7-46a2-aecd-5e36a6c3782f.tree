@@ -1,120 +1,120 @@
 {
-    "document": {
-        "background": "CrumpledPaper",
-        "colour": {
-            "a": 1.0,
-            "b": 1.0,
-            "g": 1.0,
-            "r": 1.0
-        },
-        "fill": 1,
-        "size": {
-            "x": 342.0,
-            "y": 482.0
-        }
+  "document": {
+    "background": "CrumpledPaper",
+    "colour": {
+      "a": 1.0,
+      "b": 1.0,
+      "g": 1.0,
+      "r": 1.0
     },
-    "id": "1b9c6ec6-78e7-46a2-aecd-5e36a6c3782f",
-    "ignoreGlobalRepeat": false,
-    "messages": [
-        {
-            "alignH": 1,
-            "alignV": 1,
-            "charSpace": 0.0,
-            "col": {
-                "a": 1.0,
-                "b": 0.0274509806185961,
-                "g": 0.0,
-                "r": 0.592156887054443
-            },
-            "elementName": "",
-            "font": "Halogen SDF",
-            "fontSize": 24.0,
-            "fontStyle": 0,
-            "instanceID": "55688736-25ba-4291-93a7-e83d4eed215b",
-            "isHandwriting": true,
-            "lineSpace": 16.0,
-            "links": [
-            ],
-            "msgID": "59fd3ae9-d646-4ee2-a8ea-b2bb2961ba1a",
-            "order": 1,
-            "paraSpace": 0.0,
-            "pos": {
-                "x": -0.5,
-                "y": 9.0
-            },
-            "rot": 0.0,
-            "saidBy": 0,
-            "saidTo": 1,
-            "size": {
-                "x": 311.0,
-                "y": 418.0
-            },
-            "usePages": false,
-            "wordSpace": 0.0
-        }
+    "fill": 1,
+    "size": {
+      "x": 342.0,
+      "y": 482.0
+    }
+  },
+  "id": "1b9c6ec6-78e7-46a2-aecd-5e36a6c3782f",
+  "ignoreGlobalRepeat": false,
+  "messages": [
+    {
+      "alignH": 1,
+      "alignV": 1,
+      "charSpace": 0.0,
+      "col": {
+        "a": 1.0,
+        "b": 0.0274509806185961,
+        "g": 0.0,
+        "r": 0.592156887054443
+      },
+      "elementName": "",
+      "font": "Halogen SDF",
+      "fontSize": 24.0,
+      "fontStyle": 0,
+      "instanceID": "55688736-25ba-4291-93a7-e83d4eed215b",
+      "isHandwriting": true,
+      "lineSpace": 16.0,
+      "links": [
+      ],
+      "msgID": "59fd3ae9-d646-4ee2-a8ea-b2bb2961ba1a",
+      "order": 1,
+      "paraSpace": 0.0,
+      "pos": {
+        "x": -0.5,
+        "y": 9.0
+      },
+      "rot": 0.0,
+      "saidBy": 0,
+      "saidTo": 1,
+      "size": {
+        "x": 311.0,
+        "y": 418.0
+      },
+      "usePages": false,
+      "wordSpace": 0.0
+    }
+  ],
+  "name": "CrumpledNoteStickup",
+  "participantA": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [
     ],
-    "name": "CrumpledNoteStickup",
-    "participantA": {
-        "connection": 15,
-        "disableInbox": false,
-        "jobs": [
-        ],
-        "required": false,
-        "traitConditions": 0,
-        "traits": [
-        ],
-        "triggers": [
-        ],
-        "useJobs": false,
-        "useTraits": false
-    },
-    "participantB": {
-        "connection": 15,
-        "disableInbox": false,
-        "jobs": [
-        ],
-        "required": false,
-        "traitConditions": 0,
-        "traits": [
-        ],
-        "triggers": [
-        ],
-        "useJobs": false,
-        "useTraits": false
-    },
-    "participantC": {
-        "connection": 15,
-        "disableInbox": false,
-        "jobs": [
-        ],
-        "required": false,
-        "traitConditions": 0,
-        "traits": [
-        ],
-        "triggers": [
-        ],
-        "useJobs": false,
-        "useTraits": false
-    },
-    "participantD": {
-        "connection": 15,
-        "disableInbox": false,
-        "jobs": [
-        ],
-        "required": false,
-        "traitConditions": 0,
-        "traits": [
-        ],
-        "triggers": [
-        ],
-        "useJobs": false,
-        "useTraits": false
-    },
-    "priority": 3,
-    "repeat": 1,
-    "startingMessage": "",
-    "stopMovement": true,
-    "treeChance": 1.0,
-    "treeType": 2,
-    "triggerPoint": 0
+    "required": false,
+    "traitConditions": 0,
+    "traits": [
+    ],
+    "triggers": [
+    ],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantB": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [
+    ],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [
+    ],
+    "triggers": [
+    ],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantC": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [
+    ],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [
+    ],
+    "triggers": [
+    ],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantD": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [
+    ],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [
+    ],
+    "triggers": [
+    ],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "priority": 3,
+  "repeat": 1,
+  "startingMessage": "55688736-25ba-4291-93a7-e83d4eed215b",
+  "stopMovement": true,
+  "treeChance": 1.0,
+  "treeType": 2,
+  "triggerPoint": 0
 }

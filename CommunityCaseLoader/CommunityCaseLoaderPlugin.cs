@@ -386,7 +386,7 @@ namespace CommunityCaseLoader
         {
             if (CommunityCaseLoaderPlugin.DEBUG_ShowMurderDebugMessages)
             {
-                CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"MurderMO: {MurderController.Instance.chosenMO.presetName})");
+                CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"MurderMO: {MurderController.Instance.chosenMO.presetName}");
                 CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Murderer: {MurderController.Instance.currentMurderer?.name} (Works: {MurderController.Instance.currentMurderer.job?.employer?.name}, Lives: {MurderController.Instance.currentMurderer?.home.name})");
                 CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Victim: {MurderController.Instance.currentVictim?.name} (Works: {MurderController.Instance.currentVictim?.job?.employer?.name}, Lives: {MurderController.Instance.currentVictim?.home.name}))");
             }
@@ -402,7 +402,7 @@ namespace CommunityCaseLoader
 
         public static void Postfix(MurderController __instance, Interactable __result)
         {
-            if (CommunityCaseLoaderPlugin.DEBUG_EnableMODebugging)
+            if (CommunityCaseLoaderPlugin.DEBUG_EnableMODebugging && __result.preset != null)
             {
                 CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"MurderMO ({__instance.chosenMO.name}) Spawning Item: {__result.preset.name}");
                 murderInteractables.Add(__result);
@@ -416,7 +416,7 @@ namespace CommunityCaseLoader
         private const int HIGHLIGHTED_LAYER = 30;
         public static void Postfix(MurderController.Murder __instance)
         {
-            if (CommunityCaseLoaderPlugin.DEBUG_EnableMODebugging)
+            if (CommunityCaseLoaderPlugin.DEBUG_EnableMODebugging && __instance.callingCard != null)
             {
                 CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"MurderMO ({__instance.preset.name}) Spawning Calling Card: {__instance.callingCard.preset.name}");
                 MurderController_SpawnItem.murderInteractables.Add(__instance.callingCard);
@@ -429,7 +429,7 @@ namespace CommunityCaseLoader
     public class Interactable_LoadInteractableToWorld
     {
         private const int HIGHLIGHTED_LAYER = 30;
-
+        
         public static void Prefix(Interactable __instance, ref bool forceSpawnImmediate)
         {
             if (MurderController_SpawnItem.murderInteractables.Contains(__instance))
@@ -443,6 +443,56 @@ namespace CommunityCaseLoader
             if (MurderController_SpawnItem.murderInteractables.Contains(__instance))
             {
                 __instance.spawnedObject.layer = HIGHLIGHTED_LAYER;
+            }
+        }
+    }
+
+    // Only enable vmail checks during the SpawnItemsCheck function
+    [HarmonyPatch(typeof(MurderController), nameof(MurderController.SpawnItemsCheck))]
+    public class MurderController_SpawnItemsCheck
+    {
+        internal static void Prefix(MurderController __instance)
+        {
+            Toolbox_NewVmailThread_Debug.LoggingEnabled = true;
+            Toolbox_NewVmailThread_Debug.CurrentMurderMO = __instance.chosenMO;
+        }
+
+        internal static void Postfix()
+        {
+            Toolbox_NewVmailThread_Debug.LoggingEnabled = false;
+            Toolbox_NewVmailThread_Debug.CurrentMurderMO = null;
+        }
+    }
+
+    [HarmonyPatch]
+    public class Toolbox_NewVmailThread_Debug
+    {
+        public static bool LoggingEnabled = false;
+        public static MurderMO CurrentMurderMO = null;
+
+        [HarmonyTargetMethod]
+        internal static System.Reflection.MethodBase CalculateMethod()
+        {
+            var mi = typeof(Toolbox).GetMethods().Where(mi => mi.Name == "NewVmailThread" && mi.GetParameters().Length == 7).First();
+            return mi;
+        }
+
+        public static void Postfix(Human from, Il2CppSystem.Collections.Generic.List<Human> otherParticipiants, string treeID, float timeStamp, int progress, StateSaveData.CustomDataSource overrideDataSource, int newDataSourceID)
+        {
+            if (LoggingEnabled && CommunityCaseLoaderPlugin.DEBUG_EnableMODebugging)
+            {
+                string othersList = "None";
+
+                if (otherParticipiants != null && otherParticipiants.Count > 0)
+                {
+                    othersList = "";
+                    foreach (var other in otherParticipiants)
+                    {
+                        othersList += other == null ? "null," : (other.citizenName + ",");
+                    }
+                }
+
+                CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"MurderMO ({CurrentMurderMO?.presetName}) Sending VMail: '{treeID}', from {from.citizenName}. Other participants: {othersList}");
             }
         }
     }
