@@ -30,7 +30,7 @@ namespace DDSScriptExtensions
         public static ManualLogSource PluginLogger;
 
         public static Script LuaScriptEnvironment;
-        public static Dictionary<string, Dictionary<string, DDSScript>> LoadedExtensions = new Dictionary<string, Dictionary<string, DDSScript>>();
+        public static Dictionary<string, Dictionary<string, Dictionary<string, DDSScript>>> LoadedExtensions = new Dictionary<string, Dictionary<string, Dictionary<string, DDSScript>>>();
 #if MONO
         private void Awake()
         {
@@ -59,6 +59,8 @@ namespace DDSScriptExtensions
         public static void ReloadScriptList()
         {
             LoadedExtensions.Clear();
+            LoadedExtensions["scopes"] = new Dictionary<string, Dictionary<string, DDSScript>>();
+            LoadedExtensions["values"] = new Dictionary<string, Dictionary<string, DDSScript>>();
 
             // Search for, and load, all `ddsscripts.sod.json` files found in the Bepinex plugins directory
             var modsToLoadFrom = Directory.GetDirectories(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), ".."), "*", SearchOption.AllDirectories)
@@ -71,35 +73,49 @@ namespace DDSScriptExtensions
                 var fileContent = AssetBundleLoader.JsonLoader.NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(System.IO.File.ReadAllText(System.IO.Path.Combine(mod.FullName, "ddsscripts.sod.json")));
                 var modFolderName = mod.Parent.Parent.Name;
 
-                foreach (var group in fileContent.Children())
+                LoadSubsection(fileContent, mod.Parent.Parent.Name, "scopes");
+                LoadSubsection(fileContent, mod.Parent.Parent.Name, "values");
+
+                DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"Loaded DDS Scripts for: {modFolderName}");
+            }
+        }
+
+        private static void LoadSubsection(dynamic fileContent, string modFolderName, string subsection)
+        {
+            if(fileContent.ContainsKey(subsection))
+            {
+                foreach (var group in fileContent[subsection].Children())
                 {
-                    if (!LoadedExtensions.ContainsKey(group.Name))
-                        LoadedExtensions[group.Name] = new Dictionary<string, DDSScript>();
+                    if (!LoadedExtensions[subsection].ContainsKey(group.Name))
+                        LoadedExtensions[subsection][group.Name] = new Dictionary<string, DDSScript>();
 
                     foreach (var childValue in group.Value.Children())
                     {
-                        var prefixedValueName = "custom_" + childValue.Name;
+                        var prefixedValueName = (subsection == "values" ? "custom_" : "customscope_") + childValue.Name;
 
-                        if (LoadedExtensions[group.Name].ContainsKey(prefixedValueName))
+                        if (LoadedExtensions[subsection][group.Name].ContainsKey(prefixedValueName))
                         {
                             DDSScriptExtensionsPlugin.PluginLogger.LogWarning($"Duplicate DDS script: {group.Name}.{childValue.Name}. Skipping script from {modFolderName}");
                         }
                         else
                         {
-                            LoadedExtensions[group.Name][prefixedValueName] = new DDSScript()
+                            LoadedExtensions[subsection][group.Name][prefixedValueName] = new DDSScript()
                             {
                                 script = childValue.Value["script"].Value.ToString()
                             };
 
-                            if(childValue.Value["seed"] != null && childValue.Value["seed"].Value != "")
+                            if (childValue.Value["seed"] != null && childValue.Value["seed"].Value != "")
                             {
-                                LoadedExtensions[group.Name][prefixedValueName].seedStatement = childValue.Value["seed"].Value;
+                                LoadedExtensions[subsection][group.Name][prefixedValueName].seedStatement = childValue.Value["seed"].Value;
+                            }
+                            
+                            if (childValue.Value["scope"] != null && childValue.Value["scope"].Value != "")
+                            {
+                                LoadedExtensions[subsection][group.Name][prefixedValueName].scope = childValue.Value["scope"].Value;
                             }
                         }
                     }
                 }
-
-                DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"Loaded DDS Scripts for: {modFolderName}");
             }
         }
     }
@@ -107,6 +123,7 @@ namespace DDSScriptExtensions
     public class DDSScript
     {
         public string script = "";
+        public string scope = "";
         public string seedStatement = "os.time()";
     }
 }

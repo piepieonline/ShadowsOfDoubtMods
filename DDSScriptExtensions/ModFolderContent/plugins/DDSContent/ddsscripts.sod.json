@@ -1,26 +1,48 @@
 {
-  "citizen": {
-    "selected_random": {
-      "seed": "tonumber(inputObject.seed)",
-      "script": "return 'Random number is: ' .. math.random(0, 10)"
+  "values": {
+    "citizen": {
+      "selected_random": {
+        "seed": "tonumber(inputObject.seed)",
+        "script": "return 'Random number is: ' .. math.random(0, 10)"
+      },
+      "owner": {
+        "script": "return 'Current location owner is: ' .. inputObject.currentGameLocation.thisAsAddress.owners[0].citizenName"
+      }
     },
-    "owner": {
-      "script": "return 'Current location owner is: ' .. inputObject.currentGameLocation.thisAsAddress.owners[0].citizenName"
+    "random": {
+      "alpha6": {
+        "script": "return string.format('#%06X', math.random(0, 0xFFFFFF))"
+      }
+    },
+    "city": {
+      "player_name": {
+        "script": "return Player.citizenName"
+      }
+    },
+    "time": {
+      "twohourslater": {
+        "script": "return SessionData.TimeString(tonumber(CSToString(inputObject)) + 2, true)"
+      }
     }
   },
-  "random": {
-    "alpha6": {
-      "script": "return string.format('#%06X', math.random(0, 0xFFFFFF))"
-    }
-  },
-  "city": {
-    "player_name": {
-      "script": "return Player.citizenName"
-    }
-  },
-  "time": {
-    "twohourslater": {
-      "script": "return SessionData.TimeString(tonumber(CSToString(inputObject)) + 2, true)"
+  "scopes": {
+    "citizen": {
+      "vmail_participant_a": {
+        "scope": "citizen",
+        "script": "return inputObject.thread.participantA > -1 and CityData.citizenDictionary[inputObject.thread.participantA] or nil"
+      },
+      "vmail_participant_b": {
+        "scope": "citizen",
+        "script": "return inputObject.thread.participantB > -1 and CityData.citizenDictionary[inputObject.thread.participantB] or nil"
+      },
+      "vmail_participant_c": {
+        "scope": "citizen",
+        "script": "return inputObject.thread.participantC > -1 and CityData.citizenDictionary[inputObject.thread.participantC] or nil"
+      },
+      "vmail_participant_d": {
+        "scope": "citizen",
+        "script": "return inputObject.thread.participantD > -1 and CityData.citizenDictionary[inputObject.thread.participantD] or nil"
+      }
     }
   }
 }

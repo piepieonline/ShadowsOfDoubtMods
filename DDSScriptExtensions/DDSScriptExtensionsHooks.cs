@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UnityEngine;
+using UniverseLib;
 using static lzma;
 
 namespace DDSScriptExtensions
@@ -27,11 +29,67 @@ namespace DDSScriptExtensions
             public static void Postfix()
             {
                 // TODO: Do we need to expose all globals here? Might be worth doing
+                DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["CityData"] = UserData.Create(CityData.Instance);
                 DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["Player"] = UserData.Create(Player.Instance);
                 DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["SessionData"] = UserData.Create(SessionData.Instance);
+                DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["Toolbox"] = UserData.Create(Toolbox.Instance);
                 DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["CSToString"] = (System.Func<string, object>)ToTypedStringExtension.ToTypedString;
-                // Test since DDS patches are broken
-                // Strings.stringTable["dds.blocks"]["e2c43611-8e95-4a85-94c6-969a5c3c3015"].displayStr = "Test: |writer.custom_selected_random| |writer.custom_selected_random_1|\r\n";
+            }
+        }
+
+        [HarmonyPatch(typeof(Strings), nameof(Strings.GetContainedScope))]
+        public class Strings_GetContainedScope
+        {
+            public static bool Prefix(ref DDSScope __result, DDSScope baseScope, DDSScope currentScope, string newScope, object inputObject, ref object outputObject, object additionalObject)
+            {
+                if (newScope.StartsWith("customscope_") && DDSScriptExtensionsPlugin.LoadedExtensions["scopes"][currentScope.name].ContainsKey(newScope))
+                {
+                    if (DDSScriptExtensionsPlugin.LoadedExtensions["scopes"][currentScope.name].ContainsKey(newScope))
+                    {
+                        var ddsScript = DDSScriptExtensionsPlugin.LoadedExtensions["scopes"][currentScope.name][newScope];
+
+                        DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["inputObject"] = inputObject?.TryCast(inputObject.GetActualType());
+                        DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["additionalObject"] = additionalObject?.TryCast(inputObject.GetActualType());
+
+                        if (DDSScriptExtensionsPlugin.DebugEnabled.Value)
+                        {
+                            try
+                            {
+                                if (inputObject != null)
+                                    DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"inputObject is: {inputObject.GetType().Name} - {ToTypedStringExtension.ToTypedString(inputObject)}");
+                                else
+                                    DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"inputObject is null");
+
+                                if (additionalObject != null)
+                                    DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"additionalObject is: {additionalObject.GetType().Name} - {ToTypedStringExtension.ToTypedString(inputObject)}");
+                                else
+                                    DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"additionalObject is null");
+                            }
+                            catch
+                            { }
+                        }
+
+                        try
+                        {
+                            // Run the calculation function
+                            outputObject = DDSScriptExtensionsPlugin.LuaScriptEnvironment.DoString(ddsScript.script).ToObject();
+
+                            if (DDSScriptExtensionsPlugin.DebugEnabled.Value)
+                            {
+                                DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"DDSScript 'Scope' result for {newScope}: Scope: {ddsScript.scope}, Object: {ToTypedStringExtension.ToTypedString(outputObject)} ");
+                            }
+                            __result = Toolbox.Instance.scopeDictionary[ddsScript.scope];
+                            return false;
+                        }
+                        catch (System.Exception ex)
+                        {
+                            DDSScriptExtensionsPlugin.PluginLogger.LogError(ex.Message);
+                            DDSScriptExtensionsPlugin.PluginLogger.LogError(ex.StackTrace);
+                        }
+                    }
+                }
+
+                return true;
             }
         }
 
@@ -42,7 +100,9 @@ namespace DDSScriptExtensions
 
             public static bool Prefix(ref string __result, string withinScope, string newValue, object baseObject, object inputObject, object additionalObject)
             {
-                if (newValue.StartsWith("custom_") && DDSScriptExtensionsPlugin.LoadedExtensions.ContainsKey(withinScope))
+                string scopeToSearch = withinScope;
+
+                if (newValue.StartsWith("custom_") && DDSScriptExtensionsPlugin.LoadedExtensions["values"].ContainsKey(scopeToSearch))
                 {
                     var trimmedNewValue = newValue;
                     int seedOffset = 0;
@@ -54,14 +114,14 @@ namespace DDSScriptExtensions
                         trimmedNewValue = offsetMatch.Groups[1].Value;
                         seedOffset = int.Parse(offsetMatch.Groups[2].Value);
                     }
-
-                    if (DDSScriptExtensionsPlugin.LoadedExtensions[withinScope].ContainsKey(trimmedNewValue))
+                    
+                    if (DDSScriptExtensionsPlugin.LoadedExtensions["values"][scopeToSearch].ContainsKey(trimmedNewValue))
                     {
-                        var ddsScript = DDSScriptExtensionsPlugin.LoadedExtensions[withinScope][trimmedNewValue];
+                        var ddsScript = DDSScriptExtensionsPlugin.LoadedExtensions["values"][scopeToSearch][trimmedNewValue];
 
-                        DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["baseObject"] = baseObject;
-                        DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["inputObject"] = inputObject;
-                        DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["additionalObject"] = additionalObject;
+                        DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["baseObject"] = baseObject?.TryCast(baseObject.GetActualType());
+                        DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["inputObject"] = inputObject?.TryCast(inputObject.GetActualType());
+                        DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["additionalObject"] = additionalObject?.TryCast(additionalObject.GetActualType());
 
                         if (DDSScriptExtensionsPlugin.DebugEnabled.Value)
                         {
@@ -101,7 +161,7 @@ namespace DDSScriptExtensions
 
                             if (DDSScriptExtensionsPlugin.DebugEnabled.Value)
                             {
-                                DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"DDSScript result for {withinScope}.{newValue}: {res.String}. Seed statement was: {calculatedSeedStatement}");
+                                DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"DDSScript 'Value' result for {scopeToSearch}.{newValue}: {res.String}. Seed statement was: {calculatedSeedStatement}");
                             }
                             __result = $"{res.String}";
                             return false;
