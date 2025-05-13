@@ -1,3 +1,7 @@
+# 2.1.0
+
+* Added creating Texture2D objects from PNG files on disk
+
 # 2.0.4
 
 * Updated to support fixes for DDSLoader patching

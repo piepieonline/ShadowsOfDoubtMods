@@ -17,7 +17,7 @@ namespace AssetBundleLoader
     public static class JsonLoader
     {
         public static Dictionary<string, (ScriptableObject scriptableObject, string fileId)> ScriptableObjectIDMap = new System.Collections.Generic.Dictionary<string, (ScriptableObject scriptableObject, string fileId)>();
-
+        
         private static void SerializeTypes(ref Dictionary<string, Dictionary<string, string>> dict, Type soType)
         {
             if (soType.FullName == null || !soType.IsSubclassOf(typeof(ScriptableObject))) return;

@@ -1,9 +1,9 @@
 {
   "name": "Asset_Bundle_Loader",
-  "version_number": "2.0.4",
+  "version_number": "2.1.0",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/AssetBundleLoader",
   "description": "Library. Provides helpers to load new assets into Shadows of Doubt. Includes functions for creating ScriptableObjects from raw JSON files, as well as built Unity AssetBundles",
   "dependencies": [
-    "BepInEx-BepInExPack_IL2CPP-6.0.667"
+    "BepInEx-BepInExPack_IL2CPP-6.0.733"
   ]
 }
