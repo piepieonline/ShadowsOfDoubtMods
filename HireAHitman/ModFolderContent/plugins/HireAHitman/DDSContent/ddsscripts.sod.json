@@ -1,0 +1,12 @@
+{
+  "values": {
+    "city": {
+      "selected_hitman_target_name": {
+        "script": "return HireAHitmanData.Target.citizenName"
+      },
+      "hitman_cost": {
+        "script": "return HireAHitmanData.GetCostToHire()"
+      }
+    }
+  }
+}

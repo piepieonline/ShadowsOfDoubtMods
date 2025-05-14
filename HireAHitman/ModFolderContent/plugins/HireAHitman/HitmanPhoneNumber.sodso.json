@@ -1,0 +1,8 @@
+{
+  "presetName": "HitmanPhoneNumber",
+  "fileType": "ArtPreset",
+  "name": "HitmanPhoneNumber",
+  "type": "ArtPreset",
+  "copyFrom": "REF:ArtPreset|WeaponsDealerPassword",
+  "textSize": -20.1
+}

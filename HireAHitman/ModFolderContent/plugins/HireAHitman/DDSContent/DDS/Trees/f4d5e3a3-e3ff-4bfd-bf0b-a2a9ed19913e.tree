@@ -1,0 +1,139 @@
+{
+  "document": {
+    "background": "",
+    "colour": {
+      "a": 0,
+      "b": 0,
+      "g": 0,
+      "r": 0
+    },
+    "fill": 1,
+    "size": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "id": "f4d5e3a3-e3ff-4bfd-bf0b-a2a9ed19913e",
+  "messages": [
+    {
+      "alignH": 0,
+      "alignV": 0,
+      "charSpace": 0,
+      "col": {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 0
+      },
+      "elementName": "",
+      "font": "Halogen",
+      "fontSize": 22,
+      "fontStyle": 0,
+      "instanceID": "cec63bdd-ae84-4a2c-a554-ee0616608e33",
+      "lineSpace": 16,
+      "links": [],
+      "msgID": "0f928a76-eaa9-4bf2-ac11-0a5fab1ecbfb",
+      "order": 0,
+      "paraSpace": 0,
+      "pos": {
+        "x": -30,
+        "y": -175
+      },
+      "rot": 0,
+      "saidBy": 0,
+      "saidTo": 1,
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "usePages": false,
+      "wordSpace": 0
+    },
+    {
+      "alignH": 0,
+      "alignV": 0,
+      "charSpace": 0,
+      "col": {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 0
+      },
+      "elementName": "",
+      "font": "Halogen",
+      "fontSize": 22,
+      "fontStyle": 0,
+      "instanceID": "3339cb4b-250f-468b-bf65-3dcd158f0146",
+      "lineSpace": 16,
+      "links": [],
+      "msgID": "795afb08-f6e1-43fa-ac76-0c59ddcb25b7",
+      "order": 0,
+      "paraSpace": 0,
+      "pos": {
+        "x": -30,
+        "y": -175
+      },
+      "rot": 0,
+      "saidBy": 0,
+      "saidTo": 1,
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "usePages": false,
+      "wordSpace": 0
+    }
+  ],
+  "name": "DummyHitmanPhoneTree",
+  "participantA": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantB": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantC": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantD": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "priority": 3,
+  "repeat": 7,
+  "startingMessage": "cec63bdd-ae84-4a2c-a554-ee0616608e33",
+  "stopMovement": true,
+  "treeChance": 1,
+  "treeType": 4,
+  "triggerPoint": 5
+}

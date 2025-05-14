@@ -1,0 +1,176 @@
+{
+  "presetName": "ProfessionalHitMO",
+  "notes": "",
+  "disabled": false,
+  "compatibleWith": [
+    "REF:MurderPreset|ProfessionalHitPreset"
+  ],
+  "baseDifficulty": 1,
+  "maximumPotentialScore": 65,
+  "updateThis": false,
+  "pickRandomScoreRange": {
+    "x": 0,
+    "y": 15
+  },
+  "murdererTraitModifiers": [],
+  "murdererJobModifiers": [],
+  "murdererCompanyModifiers": [
+    {
+      "companies": [
+        "REF:CompanyPreset|BlackmarketSyncClinic",
+        "REF:CompanyPreset|BlackmarketTrader",
+        "REF:CompanyPreset|GamblingDen",
+        "REF:CompanyPreset|LoanShark",
+        "REF:CompanyPreset|WeaponsDealer",
+        "REF:CompanyPreset|EnforcerBranch"
+      ],
+      "mininumEmployees": 0,
+      "companyBoost": -100,
+      "boostPerEmployeeOverMinimum": 0
+    }
+  ],
+  "useMurdererSocialClassRange": false,
+  "murdererClassRange": {
+    "x": 0,
+    "y": 1
+  },
+  "murdererClassRangeBoost": 0,
+  "useHexaco": false,
+  "hexaco": {
+    "outputMin": 1,
+    "outputMax": 10,
+    "enableFeminineMasculine": false,
+    "feminineMasculine": 0,
+    "enableHumility": false,
+    "humility": 0,
+    "enableEmotionality": false,
+    "emotionality": 0,
+    "enableExtraversion": false,
+    "extraversion": 0,
+    "enableAgreeableness": false,
+    "agreeableness": 0,
+    "enableConscientiousness": false,
+    "conscientiousness": 0,
+    "enableCreativity": false,
+    "creativity": 0
+  },
+  "requiresSniperVantageAtHome": false,
+  "weaponsPool": [
+    "REF:MurderWeaponsPool|Guns",
+    "REF:MurderWeaponsPool|Poison"
+  ],
+  "blockDroppingWeapons": 1,
+  "allowAnywhere": 1,
+  "allowHome": true,
+  "allowWork": 1,
+  "allowPublic": 1,
+  "allowStreets": 1,
+  "allowDen": false,
+  "denFurniture": [],
+  "denStyleOverride": [],
+  "denItems": [],
+  "acquaintedSuitabilityBoost": -20,
+  "attractedToSuitabilityBoost": -20,
+  "likeSuitabilityBoost": -20,
+  "sameWorkplaceBoost": -20,
+  "murdererIsTenantBoost": 0,
+  "victimRandomScoreRange": {
+    "x": 0,
+    "y": 1
+  },
+  "victimTraitModifiers": [],
+  "victimJobModifiers": [],
+  "victimCompanyModifiers": [
+    {
+      "companies": [
+        "REF:CompanyPreset|BlackmarketSyncClinic",
+        "REF:CompanyPreset|BlackmarketTrader",
+        "REF:CompanyPreset|GamblingDen",
+        "REF:CompanyPreset|LoanShark",
+        "REF:CompanyPreset|WeaponsDealer"
+      ],
+      "mininumEmployees": 0,
+      "companyBoost": -100,
+      "boostPerEmployeeOverMinimum": 0
+    }
+  ],
+  "useVictimSocialClassRange": false,
+  "victimClassRange": {
+    "x": 0,
+    "y": 1
+  },
+  "victimClassRangeBoost": 0,
+  "monkierDDSMessageList": "",
+  "confessionalDDSResponses": [],
+  "MOleads": [
+    {
+      "compatibleWithMotives": [],
+      "name": "VMAIL: Hitman Orders",
+      "compatibleWithAllMotives": 1,
+      "spawnOnPhase": 1,
+      "tryToSpawnWithEachNewMurder": 1,
+      "belongsTo": 2,
+      "chance": 1,
+      "useTraits": 0,
+      "traitModifiers": [],
+      "useIf": 0,
+      "ifTag": 0,
+      "useOrGroup": 0,
+      "orGroup": 0,
+      "chanceRatio": 0,
+      "itemTag": 0,
+      "spawnItem": null,
+      "vmailThread": "1734a8d7-aad4-48b0-b3f1-c0f1f494c203",
+      "vmailProgressThreshold": {
+        "x": 0,
+        "y": 0
+      },
+      "writer": 2,
+      "receiver": 2,
+      "vmailOtherParticipants": [
+        1
+      ],
+      "where": 2,
+      "security": 0,
+      "priority": 0,
+      "ownershipRule": 0
+    },
+    {
+      "compatibleWithMotives": [],
+      "name": "Note: Overheard plot",
+      "compatibleWithAllMotives": 1,
+      "spawnOnPhase": 3,
+      "tryToSpawnWithEachNewMurder": 1,
+      "belongsTo": 3,
+      "chance": 1,
+      "useTraits": 0,
+      "traitModifiers": [],
+      "useIf": 0,
+      "ifTag": 0,
+      "useOrGroup": 0,
+      "orGroup": 0,
+      "chanceRatio": 0,
+      "itemTag": 0,
+      "spawnItem": "REF:InteractablePreset|Int_Murder_CustomHitman_FriendOverheard",
+      "vmailThread": "",
+      "vmailProgressThreshold": {
+        "x": 0,
+        "y": 0
+      },
+      "writer": 3,
+      "receiver": 1,
+      "vmailOtherParticipants": [],
+      "where": 0,
+      "security": 0,
+      "priority": 0,
+      "ownershipRule": 0
+    }
+  ],
+  "graffiti": [],
+  "callingCardPool": [],
+  "playerTaunts": [],
+  "fileType": "MurderMO",
+  "name": "ProfessionalHitMO",
+  "type": "MurderMO",
+  "copyFrom": null
+}

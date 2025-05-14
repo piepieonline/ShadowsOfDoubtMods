@@ -1,0 +1,144 @@
+{
+  "document": {
+    "background": "",
+    "colour": {
+      "a": 1,
+      "b": 1,
+      "g": 1,
+      "r": 1
+    },
+    "fill": 1,
+    "size": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "id": "17f7b4f4-56c6-444b-b1e8-7546fcbe3602",
+  "ignoreGlobalRepeat": false,
+  "messages": [
+    {
+      "alignH": 0,
+      "alignV": 0,
+      "charSpace": 0,
+      "col": {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 0
+      },
+      "elementName": "",
+      "font": "Halogen",
+      "fontSize": 22,
+      "fontStyle": 0,
+      "instanceID": "6469bf7a-46ee-4dc9-b5d4-8255ff283517",
+      "isHandwriting": false,
+      "lineSpace": 16,
+      "links": [],
+      "msgID": "f9ecdef0-1a1b-43db-a6c8-fead34f4036d",
+      "order": 0,
+      "paraSpace": 0,
+      "pos": {
+        "x": -16,
+        "y": -142
+      },
+      "rot": 0,
+      "saidBy": 0,
+      "saidTo": 1,
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "usePages": false,
+      "wordSpace": 0
+    },
+    {
+      "alignH": 0,
+      "alignV": 0,
+      "charSpace": 0,
+      "col": {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 0
+      },
+      "elementName": "",
+      "font": "Halogen",
+      "fontSize": 22,
+      "fontStyle": 0,
+      "instanceID": "2b519777-2c91-4013-a8cb-c92f43d43443",
+      "isHandwriting": false,
+      "lineSpace": 16,
+      "links": [],
+      "msgID": "36413d48-71e1-4c26-9bc1-afcd0a18e186",
+      "order": 1,
+      "paraSpace": 0,
+      "pos": {
+        "x": -9,
+        "y": -287
+      },
+      "rot": 0,
+      "saidBy": 1,
+      "saidTo": 0,
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "usePages": false,
+      "wordSpace": 0
+    }
+  ],
+  "name": "VMailNoiseComplaintToBuildingSec",
+  "newspaperCategory": 0,
+  "newspaperContext": 0,
+  "participantA": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantB": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantC": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantD": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "priority": 3,
+  "repeat": 1,
+  "startingMessage": "6469bf7a-46ee-4dc9-b5d4-8255ff283517",
+  "stopMovement": true,
+  "treeChance": 1,
+  "treeType": 1,
+  "triggerPoint": 5
+}

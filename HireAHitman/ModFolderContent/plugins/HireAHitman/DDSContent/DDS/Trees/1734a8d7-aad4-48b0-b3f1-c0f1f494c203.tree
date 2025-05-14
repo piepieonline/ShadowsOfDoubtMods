@@ -1,0 +1,109 @@
+{
+  "name": "Murder_Hitman_Orders_Vmail",
+  "id": "1734a8d7-aad4-48b0-b3f1-c0f1f494c203",
+  "participantA": {
+    "required": true,
+    "connection": 15,
+    "useJobs": false,
+    "disableInbox": false,
+    "jobs": [],
+    "useTraits": false,
+    "traits": [],
+    "traitConditions": 0,
+    "triggers": []
+  },
+  "participantB": {
+    "required": true,
+    "connection": 31,
+    "useJobs": false,
+    "disableInbox": false,
+    "jobs": [],
+    "useTraits": false,
+    "traits": [],
+    "traitConditions": 0,
+    "triggers": []
+  },
+  "participantC": {
+    "required": true,
+    "connection": 15,
+    "useJobs": false,
+    "disableInbox": false,
+    "jobs": [],
+    "useTraits": false,
+    "traits": [],
+    "traitConditions": 0,
+    "triggers": []
+  },
+  "participantD": {
+    "required": false,
+    "connection": 15,
+    "useJobs": false,
+    "disableInbox": false,
+    "jobs": [],
+    "useTraits": false,
+    "traits": [],
+    "traitConditions": 0,
+    "triggers": []
+  },
+  "repeat": 8,
+  "triggerPoint": 5,
+  "messages": [
+    {
+      "msgID": "00deca74-9ad8-458d-b32f-9addf069e817",
+      "elementName": "",
+      "instanceID": "6e5455d5-345d-44bc-9e47-bf062f41cc5d",
+      "saidBy": 1,
+      "saidTo": 0,
+      "pos": {
+        "x": -24,
+        "y": -151
+      },
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "rot": 0,
+      "font": "Halogen",
+      "col": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+      },
+      "fontSize": 22,
+      "charSpace": 0,
+      "wordSpace": 0,
+      "lineSpace": 16,
+      "paraSpace": 0,
+      "alignH": 0,
+      "alignV": 0,
+      "fontStyle": 0,
+      "order": 0,
+      "usePages": false,
+      "isHandwriting": false,
+      "links": []
+    }
+  ],
+  "stopMovement": true,
+  "ignoreGlobalRepeat": false,
+  "treeType": 1,
+  "document": {
+    "background": "",
+    "fill": 1,
+    "size": {
+      "x": 0,
+      "y": 0
+    },
+    "colour": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+    }
+  },
+  "startingMessage": "6e5455d5-345d-44bc-9e47-bf062f41cc5d",
+  "treeChance": 1,
+  "priority": 3,
+  "newspaperCategory": 0,
+  "newspaperContext": 0
+}

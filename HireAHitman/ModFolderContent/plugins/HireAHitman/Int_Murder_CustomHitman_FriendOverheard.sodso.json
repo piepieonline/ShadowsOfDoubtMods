@@ -1,0 +1,11 @@
+{
+  "presetName": "Int_Murder_CustomHitman_FriendOverheard",
+  "useEvidence": 1,
+  "spawnEvidence": "REF:EvidencePreset|Evi_Murder_CustomHitman_FriendOverheard",
+  "copyFrom": "REF:InteractablePreset|Murder_SightingLog",
+  "fileType": "InteractablePreset",
+  "name": "Int_Murder_CustomHitman_FriendOverheard",
+  "type": "InteractablePreset",
+  "writerIs": 0,
+  "receiverIs": 0
+}

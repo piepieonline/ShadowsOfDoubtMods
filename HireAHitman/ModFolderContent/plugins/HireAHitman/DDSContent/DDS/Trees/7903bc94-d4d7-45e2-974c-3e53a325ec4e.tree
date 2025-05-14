@@ -1,0 +1,106 @@
+{
+  "name": "CustomHitman_FriendOverheard",
+  "id": "7903bc94-d4d7-45e2-974c-3e53a325ec4e",
+  "participantA": {
+    "required": false,
+    "connection": 15,
+    "useJobs": false,
+    "disableInbox": false,
+    "jobs": [],
+    "useTraits": false,
+    "traits": [],
+    "traitConditions": 0,
+    "triggers": []
+  },
+  "participantB": {
+    "required": false,
+    "connection": 15,
+    "useJobs": false,
+    "disableInbox": false,
+    "jobs": [],
+    "useTraits": false,
+    "traits": [],
+    "traitConditions": 0,
+    "triggers": []
+  },
+  "participantC": {
+    "required": false,
+    "connection": 15,
+    "useJobs": false,
+    "disableInbox": false,
+    "jobs": [],
+    "useTraits": false,
+    "traits": [],
+    "traitConditions": 0,
+    "triggers": []
+  },
+  "participantD": {
+    "required": false,
+    "connection": 15,
+    "useJobs": false,
+    "disableInbox": false,
+    "jobs": [],
+    "useTraits": false,
+    "traits": [],
+    "traitConditions": 0,
+    "triggers": []
+  },
+  "repeat": 1,
+  "triggerPoint": 0,
+  "messages": [
+    {
+      "msgID": "15bc066a-5ae9-4bdf-b9d8-c7d379048687",
+      "elementName": "",
+      "instanceID": "14c09b57-18be-4688-874c-5289c75bf023",
+      "saidBy": 0,
+      "saidTo": 1,
+      "pos": {
+        "x": -3.5,
+        "y": 4
+      },
+      "size": {
+        "x": 319,
+        "y": 454
+      },
+      "rot": 0,
+      "font": "Halogen SDF",
+      "col": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+      },
+      "fontSize": 18,
+      "charSpace": 0,
+      "wordSpace": 0,
+      "lineSpace": 16,
+      "paraSpace": 0,
+      "alignH": 0,
+      "alignV": 0,
+      "fontStyle": 0,
+      "order": 0,
+      "usePages": true,
+      "isHandwriting": true,
+      "links": []
+    }
+  ],
+  "stopMovement": true,
+  "treeType": 2,
+  "document": {
+    "background": "Paper",
+    "fill": 1,
+    "size": {
+      "x": 342,
+      "y": 482
+    },
+    "colour": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+    }
+  },
+  "startingMessage": "14c09b57-18be-4688-874c-5289c75bf023",
+  "treeChance": 1,
+  "priority": 3
+}

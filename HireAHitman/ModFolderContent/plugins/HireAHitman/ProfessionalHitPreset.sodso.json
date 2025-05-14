@@ -1,0 +1,9 @@
+{
+  "presetName": "ProfessionalHitPreset",
+  "postActionSetup": [],
+  "leads": [],
+  "copyFrom": "REF:MurderPreset|SerialKiller",
+  "fileType": "MurderPreset",
+  "name": "ProfessionalHitPreset",
+  "type": "MurderPreset"
+}

@@ -1,0 +1,12 @@
+{
+  "enabled": true,
+  "fileOrder": [
+    "REF:HitmanPhoneNumber",
+    "REF:ProfessionalHitPreset",
+    "REF:Evi_Murder_CustomHitman_FriendOverheard",
+    "REF:Int_Murder_CustomHitman_FriendOverheard",
+    "REF:ProfessionalHitMO"
+  ],
+  "loadBefore": "",
+  "version": 1
+}

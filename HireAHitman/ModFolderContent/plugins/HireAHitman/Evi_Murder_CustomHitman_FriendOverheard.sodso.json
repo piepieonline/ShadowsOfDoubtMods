@@ -1,0 +1,8 @@
+{
+  "presetName": "Evi_Murder_CustomHitman_FriendOverheard",
+  "ddsDocumentID": "7903bc94-d4d7-45e2-974c-3e53a325ec4e",
+  "fileType": "EvidencePreset",
+  "name": "Evi_Murder_CustomHitman_FriendOverheard",
+  "type": "EvidencePreset",
+  "copyFrom": "REF:EvidencePreset|Murder_SightingLog"
+}
