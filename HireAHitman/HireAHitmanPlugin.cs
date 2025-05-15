@@ -83,7 +83,7 @@ namespace HireAHitman
         {
             try
             {
-                var savePath = GetSavePath();
+                var savePath = GetSavePath(e.FilePath);
                 if (System.IO.File.Exists(savePath))
                 {
                     var jtokenTargetIds = AssetBundleLoader.JsonLoader.NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(System.IO.File.ReadAllText(savePath));
@@ -109,7 +109,7 @@ namespace HireAHitman
         {
             try
             {
-                var savePath = GetSavePath();
+                var savePath = GetSavePath(e.FilePath);
                 JsonSerializerOptions options = new JsonSerializerOptions { IncludeFields = true };
                 System.IO.File.WriteAllText(savePath, JsonSerializer.Serialize(HireAHitmanHooks.TargetHumanIds, options));
                 PluginLogger.LogInfo($"Successfully saved hired hitman targets at {savePath}!");
@@ -120,9 +120,9 @@ namespace HireAHitman
             }
         }
 
-        private string GetSavePath()
+        private string GetSavePath(string filePath)
         {
-            var savecode = Lib.SaveGame.GetUniqueString("HitmanTargetIds");
+            var savecode = Lib.SaveGame.GetUniqueString(filePath);
             var fileName = $"HitmanTargetList_{savecode}.json";
             return Lib.SaveGame.GetSavestoreDirectoryPath(System.Reflection.Assembly.GetExecutingAssembly(), fileName);
         }
