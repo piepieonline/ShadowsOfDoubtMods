@@ -41,7 +41,7 @@ namespace HireAHitman.Dialog
                 endsDialog = false
             };
 
-            DialogController_OnDialogEnd.WatchedPresets.Add(aiSpeechPreset.ddsMessageID, (AIActionPreset.AISpeechPreset dialogPreset, string dialogPresetStr, Interactable saysToInteractable, Actor saidBy, int jobRef) =>
+            DialogController_OnDialogEnd.WatchedPresets[aiSpeechPreset.ddsMessageID] = (AIActionPreset.AISpeechPreset dialogPreset, string dialogPresetStr, Interactable saysToInteractable, Actor saidBy, int jobRef) =>
             {
                 HireAHitmanPlugin.PluginLogger.LogInfo("Starting photo dialog");
                 EvidenceWitness.DialogOption dialog = new EvidenceWitness.DialogOption();
@@ -49,7 +49,7 @@ namespace HireAHitman.Dialog
                 Interactable saysTo = saysToInteractable;
                 DialogController.Instance.ExecuteDialog(dialog, Player.Instance.phoneInteractable, Player.Instance.currentNode, Player.Instance);
                 HireAHitmanPlugin.PluginLogger.LogInfo("Ending photo dialog");
-            });
+            };
 
             preset.responses.Add(aiSpeechPreset);
 

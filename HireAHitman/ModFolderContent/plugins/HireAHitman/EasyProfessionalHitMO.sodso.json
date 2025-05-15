@@ -1,0 +1,19 @@
+{
+  "presetName": "EasyProfessionalHitMO",
+  "fileType": "MurderMO",
+  "name": "EasyProfessionalHitMO",
+  "type": "MurderMO",
+  "copyFrom": "REF:MurderMO|ProfessionalHitMO",
+  "disabled": 1,
+  "callingCardPool": [
+    {
+      "item": "REF:InteractablePreset|WorkID",
+      "origin": 0,
+      "randomScoreRange": {
+        "x": 1,
+        "y": 1
+      },
+      "traitModifiers": []
+    }
+  ]
+}

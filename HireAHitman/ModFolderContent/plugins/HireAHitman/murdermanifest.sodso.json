@@ -5,7 +5,8 @@
     "REF:ProfessionalHitPreset",
     "REF:Evi_Murder_CustomHitman_FriendOverheard",
     "REF:Int_Murder_CustomHitman_FriendOverheard",
-    "REF:ProfessionalHitMO"
+    "REF:ProfessionalHitMO",
+    "REF:EasyProfessionalHitMO"
   ],
   "loadBefore": "",
   "version": 1

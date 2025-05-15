@@ -32,6 +32,7 @@ namespace HireAHitman
         public static ConfigEntry<int> CostToHire;
         public static ConfigEntry<bool> PublicPhoneNumber;
         public static ConfigEntry<bool> EnableHitmanInNormalGameplay;
+        public static ConfigEntry<bool> UseEasyCaseType;
         public static ConfigEntry<bool> DebugMode;
 
         private static HireAHitmanPlugin instance;
@@ -52,10 +53,11 @@ namespace HireAHitman
 
             instance = this;
 
-            Enabled = Config.Bind("General", "Enabled", true, "Is the mod enabled at all? (Restart required)");
+            Enabled = Config.Bind("General", "Enabled", true, "Is the mod enabled at all? (Game restart required)");
             CostToHire = Config.Bind("General", "CostToHire", 1000, "The cost to hire a hitman");
-            PublicPhoneNumber = Config.Bind("General", "PublicPhoneNumber", false, "Show phone number in the phone known numbers section?");
-            EnableHitmanInNormalGameplay = Config.Bind("General", "EnableHitmanInNormalGameplay", false, "Should the Hitman case be used in the normal rotation? (Restart required)");
+            PublicPhoneNumber = Config.Bind("General", "PublicPhoneNumber", false, "Show phone number in the phone known numbers section? (Once added, it can't be removed from that save)");
+            EnableHitmanInNormalGameplay = Config.Bind("General", "EnableHitmanInNormalGameplay", false, "Should the Hitman case be used in the normal rotation? (Game restart required)");
+            UseEasyCaseType = Config.Bind("General", "UseEasyCase", false, "Should the easy version of the case be used for a quick solve?");
             DebugMode = Config.Bind("Debug", "Enabled", false, "Is debug logging enabled?");
 
             if (Enabled.Value)
@@ -72,6 +74,7 @@ namespace HireAHitman
                 // Saving and loading
                 SOD.Common.Lib.SaveGame.OnBeforeSave += SaveGame_OnBeforeSave;
                 SOD.Common.Lib.SaveGame.OnBeforeLoad += SaveGame_OnBeforeLoad;
+                SOD.Common.Lib.SaveGame.OnAfterLoad += SaveGame_OnAfterLoad;
                 SOD.Common.Lib.Gameplay.OnVictimKilled += HireAHitmanHooks.VMailBuildingSecurity;
             }
         }
@@ -90,6 +93,15 @@ namespace HireAHitman
             catch (System.Exception exception)
             {
                 PluginLogger.LogError($"Failed to save hired hitman targets: {exception.Message}");
+            }
+        }
+
+        private void SaveGame_OnAfterLoad(object sender, SOD.Common.Helpers.SaveGameArgs e)
+        {
+            // For some reason, loading a city fires this too early. Try again after loading
+            if (PublicPhoneNumber.Value)
+            {
+                GameplayController.Instance.AddOrMergePhoneNumberData(HireAHitmanHooks.FakePhoneNumber, false, null, "hireahitman", false);
             }
         }
 
