@@ -12,8 +12,25 @@
     "x": 0,
     "y": 15
   },
-  "murdererTraitModifiers": [],
-  "murdererJobModifiers": [],
+  "murdererTraitModifiers": [
+    {
+      "rule": 0,
+      "traitList": [
+        "REF:CharacterTrait|Quirk-StatusWealthy",
+        "REF:CharacterTrait|Quirk-StatusComfortable"
+      ],
+      "mustPassForApplication": 0,
+      "scoreModifier": 4
+    }
+  ],
+  "murdererJobModifiers": [
+    {
+      "jobs": [
+        "REF:OccupationPreset|Unemployed"
+      ],
+      "jobBoost": -100
+    }
+  ],
   "murdererCompanyModifiers": [
     {
       "companies": [

@@ -16,8 +16,9 @@ namespace HireAHitman
     internal class HireAHitmanHooks
     {
         public static List<int> TargetHumanIds = new List<int>();
-        public static int fakePhoneNumber = -1;
+        public static int FakePhoneNumber = -1;
         public static MurderMO HitmanMO;
+        public static MurderMO HitmanMOEasy;
 
         private static int currentHitmanTargetId = -1;
 
@@ -49,7 +50,7 @@ namespace HireAHitman
 
         public static void VMailBuildingSecurity(object sender, SOD.Common.Helpers.GameplayObjects.VictimKilledArgs e)
         {
-            if(e.Murder.mo == HitmanMO && MurderController.Instance.activeMurders.Count == 1)
+            if((e.Murder.mo == HitmanMO || e.Murder.mo == HitmanMOEasy) && MurderController.Instance.activeMurders.Count == 1)
             {
                 Human neighbour = null;
                 float score = float.MaxValue;
@@ -114,10 +115,20 @@ namespace HireAHitman
                     if (TargetHumanIds.Count == 0) return;
 
                     // Make sure we use our specific MurderMO
-                    HitmanMO.disabled = false;
+                    if (HireAHitmanPlugin.UseEasyCaseType.Value)
+                    {
+                        HitmanMO.disabled = true;
+                        HitmanMOEasy.disabled = false;
+                    }
+                    else
+                    {
+                        HitmanMO.disabled = false;
+                        HitmanMOEasy.disabled = true;
+                    }
+
                     foreach (MurderMO murderMO in Toolbox.Instance.allMurderMOs)
                     {
-                        if (!murderMO.disabled && murderMO != HitmanMO)
+                        if (!murderMO.disabled && murderMO != HitmanMO && murderMO != HitmanMOEasy)
                         {
                             overriddenDisabledMOs.Add(murderMO);
                             murderMO.disabled = true;
@@ -133,6 +144,7 @@ namespace HireAHitman
                     }
                     overriddenDisabledMOs.Clear();
                     HitmanMO.disabled = wasHitmanDisabled;
+                    HitmanMOEasy.disabled = true;
                 }
             }
 
@@ -198,6 +210,8 @@ namespace HireAHitman
 
         internal class Dialog_HireHitman
         {
+            static CustomDialogPreset hireHitmanAgencyResponseDialog, hireHitmanAgencySelectDialog, hireHitmanAgencyWelcomeDialog;
+
             [HarmonyPatch(typeof(CityData), "CreateSingletons")]
             internal class CityData_CreateSingletons
             {
@@ -210,34 +224,32 @@ namespace HireAHitman
 
                     // Fake numbers don't get a dialog window, so we can't use a welcome, or send any message before the text has appeared
 
-                    var hireHitmanAgencyResponseDialog = new HireHitmanAgencyDialog_Response();
-                    var hireHitmanAgencySelectDialog = new HireHitmanAgencyDialog_Select(hireHitmanAgencyResponseDialog);
-                    var hireHitmanAgencyWelcomeDialog = new HireHitmanAgencyDialog_Welcome(hireHitmanAgencySelectDialog);
+                    if(hireHitmanAgencyResponseDialog == null)
+                    {
+                        hireHitmanAgencyResponseDialog = new HireHitmanAgencyDialog_Response();
+                        hireHitmanAgencySelectDialog = new HireHitmanAgencyDialog_Select(hireHitmanAgencyResponseDialog);
+                        hireHitmanAgencyWelcomeDialog = new HireHitmanAgencyDialog_Welcome(hireHitmanAgencySelectDialog);
 
-                    DialogAdditionPlugin.LoadedCustomDialogPresets.Add(hireHitmanAgencyResponseDialog);
-                    DialogAdditionPlugin.LoadedCustomDialogPresets.Add(hireHitmanAgencySelectDialog);
-                    DialogAdditionPlugin.LoadedCustomDialogPresets.Add(hireHitmanAgencyWelcomeDialog);
+                        DialogAdditionPlugin.LoadedCustomDialogPresets.Add(hireHitmanAgencyResponseDialog);
+                        DialogAdditionPlugin.LoadedCustomDialogPresets.Add(hireHitmanAgencySelectDialog);
+                        DialogAdditionPlugin.LoadedCustomDialogPresets.Add(hireHitmanAgencyWelcomeDialog);
 
-                    DialogAdditionPlugin.AddDialogInterceptor(hireHitmanAgencyResponseDialog);
-                    DialogAdditionPlugin.AddDialogInterceptor(hireHitmanAgencySelectDialog);
-                    DialogAdditionPlugin.AddDialogInterceptor(hireHitmanAgencyWelcomeDialog);
+                        DialogAdditionPlugin.AddDialogInterceptor(hireHitmanAgencyResponseDialog);
+                        DialogAdditionPlugin.AddDialogInterceptor(hireHitmanAgencySelectDialog);
+                        DialogAdditionPlugin.AddDialogInterceptor(hireHitmanAgencyWelcomeDialog);
 
-                    PhotoSelectButtonController_OnLeftClick.CallTypes.Add(hireHitmanAgencySelectDialog.Name, HireHitmanAgencyDialog_Select.OnPhotoSelected);
+                        PhotoSelectButtonController_OnLeftClick.CallTypes.Add(hireHitmanAgencySelectDialog.Name, HireHitmanAgencyDialog_Select.OnPhotoSelected);
+                    }
 
                     var citySeed = CityData.Instance.seed;
-                    fakePhoneNumber = Toolbox.Instance.GetPsuedoRandomNumber(7000000, 7999000, ref citySeed);
+                    FakePhoneNumber = Toolbox.Instance.GetPsuedoRandomNumber(7000000, 7999000, ref citySeed);
 
-                    if (citySeed != CityData.Instance.seed)
-                    {
-                        HireAHitmanPlugin.PluginLogger.LogError($"City seed changed?: {CityData.Instance.seed} != {citySeed}");
-                    }
-                    
                     if(HireAHitmanPlugin.PublicPhoneNumber.Value)
                     {
-                        GameplayController.Instance.AddOrMergePhoneNumberData(fakePhoneNumber, false, null, "hireahitman", false);
+                        GameplayController.Instance.AddOrMergePhoneNumberData(FakePhoneNumber, false, null, "hireahitman", false);
                     }
                     
-                    TelephoneController.Instance.AddFakeNumber(fakePhoneNumber, new TelephoneController.CallSource(TelephoneController.CallType.fakeOutbound, hireHitmanAgencyWelcomeDialog.Preset));
+                    TelephoneController.Instance.AddFakeNumber(FakePhoneNumber, new TelephoneController.CallSource(TelephoneController.CallType.fakeOutbound, hireHitmanAgencyWelcomeDialog.Preset));
                 }
             }
         }
@@ -255,7 +267,7 @@ namespace HireAHitman
                     settings.textSize = Mathf.Abs(MathF.Truncate(settings.textSize));
                     workingIndex -= settings.textSize;
 
-                    settings.textString = fakePhoneNumber.ToString().Insert(3, "-");
+                    settings.textString = FakePhoneNumber.ToString().Insert(3, "-");
 
                     if (HireAHitmanPlugin.DebugMode.Value)
                     {
@@ -282,6 +294,7 @@ namespace HireAHitman
                 }
 
                 HitmanMO = Toolbox.Instance.allMurderMOs.Where(mo => mo.presetName == "ProfessionalHitMO").First();
+                HitmanMOEasy = Toolbox.Instance.allMurderMOs.Where(mo => mo.presetName == "EasyProfessionalHitMO").First();
                 HitmanMO.disabled = !HireAHitmanPlugin.EnableHitmanInNormalGameplay.Value;
             }
         }
