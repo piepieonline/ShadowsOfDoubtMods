@@ -1,0 +1,9 @@
+{
+  "name": "Lead_Hints",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/LeadHints",
+  "description": "Displays the types of leads you'll receive in the 'Details' tab of job listings before accepting a side job.",
+  "dependencies": [
+    "BepInEx-BepInExPack_IL2CPP-6.0.733"
+  ]
+}
