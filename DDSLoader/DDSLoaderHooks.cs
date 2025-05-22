@@ -143,10 +143,27 @@ namespace DDSLoader
 
                                     Toolbox.Instance.allDDSTrees.Add(tree.id, tree);
 
+                                    // Sanity checks
                                     if (tree.treeType == DDSSaveClasses.TreeType.newspaper)
                                     {
                                         DDSLoaderPlugin.PluginLogger.LogWarning($"Newspaper content is no longer supported - use the official editor");
                                         // LoadNewspaperArticle(tree, messagesPath);
+                                    }
+
+                                    // Check that the starting message ID is valid
+                                    bool validStartingMessage = false;
+                                    foreach(var msg in tree.messages)
+                                    {
+                                        if (msg.instanceID == tree.startingMessage)
+                                        {
+                                            validStartingMessage = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!validStartingMessage)
+                                    {
+                                        DDSLoaderPlugin.PluginLogger.LogWarning($"DDS Tree {tree.name} ({tree.id}) doesn't reference an existing message instanceID as it's starting message. This item may not work if it is a conversation or vmail!");
                                     }
                                 }
                             }
@@ -216,6 +233,24 @@ namespace DDSLoader
                                     Strings.ParseLine(line.Trim(), out var key, out var notes, out var display, out var alt, out var freq, out var suffix, out var misc);
                                     if (display != null && StringsLoadIntoDictionaryMI != null)
                                     {
+                                        // Manually remove to prevent the override check failing
+                                        // As well as from the random table
+                                        if (Strings.stringTable[fileName].ContainsKey(key))
+                                        {
+                                            // Random tables are just added to multiple times for each value, so remove all of the duplicates
+                                            if(Strings.randomEntryLists.ContainsKey(fileName))
+                                            {
+                                                for(int i = Strings.randomEntryLists[fileName].Count - 1; i >= 0; i--)
+                                                {
+                                                    if (Strings.randomEntryLists[fileName][i].displayStr == Strings.stringTable[fileName][key].displayStr)
+                                                    {
+                                                        Strings.randomEntryLists[fileName].RemoveAt(i);
+                                                    }
+                                                }
+                                            }
+                                            Strings.stringTable[fileName].Remove(key);
+                                        }
+
                                         StringsLoadIntoDictionaryMI.Invoke(null, (new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<Il2CppSystem.Object>(new Il2CppSystem.Object[] { fileName, Strings.stringTable[fileName].Count + 1, key, display.Replace("\\r\\n", "\r\n"), alt, freq, suffix })));
 
                                         if (DDSLoaderPlugin.debugPrintLoadedStrings.Value)

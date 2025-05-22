@@ -1,3 +1,7 @@
+# 1.0.7
+
+* Fixed content (csv) overrides, vanilla content can be overridden by using the same GUID
+
 # 1.0.6
 
 * Fixed patches, removed dlls from this library (Now requires the bundle loader instead)

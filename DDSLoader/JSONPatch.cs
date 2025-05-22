@@ -5,7 +5,7 @@ using static AssetBundleLoader.JsonLoader.NewtonsoftExtensions;
 
 namespace DDSLoader
 {
-    internal class JSONPatch
+    public class JSONPatch
     {
         public static dynamic ApplyPatch(string targetJSON, string patchJSON)
         {
