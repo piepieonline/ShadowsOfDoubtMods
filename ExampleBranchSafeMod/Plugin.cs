@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using UnityEngine;
+using BepInEx.Logging;
 
 #if MONO
 using BepInEx.Unity.Mono;
@@ -9,23 +10,26 @@ using BepInEx.Unity.IL2CPP;
 
 namespace ExampleBranchSafeMod
 {
-#if MONO
+
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+#if MONO
     public class ExampleBranchSafeModPlugin : BaseUnityPlugin
+#elif IL2CPP
+    public class ExampleBranchSafeModPlugin : BasePlugin
+#endif
     {
+        public static ManualLogSource PluginLogger;
+#if MONO
         private void Awake()
         {
-            Logger.LogInfo($"I'm in Mono!");
+            PluginLogger = Logger;
+            PluginLogger.LogInfo($"I'm in Mono!");
+#elif IL2CPP
+        public override void Load()
+        {
+            PluginLogger = Log;
+            PluginLogger.LogInfo($"I'm in IL2CPP!");
+#endif
         }
     }
-#elif IL2CPP
-[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-public class ExampleBranchSafeModPlugin : BasePlugin
-{
-    public override void Load()
-    {
-        Log.LogInfo($"I'm in IL2CPP!");
-    }
-}
-#endif
 }

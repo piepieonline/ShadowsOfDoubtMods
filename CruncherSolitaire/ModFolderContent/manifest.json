@@ -4,7 +4,7 @@
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/CruncherSolitaire",
   "description": "Adds a solitaire app to residential crunchers, adding something else to do between cases.",
   "dependencies": [
-    "BepInEx-BepInExPack_IL2CPP-6.0.667",
+    "BepInEx-BepInExPack_IL2CPP-6.0.733",
     "Piepieonline-Asset_Bundle_Loader-1.0.4",
     "Piepieonline-DDSLoader-1.0.2"
   ]

@@ -44,7 +44,7 @@
 
 	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">
 		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
-		<PackageReference Include="SOD.Common" Version="1.1.5" IncludeAssets="compile" />
+		<PackageReference Include="SOD.Common" Version="2.0.6" IncludeAssets="compile" />
 		<Reference Include="UniverseLib.IL2CPP.Interop">
 			<HintPath>$(BepInExPath)plugins/GTFOModding-UnityExplorer_IL2CPP/UniverseLib.IL2CPP.Interop.dll</HintPath>
 		</Reference>

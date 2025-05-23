@@ -4,7 +4,7 @@ Lua driven script extensions for the DDS system to enable dynamic scripted text.
 
 # ddsscripts.sod.json Format
 
-Subset taken from the default ddsscripts file that comes with this mod
+This is a subset taken from the default `ddsscripts.sod.json` file (`/DDSContent/ddsscripts.sod.json`) that comes with this mod:
 ```
 {
   "values": {

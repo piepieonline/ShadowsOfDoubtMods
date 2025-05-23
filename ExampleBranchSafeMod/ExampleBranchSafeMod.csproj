@@ -1,7 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='MONO'">
+		<TargetFramework>net472</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
 		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<Platforms>x64</Platforms>
 		<AssemblyName>ExampleBranchSafeMod$(Configuration)</AssemblyName>
 		<Description>An example mod that works on both IL2CPP and Mono game branches</Description>
 		<Version>1.0.0</Version>

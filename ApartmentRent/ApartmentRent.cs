@@ -93,12 +93,6 @@ namespace ApartmentRent
             SOD.Common.Lib.SaveGame.OnAfterLoad += OnAfterLoad;
         }
 
-        // Debug helper
-        public static void GiveMoney(int amount)
-        {
-            GameplayController.Instance.AddMoney(amount, false, $"Added money");
-        }
-
         public static List<int> foreclosedAddresses = new List<int>();
         public static Dictionary<int, bool> foreclosedDoorIDs = new Dictionary<int, bool>();
         public static Dictionary<int, int> missedPayments = new Dictionary<int, int>();
