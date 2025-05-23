@@ -1,10 +1,10 @@
 {
   "name": "CitizenImporter",
-  "version_number": "2.0.1",
+  "version_number": "2.1.0",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/CitizenImporter",
   "description": "Create citizens from a file at city generation, allowing for custom names and physical attributes. Requires a new city. Template: https://docs.google.com/spreadsheets/d/11OvB572ezm2j-iO2rd89XHInrTNXey83eLdw2VJcujE/edit?gid=1379962932",
   "dependencies": [
-    "BepInEx-BepInExPack_IL2CPP-6.0.667",
+    "BepInEx-BepInExPack_IL2CPP-6.0.733",
     "Venomaus-SODCommon-2.0.6"
   ]
 }

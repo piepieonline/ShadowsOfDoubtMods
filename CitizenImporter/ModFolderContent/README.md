@@ -3,6 +3,8 @@
 Create citizens from a CSV file at city generation, allowing for custom names and physical attributes. Requires new city generation.
 Follow the steps in the Config Generation section to create a citizen list.
 
+The player's appearance can also be customised by using a row named "PLAYER PLAYER" in the spreadsheet
+
 # Config Generation
 
 * Visit the Google Sheets spreadsheet, follow the instructions on the first sheet

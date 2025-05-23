@@ -14,6 +14,8 @@ using UniverseLib;
 using static Descriptors;
 using SOD.Common.Extensions;
 using System.Text.RegularExpressions;
+using Cpp2IL.Core.Api;
+
 
 
 
@@ -93,6 +95,8 @@ namespace CitizenImporter
                 createdHumans = new Dictionary<int, HumanOverride>();
             }
         }
+
+        static HumanOverride playerOverride = null;
 
         static Dictionary<Human.Gender, List<HumanOverride>> loadedHumanOverrides = new Dictionary<Human.Gender, List<HumanOverride>>()
         {
@@ -191,7 +195,7 @@ namespace CitizenImporter
                 // Mutually exclusive traits
                 if (newHumanOverride.traits.Contains("affliction-farsighted") && !newHumanOverride.notTraits.Contains("affliction-shortsighted")) newHumanOverride.notTraits.AddItem("affliction-shortsighted");
                 if (newHumanOverride.traits.Contains("affliction-shortsighted") && !newHumanOverride.notTraits.Contains("affliction-farsighted")) newHumanOverride.notTraits.AddItem("affliction-farsighted");
-
+                
                 // Don't use non-binary here, because it's just too rare - citizens likely won't generate 
                 Human.Gender genderToAssign = (Human.Gender)Random.Range(0, 2);
                 if (newHumanOverride.gender.Length != 0)
@@ -202,7 +206,17 @@ namespace CitizenImporter
                     }
                 }
 
-                loadedHumanOverrides[genderToAssign].Add(newHumanOverride);
+                if (
+                    newHumanOverride.firstName.Trim().ToUpper() == "PLAYER" &&
+                    newHumanOverride.lastName.Trim().ToUpper() == "PLAYER"
+                )
+                {
+                    playerOverride = newHumanOverride;
+                }
+                else
+                {
+                    loadedHumanOverrides[genderToAssign].Add(newHumanOverride);
+                }
             }
 
             // Probably don't need to shuffle the order, the game seems to create citizens in a fairly random order?
@@ -291,7 +305,7 @@ namespace CitizenImporter
 
             foreach (var keyValue in overridenHumans)
             {
-                var human = keyValue.Value.Item1;
+                var human = CityData.Instance.citizenDictionary[keyValue.Key];
                 var humanOverride = keyValue.Value.Item2;
                 
                 if(humanOverride.firstName != "" && human.firstName != humanOverride.firstName) PluginLogger.LogWarning($"Citizen override: {human.citizenName} doesn't match 'firstName'");
@@ -322,7 +336,21 @@ namespace CitizenImporter
                 }
             }
         }
-        
+
+        // Player overrides
+        [HarmonyPatch(typeof(Player), nameof(Player.PrepForStart))]
+        public class Player_PrepForStart
+        {
+            public static void Prefix(Player __instance)
+            {
+                if(playerOverride != null)
+                {
+                    overridenHumans[__instance.humanID] = (__instance, playerOverride);
+                    PluginLogger.LogInfo($"Player appearence set");
+                }
+            }
+        }
+
         // Partner is set after this, random dice roll.. How can we force them to spawn if requested?
         [HarmonyPatch(typeof(Human), "SetSexualityAndGender")]
         public class Human_SetSexualityAndGender
@@ -675,6 +703,13 @@ namespace CitizenImporter
                 if (overridenHumans.ContainsKey(__instance.citizen.humanID))
                 {
                     var overrideHuman = overridenHumans[__instance.citizen.humanID].Item2;
+
+                    if(overrideHuman == playerOverride)
+                    {
+                        // Skip the player, their name is already set
+                        return;
+                    }
+
                     __instance.citizen.firstName = overrideHuman.firstName.Length > 0 ? overrideHuman.firstName : __instance.citizen.firstName;
                     __instance.citizen.surName = overrideHuman.lastName.Length > 0 ? overrideHuman.lastName : __instance.citizen.surName;
                     __instance.citizen.casualName = overrideHuman.casualName.Length > 0 ? overrideHuman.casualName : __instance.citizen.firstName;

@@ -1,3 +1,8 @@
+# 2.1.0
+
+* Player customisation! If the CSV contains a row with the first name and surname "PLAYER", those details will be used for the player's appearance
+  * Not all parameters apply to players, but the physical characteristics will be applied
+
 # 2.0.1
 
 * Better error messages when there is an invalid row in the CSV 
