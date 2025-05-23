@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
-using HarmonyLib;
-using DialogAdditions;
-using HireAHitman.Dialog;
-using AssetBundleLoader;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+
 using UnityEngine;
-using System;
-using Cpp2IL.Core.Api;
-using BigGustave;
+using HarmonyLib;
+
 using static MurderController;
 using SOD.Common.Extensions;
-using System.Linq;
+using DialogAdditions;
+using HireAHitman.Dialog;
 
 namespace HireAHitman
 {
@@ -70,7 +69,7 @@ namespace HireAHitman
                         }
                     }
                 }
-
+                
                 if (neighbour == null)
                 {
                     HireAHitmanPlugin.DebugLogIfEnabled(BepInEx.Logging.LogLevel.Info, $"Not sending, no neighbour");
@@ -103,12 +102,14 @@ namespace HireAHitman
             [HarmonyPatch(typeof(MurderController), "PickNewMurderer")]
             internal class MurderController_PickNewMurderer
             {
+                static List<MurderPreset> overriddenDisabledPresets = new List<MurderPreset>();
                 static List<MurderMO> overriddenDisabledMOs = new List<MurderMO>();
                 static bool wasHitmanDisabled = false;
 
                 public static void Prefix()
                 {
                     overriddenDisabledMOs.Clear();
+                    overriddenDisabledPresets.Clear();
                     wasHitmanDisabled = HitmanMO.disabled;
 
                     // Don't do anything if we don't have a target lined up
@@ -134,6 +135,15 @@ namespace HireAHitman
                             murderMO.disabled = true;
                         }
                     }
+
+                    foreach (MurderPreset murderPreset in Toolbox.Instance.allMurderPresets)
+                    {
+                        if (!murderPreset.disabled && murderPreset.presetName != "ProfessionalHitPreset")
+                        {
+                            overriddenDisabledPresets.Add(murderPreset);
+                            murderPreset.disabled = true;
+                        }
+                    }
                 }
 
                 public static void Postfix()
@@ -143,6 +153,13 @@ namespace HireAHitman
                         murderMO.disabled = false;
                     }
                     overriddenDisabledMOs.Clear();
+                    
+                    foreach (var murderPreset in overriddenDisabledPresets)
+                    {
+                        murderPreset.disabled = false;
+                    }
+                    overriddenDisabledMOs.Clear();
+
                     HitmanMO.disabled = wasHitmanDisabled;
                     HitmanMOEasy.disabled = true;
                 }

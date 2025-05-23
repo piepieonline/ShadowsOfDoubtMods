@@ -1,3 +1,8 @@
+# 1.0.3
+
+* Fixed cases where the wrong preset was chosen, and a kidnapping or sniper could occur
+* Fixed evidence accidently being sent to the victim giving the game away
+
 # 1.0.2
 
 * Minor fix for saving the victim ID per save instead of globally

@@ -125,7 +125,7 @@
       "name": "VMAIL: Hitman Orders",
       "compatibleWithAllMotives": 1,
       "spawnOnPhase": 1,
-      "tryToSpawnWithEachNewMurder": 1,
+      "tryToSpawnWithEachNewMurder": 0,
       "belongsTo": 2,
       "chance": 1,
       "useTraits": 0,
@@ -144,9 +144,7 @@
       },
       "writer": 2,
       "receiver": 2,
-      "vmailOtherParticipants": [
-        1
-      ],
+      "vmailOtherParticipants": [],
       "where": 2,
       "security": 0,
       "priority": 0,

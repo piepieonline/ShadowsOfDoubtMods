@@ -1,9 +1,9 @@
-60015571-c2d3-424c-9942-8cbabbe3217c,,"|city.custom_selected_hitman_target_name|, understood. Someone will be dispatched to take care of them.",,,,22:00 12/04/2025
+60015571-c2d3-424c-9942-8cbabbe3217c,,"|city.customscope_selected_hitman_target.fullname|, understood. Someone will be dispatched to take care of them.",,,,22:00 12/04/2025
 fdec27f0-1bf1-48d0-8c69-9bc514ea30bb,,"You've reached Dial-A-Whack. Please detail the name and address of the target. The price is |city.custom_hitman_cost| crows.",,,,16:42 10/05/2025
 c22aec5a-4d23-4622-b428-2008daa682cd,,"Insufficient details. Please provide the targets name and home address.",,,,22:02 12/04/2025
 6d51ff5e-9d9c-4bb8-9ad5-43a17dd40cb1,,And ensure you have the |city.custom_hitman_cost| crows to cover it.,,,,18:34 10/05/2025
 7fa383e0-3942-4d6e-bff4-f2164dd5b1ca,,Orders,,,,07:33 13/05/2025
-fb46f8b5-0395-48f5-8b10-cf07084eca5c,,"Agent, you have been activated.\r\n\r\nYour target is one |customscope_vmail_participant_c.fullname|, and they live at |customscope_vmail_participant_c.home.name|.\r\n\r\nCrows will be at the usual dead drop once confirmation is received.",,,,12:09 13/05/2025
+fb46f8b5-0395-48f5-8b10-cf07084eca5c,,"Agent, you have been activated.\r\n\r\nYour target is one |killer.nextmurder.victim.fullname|, and they live at |killer.nextmurder.victim.home.name|.\r\n\r\nCrows will be at the usual dead drop once confirmation is received.",,,,12:09 13/05/2025
 b5afab17-bf7b-484b-b094-8453bb4f56d9,,"Hey |receiver.casualname|,\r\n\r\n I heard some pretty scary things when I was walking through |killer.nextmurder.killer.home.building| the other day. I heard your name, and just the words "it'll be taken care of". \r\nPlease, please be careful! The |killer.nextmurder.killer.gender| voice sounded really serious...\r\n\r\nYour friend,\r\n|writer.casualname|",,,,10:36 13/05/2025
 bc1f07db-e58a-4065-b07a-5b5addb2e3a9,,"Dear |receiver.fullname|,\r\n\r\nI wish to raise a concern about the new tenant on my floor. There have been some strange goings-on since they moved in, strangers and odd sounds at all hours.\r\nCould you please keep an eye on them? I'm worried for my safety.\r\n\r\nRespectfully yours,\r\n|fullname|",,,,21:16 13/05/2025
 25c73c10-3ffa-436b-9ea5-b6151147a6b3,,Tenant Complaint,,,,21:17 13/05/2025
