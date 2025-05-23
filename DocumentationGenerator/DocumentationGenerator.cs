@@ -55,9 +55,7 @@ namespace DocumentationGenerator
                 Logger.LogWarning($"Documentation Regeneration Started");
 
                 // Codegen specific stuff
-                var codegenSOMap = new Dictionary<string, Dictionary<string, IEnumerable<string>>>();
-                codegenSOMap["ScriptableObject"] = new Dictionary<string, IEnumerable<string>>();
-                codegenSOMap["Enum"] = new Dictionary<string, IEnumerable<string>>();
+                var codegenSOMap = new SOMapping();
                 var codegenIDMap = new Dictionary<string, IEnumerable<string>>();
                 var codegenTemplates = new Dictionary<string, dynamic>();
                 var codegenSOTypeMapping = new Dictionary<string, Dictionary<string, (string Class, bool Array, string Tooltip)>>();
@@ -92,9 +90,9 @@ namespace DocumentationGenerator
                     if(soType.IsAssignableTo(typeof(ScriptableObject)))
                     {
                         // Type map
-                        if (!codegenSOMap["ScriptableObject"].ContainsKey(soTypeName))
+                        if (!codegenSOMap.ScriptableObject.ContainsKey(soTypeName))
                         {
-                            codegenSOMap["ScriptableObject"][soTypeName] = new SortedSet<string>();
+                            codegenSOMap.ScriptableObject[soTypeName] = new SortedSet<string>();
                         }
 
                         if (DocumentationGenerator.IsFullExportEnabled && soName != "")
@@ -110,7 +108,22 @@ namespace DocumentationGenerator
                         {
                             // There are a massive number of duplicates - maybe due to addressables?
                             // Only add one copy to the SO list, but record both IDs (treating them as the same for now)
-                            if (!codegenSOMap["ScriptableObject"][soTypeName].Contains(soName)) ((SortedSet<string>)codegenSOMap["ScriptableObject"][soTypeName]).Add(soName);
+                            if (!codegenSOMap.ScriptableObject[soTypeName].Contains(soName)) ((SortedSet<string>)codegenSOMap.ScriptableObject[soTypeName]).Add(soName);
+                        }
+                    }
+
+                    if(soType.IsAssignableTo(typeof(ScriptableObjectIDSystem)))
+                    {
+                        // Type map
+                        if (!codegenSOMap.ScriptableObjectID.ContainsKey(soTypeName))
+                        {
+                            codegenSOMap.ScriptableObjectID[soTypeName] = new SortedDictionary<string, string>();
+                        }
+
+                        if (soName != "")
+                        {
+                            ScriptableObjectIDSystem scriptableObjectID = so.Cast<ScriptableObjectIDSystem>();
+                            if (!codegenSOMap.ScriptableObjectID[soTypeName].ContainsKey(scriptableObjectID.id)) codegenSOMap.ScriptableObjectID[soTypeName].Add(scriptableObjectID.id, soName);
                         }
                     }
 
@@ -122,7 +135,7 @@ namespace DocumentationGenerator
                 }
 
                 // Export trait list to the wiki table format
-                Generator_Traits.GenerateTraitsWiki(MEDIAWIKI_DOC_EXPORT_PATH, codegenSOMap["ScriptableObject"]["CharacterTrait"]);
+                Generator_Traits.GenerateTraitsWiki(MEDIAWIKI_DOC_EXPORT_PATH, codegenSOMap.ScriptableObject["CharacterTrait"]);
 
                 /*
                 foreach(var rq in GameplayControls.Instance.murderResolveQuestions)
@@ -145,10 +158,10 @@ namespace DocumentationGenerator
                 {
                     if (type.IsEnum)
                     {
-                        codegenSOMap["Enum"][type.Name] = new List<string>();
+                        codegenSOMap.Enum[type.Name] = new List<string>();
                         foreach (var enumValue in type.GetEnumValues())
                         {
-                            ((List<string>)codegenSOMap["Enum"][type.Name]).Add(enumValue.ToString());
+                            ((List<string>)codegenSOMap.Enum[type.Name]).Add(enumValue.ToString());
                         }
                     }
 
@@ -190,10 +203,10 @@ namespace DocumentationGenerator
 
                             if (property.PropertyType.IsEnum)
                             {
-                                codegenSOMap["Enum"][property.Name] = new SortedSet<string>();
+                                codegenSOMap.Enum[property.Name] = new SortedSet<string>();
                                 foreach (var enumValue in property.PropertyType.GetEnumValues())
                                 {
-                                    ((SortedSet<string>)codegenSOMap["Enum"][property.Name]).Add(enumValue.ToString());
+                                    ((SortedSet<string>)codegenSOMap.Enum[property.Name]).Add(enumValue.ToString());
                                 }
                             }
                         }
@@ -242,6 +255,13 @@ namespace DocumentationGenerator
 
                 Logger.LogWarning($"Documentation Regenerated. Turn off documentation generation and restart the game!");
             }
+        }
+
+        class SOMapping
+        {
+            public Dictionary<string, IEnumerable<string>> ScriptableObject = new Dictionary<string, IEnumerable<string>>();
+            public Dictionary<string, SortedDictionary<string, string>> ScriptableObjectID = new Dictionary<string, SortedDictionary<string, string>>();
+            public Dictionary<string, IEnumerable<string>> Enum = new Dictionary<string, IEnumerable<string>>();
         }
     }
 }
