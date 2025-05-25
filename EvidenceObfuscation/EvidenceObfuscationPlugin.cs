@@ -27,6 +27,12 @@ namespace EvidenceObfuscation
         public static ConfigEntry<bool> EmployeeRecord_Printed_FingerprintsRemoved;
         public static ConfigEntry<bool> EmployeeRecord_Filling_FingerprintsRemoved;
 
+        public static ConfigEntry<bool> GovDatabase_FingerprintsRemoved;
+
+        public static ConfigEntry<bool> MurderWeapon_EntryWoundRemoval;
+        public static ConfigEntry<bool> MurderWeapon_GunTypeRemoved;
+        public static ConfigEntry<bool> MurderWeapon_MeleeTypeRemoved;
+
 #if MONO
         private void Awake()
         {
@@ -43,10 +49,27 @@ namespace EvidenceObfuscation
             EmployeeRecord_Printed_FingerprintsRemoved = Config.Bind("Employee Record", "Should fingerprints be removed from employee records printed from a cruncher?", false);
             EmployeeRecord_Filling_FingerprintsRemoved = Config.Bind("Employee Record", "Should fingerprints be removed from employee records found in a filling cabinet?", false);
 
+            GovDatabase_FingerprintsRemoved = Config.Bind("Government Database", "Should fingerprints be removed from the government database?", false);
+
+            MurderWeapon_EntryWoundRemoval = Config.Bind("Murder Weapon", "Should entry wound evidence be removed?", false, "Recommended true, as these pieces of evidence are kind of broken anyway");
+            MurderWeapon_GunTypeRemoved = Config.Bind("Murder Weapon", "Should the gun type be removed from the inspection of the body?", false);
+            MurderWeapon_MeleeTypeRemoved = Config.Bind("Murder Weapon", "Should the melee weapon type be removed from the inspection of the body?", false);
+
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
             var harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");
             harmony.PatchAll();
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is patched!");
+        }
+
+        public static void RemoveMessageMatching(DDSSaveClasses.DDSTreeSave tree, string name)
+        {
+            for (int i = tree.messages.Count - 1; i >= 0; i--)
+            {
+                if (tree.messages[i].elementName == name)
+                {
+                    tree.messages.RemoveAt(i);
+                }
+            }
         }
     }
 }

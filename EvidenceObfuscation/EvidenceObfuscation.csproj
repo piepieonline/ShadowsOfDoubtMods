@@ -44,7 +44,7 @@
 
 	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">
 		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
-		<PackageReference Include="SOD.Common" Version="1.1.5" IncludeAssets="compile" />
+		<PackageReference Include="SOD.Common" Version="2.0.6" IncludeAssets="compile" />
 		<Reference Include="$(BepInExPath)interop/Unity.TextMeshPro.dll" />
 		<Reference Include="$(BepInExPath)interop/Il2Cppmscorlib.dll" />
 		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
@@ -53,14 +53,14 @@
 	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-		<Folder Include="ModFolderContent\" />
+	  <ProjectReference Include="..\DDSScriptExtensions\DDSScriptExtensions.csproj" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<Exec Command="mkdir &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" Condition="!Exists('$(BepInExPath)plugins/$(ProjectName)')" />
 		<Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
-		<Exec Command="copy /Y &quot;$(ProjectDir)ModFolderContent\*&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
+		<Exec Command="xcopy /S /Y /d &quot;$(ProjectDir)ModFolderContent\*&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
 	</Target>
 </Project>

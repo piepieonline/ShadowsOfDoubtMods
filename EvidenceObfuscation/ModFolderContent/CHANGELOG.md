@@ -1,3 +1,11 @@
+# 2.3.0
+
+* Added an option to remove fingerprints from the government database records
+
+# 2.2.0
+
+* Added options to remove details from the time of death evidence, alongside removing the entry wound evidence
+
 # 2.1.2
 
 * Fixed broken employee records
