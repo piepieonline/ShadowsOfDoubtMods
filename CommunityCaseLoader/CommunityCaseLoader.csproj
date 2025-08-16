@@ -1,15 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup Condition="'$(Configuration)'=='MONO'">
-		<TargetFramework>net472</TargetFramework>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
-		<TargetFramework>net6.0</TargetFramework>
-	</PropertyGroup>
-	
+﻿<Project Sdk="Microsoft.NET.Sdk">	
 	<PropertyGroup>
-		<Platforms>x64</Platforms>
 		<AssemblyName>CommunityCaseLoader</AssemblyName>
 		<Description>An example mod that works on both IL2CPP and Mono game branches</Description>
 		<Version>1.0.0</Version>
@@ -20,15 +10,6 @@
 			https://nuget.bepinex.dev/v3/index.json
 		</RestoreAdditionalProjectSources>
 		<RootNamespace>CommunityCaseLoader</RootNamespace>
-		<Configurations>Mono;IL2CPP</Configurations>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='MONO'">
-		<BepInExPath>E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/BepInEx/</BepInExPath>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
-		<BepInExPath>D:/Game Modding/r2modman/_Data/ShadowsofDoubt/profiles/LocalModding/BepInEx/</BepInExPath>
 	</PropertyGroup>
 	
 	<ItemGroup>
@@ -64,10 +45,4 @@
 	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
 	</ItemGroup>
-
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="mkdir &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" Condition="!Exists('$(BepInExPath)plugins/$(ProjectName)')" />
-		<Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
-		<Exec Command="xcopy /S /Y /d &quot;$(ProjectDir)ModFolderContent\*&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
-	</Target>
 </Project>

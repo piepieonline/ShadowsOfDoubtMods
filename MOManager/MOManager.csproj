@@ -1,17 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup Condition="'$(Configuration)'=='MONO'">
-		<TargetFramework>net472</TargetFramework>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
-		<TargetFramework>net6.0</TargetFramework>
-	</PropertyGroup>
-	
 	<PropertyGroup>
-		<Platforms>x64</Platforms>
 		<AssemblyName>MOManager</AssemblyName>
-		<Description>Displays the types of leads you'll receive in the 'Details' tab of job listings before accepting a side job.</Description>
 		<Version>1.0.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
@@ -20,18 +9,8 @@
 			https://nuget.bepinex.dev/v3/index.json
 		</RestoreAdditionalProjectSources>
 		<RootNamespace>MOManager</RootNamespace>
-		<Configurations>Mono;IL2CPP</Configurations>
-		<RunPostBuildEvent>Always</RunPostBuildEvent>
 	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='MONO'">
-		<BepInExPath>E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/BepInEx/</BepInExPath>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
-		<BepInExPath>D:/Game Modding/r2modman/_Data/ShadowsofDoubt/profiles/LocalModding/BepInEx/</BepInExPath>
-	</PropertyGroup>
-
+	
 	<ItemGroup>
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
 		<PackageReference Include="UnityEngine.Modules" Version="2021.3.26" IncludeAssets="compile" />
@@ -53,10 +32,4 @@
 	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
 	</ItemGroup>
-
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="mkdir &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" Condition="!Exists('$(BepInExPath)plugins/$(ProjectName)')" />
-		<Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
-		<Exec Command="xcopy /S /Y /d &quot;$(ProjectDir)ModFolderContent\*&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
-	</Target>
 </Project>

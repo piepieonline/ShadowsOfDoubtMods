@@ -1,31 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup Condition="'$(Configuration)'=='MONO'">
-		<TargetFramework>net472</TargetFramework>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
-		<TargetFramework>net6.0</TargetFramework>
-	</PropertyGroup>
-
 	<PropertyGroup>
-		<Platforms>x64</Platforms>
 		<AssemblyName>DDSLoader</AssemblyName>
 		<Description>Loads the DDS and strings CSV for other mods</Description>
 		<Version>1.0.2</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
-		<Configurations>Mono;IL2CPP</Configurations>
 	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='MONO'">
-		<BepInExPath>E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/BepInEx/</BepInExPath>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
-		<BepInExPath>D:/Game Modding/r2modman/_Data/ShadowsofDoubt/profiles/LocalModding/BepInEx/</BepInExPath>
-	</PropertyGroup>
-
+	
 	<ItemGroup>
 		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
@@ -46,11 +27,4 @@
 		<Reference Include="$(BepInExPath)/unity-libs/UnityEngine.JSONSerializeModule.dll" />
 		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
 	</ItemGroup>
-
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="mkdir &quot;$(BepInExPath)plugins\$(ProjectName)&quot;" Condition="!Exists('$(BepInExPath)plugins\$(ProjectName)')" />
-		<Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
-		<Exec Command="copy /Y &quot;$(ProjectDir)ModFolderContent\*&quot; &quot;$(BepInExPath)plugins\$(ProjectName)&quot;" />
-		<Exec Command="xcopy /S /Y /d &quot;$(TargetDir)$(TargetName).dll&quot; &quot;D:\Game Modding\ShadowsOfDoubt\_Mods\ShadowsOfDoubtContent\$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;D:\Game Modding\ShadowsOfDoubt\_Mods\ShadowsOfDoubtContent\$(ProjectName)&quot;" />
-	</Target>
 </Project>

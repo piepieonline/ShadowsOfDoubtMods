@@ -1,0 +1,24 @@
+<Project>
+    <PropertyGroup>
+        <Platforms>x64</Platforms>
+        <Configurations>Mono;IL2CPP</Configurations>
+        <RunPostBuildEvent>Always</RunPostBuildEvent>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)'=='MONO'">
+        <TargetFramework>net472</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+    
+    <PropertyGroup Condition="'$(Configuration)'=='MONO'">
+        <BepInExPath>E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/BepInEx/</BepInExPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
+        <BepInExPath Condition="!$([System.OperatingSystem]::IsLinux())">D:/Game Modding/r2modman/_Data/ShadowsofDoubt/profiles/LocalModding/BepInEx/</BepInExPath>
+        <BepInExPath Condition="$([System.OperatingSystem]::IsLinux())">$(HOME)/.config/r2modmanPlus-local/ShadowsofDoubt/profiles/LocalModding/BepInEx/</BepInExPath>
+    </PropertyGroup>
+</Project>

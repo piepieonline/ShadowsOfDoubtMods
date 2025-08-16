@@ -1,0 +1,18 @@
+<Project>
+    <!-- Windows - Copy builds to game -->
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="!$([System.OperatingSystem]::IsLinux())">
+        <Exec Command="mkdir &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" Condition="!Exists('$(BepInExPath)plugins/$(ProjectName)')" />
+        <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
+        <Exec Command="xcopy /S /Y /d &quot;$(ProjectDir)ModFolderContent\*&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
+        <!-- TODO: Create the zip archive like linux builds -->
+    </Target>
+
+    <!-- Linux - Copy builds to game -->
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$([System.OperatingSystem]::IsLinux())">
+        <Exec Command="mkdir -p &quot;$(BepInExPath)/plugins/$(ProjectName)&quot;" Condition="!Exists('$(BepInExPath)/plugins/$(ProjectName)')" />
+        <Exec Command="cp -u &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)/plugins/$(ProjectName)&quot;" />
+        <Exec Command="cp -u &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)/plugins/$(ProjectName)&quot;" />
+        <Exec Command="rsync -av --update &quot;$(ProjectDir)ModFolderContent/&quot; &quot;$(BepInExPath)/plugins/$(ProjectName)&quot;" />
+        <Exec Command="7z a -r $(BepInExPath)/plugins/$(ProjectName).zip &quot;$(BepInExPath)/plugins/$(ProjectName)/*&quot;" />
+    </Target>
+</Project>
