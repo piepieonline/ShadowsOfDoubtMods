@@ -1,6 +1,6 @@
 {
   "name": "Case_Board_WASD_Controls",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/CaseBoardScroll",
   "description": "Adds simple WASD controls to the case board",
   "dependencies": [

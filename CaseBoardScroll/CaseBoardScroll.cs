@@ -64,27 +64,32 @@ namespace CaseBoardScroll
 
         void LateUpdate()
         {
-            float zoomScrollFactor = Mathf.Lerp(CaseBoardScroll.minZoomModifier.Value, CaseBoardScroll.maxZoomModifier.Value, zoomContent.normalizedZoom);
-
-            float xMax = CaseBoardScroll.xScrollSpeed.Value * zoomScrollFactor * Time.deltaTime;
-            float yMax = CaseBoardScroll.yScrollSpeed.Value * zoomScrollFactor * Time.deltaTime;
-
-            if (Input.GetKey(KeyCode.W))
+            var currentSelectedUIObject = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
+            // Make sure the player isn't entering text into a caseboard UI component
+            if (currentSelectedUIObject == null || currentSelectedUIObject.GetComponent<TMPro.TMP_InputField>() == null)
             {
-                scrollRect.SetVerticalNormalizedPosition(scrollRect.verticalNormalizedPosition + yMax);
-            }
-            else if (Input.GetKey(KeyCode.S))
-            {
-                scrollRect.SetVerticalNormalizedPosition(scrollRect.verticalNormalizedPosition - yMax);
-            }
-
-            if (Input.GetKey(KeyCode.A))
-            {
-                scrollRect.SetHorizontalNormalizedPosition(scrollRect.horizontalNormalizedPosition - xMax);
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {
-                scrollRect.SetHorizontalNormalizedPosition(scrollRect.horizontalNormalizedPosition + xMax);
+                float zoomScrollFactor = Mathf.Lerp(CaseBoardScroll.minZoomModifier.Value, CaseBoardScroll.maxZoomModifier.Value, zoomContent.normalizedZoom);
+                
+                float xMax = CaseBoardScroll.xScrollSpeed.Value * zoomScrollFactor * Time.deltaTime;
+                float yMax = CaseBoardScroll.yScrollSpeed.Value * zoomScrollFactor * Time.deltaTime;
+    
+                if (Input.GetKey(KeyCode.W))
+                {
+                    scrollRect.SetVerticalNormalizedPosition(scrollRect.verticalNormalizedPosition + yMax);
+                }
+                else if (Input.GetKey(KeyCode.S))
+                {
+                    scrollRect.SetVerticalNormalizedPosition(scrollRect.verticalNormalizedPosition - yMax);
+                }
+    
+                if (Input.GetKey(KeyCode.A))
+                {
+                    scrollRect.SetHorizontalNormalizedPosition(scrollRect.horizontalNormalizedPosition - xMax);
+                }
+                else if (Input.GetKey(KeyCode.D))
+                {
+                    scrollRect.SetHorizontalNormalizedPosition(scrollRect.horizontalNormalizedPosition + xMax);
+                }
             }
         }
     }
