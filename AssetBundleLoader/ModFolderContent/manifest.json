@@ -1,6 +1,6 @@
 {
   "name": "Asset_Bundle_Loader",
-  "version_number": "2.1.1",
+  "version_number": "2.1.2",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/AssetBundleLoader",
   "description": "Library. Provides helpers to load new assets into Shadows of Doubt. Includes functions for creating ScriptableObjects from raw JSON files, as well as built Unity AssetBundles",
   "dependencies": [

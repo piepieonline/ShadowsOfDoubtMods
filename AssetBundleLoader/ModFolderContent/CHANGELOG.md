@@ -1,3 +1,7 @@
+# 2.1.2
+
+* Fixed a backwards default parameter that caused existing mods issues
+
 # 2.1.1
 
 * Added loading patch JSONs to overwrite base game objects, in addition to creating new objects

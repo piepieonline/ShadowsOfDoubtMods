@@ -48,7 +48,7 @@ namespace AssetBundleLoader
             }
         }
 
-        public static ScriptableObject LoadFileToGame(string json, bool isNewObject = false)
+        public static ScriptableObject LoadFileToGame(string json, bool isNewObject = true)
         {
             var newSOJSON = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(json);
 
