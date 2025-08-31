@@ -16,8 +16,9 @@ namespace AssetBundleLoader
 {
     public static class JsonLoader
     {
-        public static Dictionary<string, (ScriptableObject scriptableObject, string fileId)> ScriptableObjectIDMap = new System.Collections.Generic.Dictionary<string, (ScriptableObject scriptableObject, string fileId)>();
-        
+        public static Dictionary<string, (ScriptableObject scriptableObject, string fileId)> ScriptableObjectIDMap =
+            new System.Collections.Generic.Dictionary<string, (ScriptableObject scriptableObject, string fileId)>();
+
         private static void SerializeTypes(ref Dictionary<string, Dictionary<string, string>> dict, Type soType)
         {
             if (soType.FullName == null || !soType.IsSubclassOf(typeof(ScriptableObject))) return;
@@ -42,11 +43,12 @@ namespace AssetBundleLoader
                 {
                     SerializeTypes(ref dict, field.PropertyType);
                 }
+
                 dict[soType.FullName][field.Name] = field.PropertyType.FullName;
             }
         }
 
-        public static ScriptableObject LoadFileToGame(string json)
+        public static ScriptableObject LoadFileToGame(string json, bool isNewObject = false)
         {
             var newSOJSON = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(json);
 
@@ -73,50 +75,59 @@ namespace AssetBundleLoader
             // Replace references to existing (or created before us) ScriptableObjets
             try
             {
-                ExtractAndReplaceTokens(JsonExtensions.FindTokensByValueMatch(newSOJSON, new System.Text.RegularExpressions.Regex("^REF")), $"{fileType}|{fileName}");
+                ExtractAndReplaceTokens(
+                    JsonExtensions.FindTokensByValueMatch(newSOJSON, new System.Text.RegularExpressions.Regex("^REF")),
+                    $"{fileType}|{fileName}");
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException ex)
             {
-                BundleLoader.PluginLogger.LogError($"{fileName} failed to load, missing reference.");
+                BundleLoader.PluginLogger.LogError($"{fileName} failed to load, missing reference ({ex.Message}).");
                 throw;
             }
 
             ScriptableObject newSO;
-
-            // Shortcut, so we don't have to create everything from scratch
-            if (copyFrom != null && copyFrom.Contains("|"))
+            string newSOName = newSOJSON.SelectToken("name").ToString();
+            string cacheKey = fileType + "|" + newSOName;
+                
+            if (isNewObject)
             {
-                newSO = ScriptableObject.Instantiate(ScriptableObjectIDMap[copyFrom.Replace("REF:", "").Trim()].scriptableObject);
+                // Shortcut, so we don't have to create everything from scratch
+                if (copyFrom != null && copyFrom.Contains("|"))
+                {
+                    newSO = ScriptableObject.Instantiate(ScriptableObjectIDMap[copyFrom.Replace("REF:", "").Trim()]
+                        .scriptableObject);
+                }
+                else
+                {
+                    newSO = ScriptableObject.CreateInstance(fileType);
+                }
             }
             else
             {
-                newSO = ScriptableObject.CreateInstance(fileType);
+                newSO = ScriptableObjectIDMap[cacheKey].scriptableObject;
             }
 
             // Use the restored FromJson method to parse the completed JSON files
             newSO = RestoredJsonUtility.FromJsonInternal(newSOJSON.ToString(), newSO);
-            newSO.name = newSOJSON.SelectToken("name").ToString();
+            newSO.name = newSOName;
 
             // Using the original json and the created SO, fix self-references
             // TODO: Set all custom references with this, not just self? Would reduce the need for the fileOrder to only being required for copyFrom
             FixSelfReferences(newSO, newSOJSONWithRefs);
 
-            // Cache the ID of this new object, so following objects can refer to it
-            string key = fileType + "|" + newSO.name;
-            var arr = new Il2CppSystem.Collections.Generic.List<ScriptableObject>();
-            arr.Add(newSO);
-            string value = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(JsonUtilityArrays.ToJson(arr.ToArray()))
-                .SelectToken("Items[0]").ToString()
-            ;
+            // Cache the ID of this new object, so following objects can refer to it (if it doesn't already exist)
+            if (isNewObject)
+            {
+                var arr = new Il2CppSystem.Collections.Generic.List<ScriptableObject>();
+                arr.Add(newSO);
+                string value = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(JsonUtilityArrays.ToJson(arr.ToArray()))
+                        .SelectToken("Items[0]").ToString()
+                    ;
 
-            ScriptableObjectIDMap.Add(key, (newSO, value));
+                ScriptableObjectIDMap.Add(cacheKey, (newSO, value));
+            }
 
             return newSO;
-        }
-
-        private static void ExtractAndReplace(dynamic json, string token, string typeAndNameKey)
-        {
-            ExtractAndReplaceTokens(json.SelectTokens(token).ToList(), typeAndNameKey);
         }
 
         private static void ExtractAndReplaceTokens(List<dynamic> tokens, string typeAndNameKey)

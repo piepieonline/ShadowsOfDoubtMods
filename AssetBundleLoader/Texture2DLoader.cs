@@ -38,5 +38,43 @@ namespace AssetBundleLoader
             }
             return tex;
         }
+
+        public static Texture2D CombineTexture2D(Texture2D baseTexture, Texture2D overlayTexture, Color overrideColour, bool overwrite = true)
+        {
+            var combinedTexture2D = new Texture2D(baseTexture.width, baseTexture.height);
+
+            if (baseTexture.width != overlayTexture.width || baseTexture.height != overlayTexture.height)
+            {
+                BundleLoader.PluginLogger.LogError("Base and overlay textures must be the same size.");
+                return null;
+            }
+
+            for (int x = 0; x < baseTexture.width; x++)
+            {
+                for (int y = 0; y < baseTexture.height; y++)
+                {
+                    Color overlayPixel = overlayTexture.GetPixel(x, y);
+                    if (overlayPixel.a > 0.01f)
+                    {
+                        if (overwrite)
+                        {
+                            combinedTexture2D.SetPixel(x, y, overrideColour.a > 0.01f ? overrideColour : overlayPixel);
+                        }
+                        else
+                        {
+                            combinedTexture2D.SetPixel(x, y, overlayPixel);
+                        }
+                    }
+                    else
+                    {
+                        combinedTexture2D.SetPixel(x, y, baseTexture.GetPixel(x, y));
+                    }
+                }
+            }
+
+            combinedTexture2D.Apply();
+
+            return combinedTexture2D;
+        }
     }
 }

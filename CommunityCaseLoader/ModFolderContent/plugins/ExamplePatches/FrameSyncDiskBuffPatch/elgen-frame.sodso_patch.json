@@ -1,0 +1,17 @@
+{
+  "presetName": "ElGen-Frame",
+  "mainEffect1Value": 0.5,
+  "mainEffect2Value": -0.5,
+  "option1UpgradeValues": [
+    0.1,
+    -0.1
+  ],
+  "option2UpgradeValues": [
+    0.2,
+    -0.2
+  ],
+  "copyFrom": null,
+  "fileType": "SyncDiskPreset",
+  "name": "ElGen-Frame",
+  "type": "SyncDiskPreset"
+}

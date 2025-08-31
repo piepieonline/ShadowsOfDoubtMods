@@ -1,3 +1,8 @@
+# 2.1.1
+
+* Added loading patch JSONs to overwrite base game objects, in addition to creating new objects
+* Added a helper to combine Texture2Ds
+
 # 2.1.0
 
 * Added creating Texture2D objects from PNG files on disk

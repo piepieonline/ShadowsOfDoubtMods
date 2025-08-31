@@ -1,3 +1,8 @@
+# 0.2.5
+
+* Loading sodso_patch files, which allow for modification of base game ScriptableObjects with partial JSONs
+  * Added an example patch for the Frame sync disk, disabled by default 
+
 # 0.2.4
 
 * Enabled debug logging of VMails sent as part of a Murder case
