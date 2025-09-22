@@ -1,0 +1,9 @@
+{
+  "values": {
+    "sidejob": {
+      "sealed_envelope_colour": {
+        "script": "return TheftObjectiveColours.GetEnvelopeColour(inputObject)"
+      }
+    }
+  }
+}

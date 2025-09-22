@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>TheftObjectiveColours</AssemblyName>
+		<Description>Adds colour variety to corporate theft objectives in SOD. No more looking at 5 envelopes with no way to know the right one!</Description>
+		<Version>1.0.0</Version>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>latest</LangVersion>
+		<RestoreAdditionalProjectSources>
+			https://api.nuget.org/v3/index.json;
+			https://nuget.bepinex.dev/v3/index.json
+		</RestoreAdditionalProjectSources>
+		<RootNamespace>TheftObjectiveColours</RootNamespace>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+		<PackageReference Include="UnityEngine.Modules" Version="2021.3.26" IncludeAssets="compile" />
+		<ProjectReference Include="..\DDSScriptExtensions\DDSScriptExtensions.csproj" />
+		<ProjectReference Include="..\DialogAdditions\DialogAdditions.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">
+		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+		<Reference Include="UniverseLib.IL2CPP.Interop">
+			<HintPath>$(BepInExPath)plugins/GTFOModding-UnityExplorer_IL2CPP/UniverseLib.IL2CPP.Interop.dll</HintPath>
+		</Reference>
+		<Reference Include="$(BepInExPath)interop/Il2Cppmscorlib.dll" />
+		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ModFolderContent\plugins\DDSContent\Strings\English\" />
+	</ItemGroup>
+</Project>
