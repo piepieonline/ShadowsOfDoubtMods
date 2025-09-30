@@ -1,0 +1,13 @@
+{
+  "presetName": "EP_GunSerialNumber",
+  "fileType": "EvidencePreset",
+  "name": "EP_GunSerialNumber",
+  "type": "EvidencePreset",
+  "copyFrom": "REF:EvidencePreset|EntryWound",
+  "ddsDocumentID": "e07aa463-f221-427a-9c62-40b2da4d85f3",
+  "enableSummary": 1,
+  "factSetup": [],
+  "iconSpriteLarge": null,
+  "subClass": "",
+  "matchTypes": []
+}

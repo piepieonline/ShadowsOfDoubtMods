@@ -1,0 +1,8 @@
+fd1dd627-f9c0-4a90-9d8f-50eea9994ba8,,A weapon serial number: |object.custom_gun_serial_number|,,,,21:35 20/05/2025
+27b544b8-8a59-4934-a48f-09bef56db2a5,,A bullet head stamp: |object.custom_gun_head_stamp|,,,,21:34 20/05/2025
+3aa69d56-a642-4486-b3de-5e432eb3f6ed,,"Sure, I'll analyse that for you. Give me a few moments please.",,,,15:34 21/05/2025
+04b5162a-42b2-44a1-a686-708345c22c6b,,"Ok, analysis complete. The weapon serial number is |custom_gun_serial_number| and the head print pattern is |custom_gun_head_stamp|.",,,,15:18 21/05/2025
+bab7158d-706c-4d92-a5f0-96908d894564,,"Ok, analysis complete. The casing has the head print pattern |custom_gun_head_stamp|.",,,,15:26 21/05/2025
+f785eb55-1543-4e1f-8c2e-44cc683af7f5,,"Sorry, you'll have to give that to one of the lab workers to get it analysed",,,,13:13 22/05/2025
+aac4c134-0767-4102-bec7-50b92af8b454,,"Sorry, I'm not at work right now.",,,,13:15 22/05/2025
+cf940843-f2ed-4886-bf73-6b338fa85716,,Bring it back next time I'm working and I'll analyse it for you.,,,,13:15 22/05/2025

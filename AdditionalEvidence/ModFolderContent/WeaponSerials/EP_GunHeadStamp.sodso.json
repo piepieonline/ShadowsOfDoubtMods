@@ -1,0 +1,9 @@
+{
+  "presetName": "EP_GunHeadStamp",
+  "copyFrom": "REF:EvidencePreset|EP_GunSerialNumber",
+  "fileType": "EvidencePreset",
+  "name": "EP_GunHeadStamp",
+  "type": "EvidencePreset",
+  "ddsDocumentID": "11db7c2b-e835-4854-ba2a-84610c1574cc",
+  "useBelongsToInName": 1
+}

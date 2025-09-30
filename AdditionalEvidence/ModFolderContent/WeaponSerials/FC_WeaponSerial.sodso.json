@@ -1,0 +1,23 @@
+{
+  "presetName": "FC_WeaponSerial",
+  "iconSpriteLarge": null,
+  "subClass": "",
+  "allowDuplicates": true,
+  "allowReverseDuplicates": true,
+  "fromDataKeys": [
+    0
+  ],
+  "toDataKeys": [
+    0
+  ],
+  "discoverOnCreate": 1,
+  "countsAsNewInformationOnDiscovery": 1,
+  "applyFromKeysOnDiscovery": [],
+  "applyToKeysOnDiscovery": [],
+  "discoveryTriggers": [],
+  "factRank": 9,
+  "fileType": "FactPreset",
+  "name": "FC_WeaponSerial",
+  "type": "FactPreset",
+  "copyFrom": null
+}

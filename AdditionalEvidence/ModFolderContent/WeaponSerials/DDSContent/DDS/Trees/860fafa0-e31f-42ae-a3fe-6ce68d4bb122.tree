@@ -1,0 +1,241 @@
+{
+  "document": {
+    "background": "",
+    "colour": {
+      "a": 0,
+      "b": 0,
+      "g": 0,
+      "r": 0
+    },
+    "fill": 1,
+    "size": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "id": "860fafa0-e31f-42ae-a3fe-6ce68d4bb122",
+  "messages": [
+    {
+      "alignH": 0,
+      "alignV": 0,
+      "charSpace": 0,
+      "col": {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 0
+      },
+      "elementName": "",
+      "font": "Halogen",
+      "fontSize": 22,
+      "fontStyle": 0,
+      "instanceID": "37509bcf-223a-4fba-89cd-39872c1cacff",
+      "lineSpace": 16,
+      "links": [],
+      "msgID": "59639f4f-c928-45ad-8d41-9d81536b90da",
+      "order": 0,
+      "paraSpace": 0,
+      "pos": {
+        "x": -30,
+        "y": -175
+      },
+      "rot": 0,
+      "saidBy": 0,
+      "saidTo": 1,
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "usePages": false,
+      "wordSpace": 0
+    },
+    {
+      "alignH": 0,
+      "alignV": 0,
+      "charSpace": 0,
+      "col": {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 0
+      },
+      "elementName": "",
+      "font": "Halogen",
+      "fontSize": 22,
+      "fontStyle": 0,
+      "instanceID": "f831bcbb-e778-415a-a30a-4047ba79aeac",
+      "lineSpace": 16,
+      "links": [],
+      "msgID": "5959709d-6c59-4c86-806b-dc3b95512b0e",
+      "order": 0,
+      "paraSpace": 0,
+      "pos": {
+        "x": -30,
+        "y": -175
+      },
+      "rot": 0,
+      "saidBy": 0,
+      "saidTo": 1,
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "usePages": false,
+      "wordSpace": 0
+    },
+    {
+      "alignH": 0,
+      "alignV": 0,
+      "charSpace": 0,
+      "col": {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 0
+      },
+      "elementName": "",
+      "font": "Halogen",
+      "fontSize": 22,
+      "fontStyle": 0,
+      "instanceID": "7b235e36-8afd-4887-9f52-06d690c15679",
+      "lineSpace": 16,
+      "links": [],
+      "msgID": "6469af6a-97b1-4b31-a673-35f2f827af57",
+      "order": 0,
+      "paraSpace": 0,
+      "pos": {
+        "x": -30,
+        "y": -175
+      },
+      "rot": 0,
+      "saidBy": 0,
+      "saidTo": 1,
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "usePages": false,
+      "wordSpace": 0
+    },
+    {
+      "alignH": 0,
+      "alignV": 0,
+      "charSpace": 0,
+      "col": {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 0
+      },
+      "elementName": "",
+      "font": "Halogen",
+      "fontSize": 22,
+      "fontStyle": 0,
+      "instanceID": "4bd7f25d-0e1c-499a-8e90-b8260f6528eb",
+      "lineSpace": 16,
+      "links": [],
+      "msgID": "66da9109-6801-4e14-9847-d235648dfed0",
+      "order": 0,
+      "paraSpace": 0,
+      "pos": {
+        "x": -30,
+        "y": -175
+      },
+      "rot": 0,
+      "saidBy": 0,
+      "saidTo": 1,
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "usePages": false,
+      "wordSpace": 0
+    },
+    {
+      "alignH": 0,
+      "alignV": 0,
+      "charSpace": 0,
+      "col": {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 0
+      },
+      "elementName": "",
+      "font": "Halogen",
+      "fontSize": 22,
+      "fontStyle": 0,
+      "instanceID": "1276b2d4-9921-4284-97e1-041975036921",
+      "lineSpace": 16,
+      "links": [],
+      "msgID": "cf7df173-6a99-4dd6-8a07-a993981a9ddd",
+      "order": 0,
+      "paraSpace": 0,
+      "pos": {
+        "x": -30,
+        "y": -175
+      },
+      "rot": 0,
+      "saidBy": 0,
+      "saidTo": 1,
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "usePages": false,
+      "wordSpace": 0
+    }
+  ],
+  "name": "ScientistAnalyseTree",
+  "participantA": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantB": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantC": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantD": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "priority": 3,
+  "repeat": 7,
+  "startingMessage": "37509bcf-223a-4fba-89cd-39872c1cacff",
+  "stopMovement": true,
+  "treeChance": 1,
+  "treeType": 0,
+  "triggerPoint": 5
+}

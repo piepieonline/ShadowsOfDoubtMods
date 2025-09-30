@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "fileOrder": [
+    "REF:EP_CrumpledPasswordNoteBin",
+    "REF:IP_CrumpledPasswordNoteBin"
+  ],
+  "loadBefore": "",
+  "version": 1
+}

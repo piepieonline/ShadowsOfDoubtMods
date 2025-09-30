@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "fileOrder": [
+    "REF:EP_GunSerialNumber",
+    "REF:EP_GunHeadStamp",
+    "REF:FC_WeaponSerial"
+  ],
+  "loadBefore": "",
+  "version": 1
+}

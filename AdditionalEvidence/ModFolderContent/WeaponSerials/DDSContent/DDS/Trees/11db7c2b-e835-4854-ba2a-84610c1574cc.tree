@@ -1,0 +1,141 @@
+{
+  "document": {
+    "background": "Paper",
+    "fill": 1,
+    "size": {
+      "x": 342,
+      "y": 482
+    },
+    "colour": {
+      "r": 1,
+      "g": 0.9960784316062927,
+      "b": 0.9960784316062927,
+      "a": 1
+    }
+  },
+  "id": "11db7c2b-e835-4854-ba2a-84610c1574cc",
+  "messages": [
+    {
+      "msgID": "",
+      "elementName": "Spatter01",
+      "instanceID": "7ae641b9-4fa3-4de2-b018-f85e80a398bd",
+      "saidBy": 0,
+      "saidTo": 1,
+      "pos": {
+        "x": 8,
+        "y": 24
+      },
+      "size": {
+        "x": 320,
+        "y": 300
+      },
+      "rot": 0,
+      "font": "Halogen",
+      "col": {
+        "r": 0.2705882489681244,
+        "g": 0.10196078568696976,
+        "b": 0,
+        "a": 0.14347825944423676
+      },
+      "fontSize": 22,
+      "charSpace": 0,
+      "wordSpace": 0,
+      "lineSpace": 16,
+      "paraSpace": 0,
+      "alignH": 0,
+      "alignV": 0,
+      "fontStyle": 0,
+      "order": 1,
+      "usePages": false,
+      "isHandwriting": false,
+      "links": []
+    },
+    {
+      "msgID": "6f9fa748-09b9-467a-9f4a-f9724ed349a5",
+      "elementName": "",
+      "instanceID": "ef37316b-a238-4e5b-baa7-2c8d1b0b02fc",
+      "saidBy": 0,
+      "saidTo": 1,
+      "pos": {
+        "x": -2,
+        "y": -1
+      },
+      "size": {
+        "x": 312,
+        "y": 412
+      },
+      "rot": 0,
+      "font": "TruetypewriterPolyglott SDF",
+      "col": {
+        "r": 0.06410913169384003,
+        "g": 0.14833755791187286,
+        "b": 0.3686274588108063,
+        "a": 1
+      },
+      "fontSize": 22,
+      "charSpace": 0,
+      "wordSpace": 0,
+      "lineSpace": 17,
+      "paraSpace": 0,
+      "alignH": 0,
+      "alignV": 0,
+      "fontStyle": 0,
+      "order": 6,
+      "usePages": true,
+      "isHandwriting": false,
+      "links": []
+    }
+  ],
+  "name": "WeaponHeadStampEvidence",
+  "participantA": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantB": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": true,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantC": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "participantD": {
+    "connection": 15,
+    "disableInbox": false,
+    "jobs": [],
+    "required": false,
+    "traitConditions": 0,
+    "traits": [],
+    "triggers": [],
+    "useJobs": false,
+    "useTraits": false
+  },
+  "priority": 3,
+  "repeat": 1,
+  "startingMessage": "ef37316b-a238-4e5b-baa7-2c8d1b0b02fc",
+  "stopMovement": true,
+  "treeChance": 1,
+  "treeType": 2,
+  "triggerPoint": 0
+}

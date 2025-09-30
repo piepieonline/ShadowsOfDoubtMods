@@ -1,0 +1,144 @@
+{
+  "name": "CrumpledPasswordNoteBin",
+  "id": "7f1e317b-37f8-4daa-82a6-ff3057c93635",
+  "participantA": {
+    "required": false,
+    "connection": 15,
+    "useJobs": false,
+    "disableInbox": false,
+    "jobs": [],
+    "useTraits": false,
+    "traits": [],
+    "traitConditions": 0,
+    "triggers": []
+  },
+  "participantB": {
+    "required": false,
+    "connection": 15,
+    "useJobs": false,
+    "disableInbox": false,
+    "jobs": [],
+    "useTraits": false,
+    "traits": [],
+    "traitConditions": 0,
+    "triggers": []
+  },
+  "participantC": {
+    "required": false,
+    "connection": 15,
+    "useJobs": false,
+    "disableInbox": false,
+    "jobs": [],
+    "useTraits": false,
+    "traits": [],
+    "traitConditions": 0,
+    "triggers": []
+  },
+  "participantD": {
+    "required": false,
+    "connection": 15,
+    "useJobs": false,
+    "disableInbox": false,
+    "jobs": [],
+    "useTraits": false,
+    "traits": [],
+    "traitConditions": 0,
+    "triggers": []
+  },
+  "repeat": 1,
+  "triggerPoint": 0,
+  "messages": [
+    {
+      "msgID": "9e80e7cd-feea-4355-bf9a-852fd571b0c1",
+      "elementName": "",
+      "instanceID": "ca9d421f-6ea3-4ef7-b31c-375e5e5fc31e",
+      "saidBy": 0,
+      "saidTo": 1,
+      "pos": {
+        "x": -5.5,
+        "y": -5
+      },
+      "size": {
+        "x": 281,
+        "y": 262
+      },
+      "rot": 0,
+      "font": "Halogen SDF",
+      "col": {
+        "r": 0.5921568870544434,
+        "g": 0,
+        "b": 0.027450980618596077,
+        "a": 1
+      },
+      "fontSize": 22,
+      "charSpace": 0,
+      "wordSpace": 0,
+      "lineSpace": 16,
+      "paraSpace": 0,
+      "alignH": 0,
+      "alignV": 0,
+      "fontStyle": 0,
+      "order": 2,
+      "usePages": false,
+      "isHandwriting": true,
+      "links": []
+    },
+    {
+      "msgID": "",
+      "elementName": "Spatter01",
+      "instanceID": "ede14a50-13b2-4b11-9734-f590279754ac",
+      "saidBy": 0,
+      "saidTo": 1,
+      "pos": {
+        "x": 43,
+        "y": -119.5
+      },
+      "size": {
+        "x": 274,
+        "y": 239
+      },
+      "rot": 0,
+      "font": "FreeSerif SDF",
+      "col": {
+        "r": 0.5921568870544434,
+        "g": 0,
+        "b": 0.027450980618596077,
+        "a": 1
+      },
+      "fontSize": 22,
+      "charSpace": 0,
+      "wordSpace": 0,
+      "lineSpace": 16,
+      "paraSpace": 0,
+      "alignH": 0,
+      "alignV": 0,
+      "fontStyle": 0,
+      "order": 1,
+      "usePages": false,
+      "isHandwriting": false,
+      "links": []
+    }
+  ],
+  "stopMovement": true,
+  "ignoreGlobalRepeat": false,
+  "treeType": 2,
+  "document": {
+    "background": "CrumpledPaper",
+    "fill": 1,
+    "size": {
+      "x": 342,
+      "y": 482
+    },
+    "colour": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+    }
+  },
+  "startingMessage": "ca9d421f-6ea3-4ef7-b31c-375e5e5fc31e",
+  "treeChance": 1,
+  "priority": 3,
+  "newspaperCategory": 0,
+  "newspaperContext": 0
+}

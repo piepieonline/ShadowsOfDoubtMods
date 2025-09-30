@@ -1,0 +1,20 @@
+﻿{
+  "values": {
+    "object": {
+      "gun_serial_number": {
+        "script": "return GetGunSerialNumber(inputObject)"
+      },
+      "gun_head_stamp": {
+        "script": "return GetGunHeadStamp(inputObject)"
+      }
+    },
+    "citizen": {
+      "gun_serial_number": {
+        "script": "return GetGunSerialNumber(inputObject)"
+      },
+      "gun_head_stamp": {
+        "script": "return GetGunHeadStamp(inputObject)"
+      }
+    }
+  }
+}
