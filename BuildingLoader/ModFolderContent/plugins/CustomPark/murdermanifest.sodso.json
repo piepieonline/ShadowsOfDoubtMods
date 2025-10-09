@@ -1,0 +1,11 @@
+{
+  "enabled": true,
+  "fileOrder": [
+    "REF:CustomParkBuildingPreset",
+    "REF:CustomParkRoomConfig",
+    "REF:CustomParkRoomType",
+    "REF:CustomParkPublicBathroomRTP"
+  ],
+  "loadBefore": "",
+  "version": 1
+}

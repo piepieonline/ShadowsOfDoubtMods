@@ -1,0 +1,44 @@
+{
+  "presetName": "CustomParkBuildingPreset",
+  "buildingHeight": 2,
+  "floorLayouts": [
+    {
+      "floorsWithThisSetting": 1,
+      "blueprints": [],
+      "airVentMaximumExtrusion": 0,
+      "controlRoomVariants": [],
+      "forceShowModel": 0,
+      "forceHideModels": [],
+      "forceHideModelsInRooms": [],
+      "forceHideModelsOutside": [],
+      "overrideCeilingHeight": 0,
+      "newCeilingHeight": 51
+    },
+    {
+      "floorsWithThisSetting": 1,
+      "blueprints": [],
+      "airVentMaximumExtrusion": 1,
+      "controlRoomVariants": [],
+      "forceShowModel": 0,
+      "forceHideModels": [],
+      "forceHideModelsInRooms": [],
+      "forceHideModelsOutside": [],
+      "overrideCeilingHeight": 0,
+      "newCeilingHeight": 51
+    }
+  ],
+  "overrideNaming": true,
+  "possibleNames": [
+    "Custom Park"
+  ],
+  "fileType": "BuildingPreset",
+  "name": "CustomParkBuildingPreset",
+  "type": "BuildingPreset",
+  "copyFrom": "REF:BuildingPreset|Park",
+  "defaultExteriorWallMaterial": [
+    "REF:MaterialGroupPreset|Brick"
+  ],
+  "overrideGrubiness": 1,
+  "grubinessOverride": 1,
+  "lobbyPreset": "REF:AddressPreset|BuildingBathrooms"
+}

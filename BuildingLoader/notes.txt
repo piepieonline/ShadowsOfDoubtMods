@@ -1,0 +1,31 @@
+﻿FurnitureCluster > FurnitureClass
+FurnitureCluster > RoomTypeFilter (allowedRoomFilter)
+
+FurniturePreset > FurnitureClass
+FurniturePreset > RoomTypeFilter (allowedRoomFilters)
+
+FurnitureClass > FurnitureClass
+
+RoomTypeFilter > RoomClassPreset
+
+------------
+
+Each AddressSaveData has a list of named objects with a prefab (are they LayoutConfiguration or AddressPreset?) which contains a list of RoomSaveData
+
+Each RoomSaveData has a prefab (RoomConfiguration, RoomClassPreset or RoomTypePreset?) and a list of NodeSaveData
+
+Each NodeSaveData has a list of WallSaveData
+
+------------
+
+NewFloor.LoadDataToFloor
+	FloorSaveData.a_d[0] = Outside
+	FloorSaveData.a_d[1] = Lobby
+	FloorSaveData.a_d[2+] = <As defined>
+
+
+
+
+--- Spawning items ---
+
+InteractablePreset.subObjectClasses - these classes represent locations - so KitchenBin will spawn in some counters, or under some benches

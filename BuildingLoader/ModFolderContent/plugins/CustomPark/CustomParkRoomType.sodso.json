@@ -1,0 +1,8 @@
+{
+  "presetName": "CustomParkRoomType",
+  "forceConfiguration": "REF:RoomConfiguration|CustomParkRoomConfig",
+  "copyFrom": "REF:RoomTypePreset|Park",
+  "fileType": "RoomTypePreset",
+  "name": "CustomParkRoomType",
+  "type": "RoomTypePreset"
+}

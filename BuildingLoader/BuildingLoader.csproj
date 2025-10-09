@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>BuildingLoader</AssemblyName>
+		<Version>1.0.0</Version>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>latest</LangVersion>
+		<RestoreAdditionalProjectSources>
+			https://api.nuget.org/v3/index.json;
+			https://nuget.bepinex.dev/v3/index.json
+		</RestoreAdditionalProjectSources>
+		<RootNamespace>BuildingLoader</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+		<PackageReference Include="UnityEngine.Modules" Version="2021.3.26" IncludeAssets="compile" />
+		<ProjectReference Include="../AssetBundleLoader/AssetBundleLoader.csproj" />
+		<ProjectReference Include="../DDSLoader/DDSLoader.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='MONO'">
+		<PackageReference Include="BepInEx.Unity.Mono" Version="6.0.0-be.*" IncludeAssets="compile" />
+		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/UnityEngine.CoreModule.dll" />
+		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/UnityEngine.UI.dll" />
+		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/Assembly-CSharp.dll" />
+
+		<Reference Include="UniverseLib.Mono">
+			<HintPath>E:\SteamLibrary\steamapps\common\Shadows of Doubt mono\BepInEx\plugins\AssetBundleLoader\UniverseLib.Mono.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">
+		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+		<PackageReference Include="SOD.Common" Version="2.0.6" />
+		<Reference Include="$(BepInExPath)interop/Il2Cppmscorlib.dll" />
+		<Reference Include="$(BepInExPath)interop/Il2CppSystem.Core.dll" />
+		<Reference Include="$(BepInExPath)interop/UnityEngine.CoreModule.dll" />
+		<Reference Include="$(BepInExPath)interop/UnityEngine.UI.dll" />
+		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
+		<Reference Include="UniverseLib.IL2CPP.Interop">
+			<HintPath>$(BepInExPath)plugins/GTFOModding-UnityExplorer_IL2CPP/UniverseLib.IL2CPP.Interop.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+	</ItemGroup>
+</Project>

@@ -1,0 +1,20 @@
+{
+  "presetName": "ArcadeMachinePreset",
+  "prefab": null,
+  "fileType": "FurniturePreset",
+  "name": "ArcadeMachinePreset",
+  "type": "FurniturePreset",
+  "copyFrom": "REF:FurniturePreset|WashingMachines",
+  "integratedInteractables": [
+    {
+      "preset": "REF:InteractablePreset|ArcadeMachineControls",
+      "pairToController": 0,
+      "belongsTo": 0
+    }
+  ],
+  "classes": [
+    "REF:FurnitureClass|1x1ArcadeMachineClass"
+  ],
+  "allowedInOpenPlan": 0,
+  "subObjects": []
+}

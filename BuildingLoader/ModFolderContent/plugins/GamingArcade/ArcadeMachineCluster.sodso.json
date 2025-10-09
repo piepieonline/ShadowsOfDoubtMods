@@ -1,0 +1,195 @@
+{
+  "copyFrom": "REF:FurnitureCluster|WashingMachinesBackToBackX5",
+  "disable": false,
+  "clusterElements": [
+    {
+      "onlyValidIfPreviousObjectPlaced": false,
+      "placements": [
+        {
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "furnitureClass": "REF:FurnitureClass|1x1ArcadeMachineClass",
+      "facing": 0,
+      "importantToCluster": true,
+      "chanceOfPlacementAttempt": 1,
+      "placementScoreBoost": 2,
+      "useFovBlock": false,
+      "blockDirection": {
+        "x": 0,
+        "y": 1
+      },
+      "maxFOVBlockDistance": 1,
+      "localScale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "positionOffset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "onlyValidIfPreviousObjectPlaced": false,
+      "placements": [
+        {
+          "x": 0,
+          "y": 1
+        }
+      ],
+      "furnitureClass": "REF:FurnitureClass|1x1ArcadeMachineClass",
+      "facing": 1,
+      "importantToCluster": true,
+      "chanceOfPlacementAttempt": 1,
+      "placementScoreBoost": 2,
+      "useFovBlock": false,
+      "blockDirection": {
+        "x": 0,
+        "y": 1
+      },
+      "maxFOVBlockDistance": 1,
+      "localScale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "positionOffset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "onlyValidIfPreviousObjectPlaced": false,
+      "placements": [
+        {
+          "x": 1,
+          "y": 0
+        }
+      ],
+      "furnitureClass": "REF:FurnitureClass|1x1ArcadeMachineClass",
+      "facing": 0,
+      "importantToCluster": true,
+      "chanceOfPlacementAttempt": 1,
+      "placementScoreBoost": 2,
+      "useFovBlock": false,
+      "blockDirection": {
+        "x": 0,
+        "y": 1
+      },
+      "maxFOVBlockDistance": 1,
+      "localScale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "positionOffset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "onlyValidIfPreviousObjectPlaced": true,
+      "placements": [
+        {
+          "x": 1,
+          "y": 1
+        }
+      ],
+      "furnitureClass": "REF:FurnitureClass|1x1ArcadeMachineClass",
+      "facing": 1,
+      "importantToCluster": true,
+      "chanceOfPlacementAttempt": 1,
+      "placementScoreBoost": 2,
+      "useFovBlock": false,
+      "blockDirection": {
+        "x": 0,
+        "y": 1
+      },
+      "maxFOVBlockDistance": 1,
+      "localScale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "positionOffset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "onlyValidIfPreviousObjectPlaced": false,
+      "placements": [
+        {
+          "x": 2,
+          "y": 0
+        }
+      ],
+      "furnitureClass": "REF:FurnitureClass|1x1ArcadeMachineClass",
+      "facing": 0,
+      "importantToCluster": false,
+      "chanceOfPlacementAttempt": 1,
+      "placementScoreBoost": 2,
+      "useFovBlock": false,
+      "blockDirection": {
+        "x": 0,
+        "y": 1
+      },
+      "maxFOVBlockDistance": 1,
+      "localScale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "positionOffset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "onlyValidIfPreviousObjectPlaced": true,
+      "placements": [
+        {
+          "x": 2,
+          "y": 1
+        }
+      ],
+      "furnitureClass": "REF:FurnitureClass|1x1ArcadeMachineClass",
+      "facing": 1,
+      "importantToCluster": false,
+      "chanceOfPlacementAttempt": 1,
+      "placementScoreBoost": 2,
+      "useFovBlock": false,
+      "blockDirection": {
+        "x": 0,
+        "y": 1
+      },
+      "maxFOVBlockDistance": 1,
+      "localScale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "positionOffset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ],
+  "enableDebug": 0,
+  "fileType": "FurnitureCluster",
+  "name": "ArcadeMachineCluster",
+  "presetName": "ArcadeMachineCluster",
+  "type": "FurnitureCluster",
+  "allowedInOpenPlan": 0,
+  "zeroNodeClasses": [
+    "REF:FurnitureClass|1x1ArcadeMachineClass"
+  ]
+}

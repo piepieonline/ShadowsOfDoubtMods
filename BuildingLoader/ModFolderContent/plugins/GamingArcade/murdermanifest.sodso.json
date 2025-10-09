@@ -1,0 +1,10 @@
+{
+  "enabled": false,
+  "version": 1,
+  "fileOrder": [
+    "REF:ArcadeMachineControls",
+    "REF:1x1ArcadeMachineClass",
+    "REF:ArcadeMachinePreset",
+    "REF:ArcadeMachineCluster"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "presetName": "ArcadeMachineControls",
+  "copyFrom": "REF:InteractablePreset|WashingMachineDoor",
+  "fileType": "InteractablePreset",
+  "name": "ArcadeMachineControls",
+  "type": "InteractablePreset",
+  "actionsPreset": [
+    "REF:InteractableActionsPreset|LoadLaundry"
+  ]
+}
