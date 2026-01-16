@@ -1,9 +1,10 @@
 {
   "name": "MO_Manager",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/MOManager",
   "description": "Allows for configuration of which MurderMOs appear and statistically how often.",
   "dependencies": [
-    "BepInEx-BepInExPack_IL2CPP-6.0.733"
+    "BepInEx-BepInExPack_IL2CPP-6.0.738",
+    "Venomaus-SODCommon-2.1.1"
   ]
 }

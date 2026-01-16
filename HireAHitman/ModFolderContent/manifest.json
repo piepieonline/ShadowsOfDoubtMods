@@ -1,15 +1,15 @@
 {
   "name": "Hire_A_Hitman",
-  "version_number": "1.0.3",
+  "version_number": "1.0.4",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/HireAHitman",
   "description": "Adds the option to hire a hitman over the phone to take out an NPC of your choice. Requires you to know their name and address. Can be used to empty apartments so you can purchase them the day after the case is solved.",
   "dependencies": [
-    "BepInEx-BepInExPack_IL2CPP-6.0.733",
+    "BepInEx-BepInExPack_IL2CPP-6.0.738",
     "Piepieonline-Asset_Bundle_Loader-2.1.0",
     "Piepieonline-DDSLoader-1.0.6",
     "Piepieonline-DDS_Script_Extensions-1.0.0",
     "Piepieonline-PlayerDialogAdditions-0.14.0",
     "Piepieonline-CommunityCaseLoader-0.2.4",
-    "Venomaus-SODCommon-2.1.0"
+    "Venomaus-SODCommon-2.1.1"
   ]
 }

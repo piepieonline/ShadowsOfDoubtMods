@@ -4,8 +4,12 @@ using BepInEx.Logging;
 using BepInEx.Configuration;
 using HarmonyLib;
 using System.Collections.Generic;
+using Il2CppInterop.Runtime;
 
 using System.Text.RegularExpressions;
+using LibCpp2IL.BinaryStructures;
+using SOD.Common.Extensions;
+using Il2CppType = Il2CppInterop.Runtime.Il2CppType;
 
 
 #if MONO
@@ -59,10 +63,10 @@ namespace MOManager
         {
             public static void Postfix()
             {
-                foreach(var preset in Toolbox.Instance.allMurderPresets)
+                foreach(var preset in Toolbox.Instance.GetFromResourceCache<MurderPreset>())
                 {
                     // Disabled for hitman, the tutorial preset
-                    if (preset.presetName == null || preset.presetName.Length == 0 || preset.presetName == "Hitman")
+                    if (string.IsNullOrEmpty(preset.presetName) || preset.presetName == "Hitman")
                         continue;
 
                     var presetConfigValue = ConfigFile.Bind("MurderPreset", $"Frequency {preset.presetName.Trim()}.", preset.frequency, $"The frequency for this Preset. This preset is added to the pool this many times, and then a preset is selected from the pool at random. Default is {preset.frequency}, -1 to disable outright.").Value;
@@ -77,10 +81,10 @@ namespace MOManager
                     }
                 }
 
-                foreach(var mo in Toolbox.Instance.allMurderMOs)
+                foreach(var mo in Toolbox.Instance.GetFromResourceCache<MurderMO>())
                 {
                     // Disabled for hitman, the tutorial mo
-                    if (mo.presetName == null || mo.presetName.Length == 0 || mo.presetName == "Hitman")
+                    if (string.IsNullOrEmpty(mo.presetName) || mo.presetName == "Hitman")
                         continue;
 
                     var moConfigValue = ConfigFile.Bind("MurderMO", $"Maximum base score for {mo.presetName.Trim()}.", mo.pickRandomScoreRange.y, $"The maximum base score for this MO. The higher, the more likely this MO is to be picked. Default is {mo.pickRandomScoreRange.y}, -1 to disable outright.").Value;

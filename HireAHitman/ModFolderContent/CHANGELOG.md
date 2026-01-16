@@ -1,3 +1,7 @@
+# 1.0.4
+
+* Updated for game version 41.04
+
 # 1.0.3
 
 * Fixed cases where the wrong preset was chosen, and a kidnapping or sniper could occur

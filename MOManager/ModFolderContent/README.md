@@ -10,7 +10,23 @@ Needs to be run once before the configuration options will appear, and then each
 - Requires one launch before configuration options appear.
 - Doesn't work with BepInExConfigManager, but only causes warnings in the log.
 
-## Explaination
+## Configuration
+- Install the mod and run the game once to generate the configuration
+- Use either the configuration editor in your mod manager, or BepInExConfigManager in-game to configure the probabilities
+
+### Mod Manager (R2modman or Thunderstore Mod Manager)
+- In the left hand menu, find "Config Editor"
+- Search for MOManager, click it, and click "Edit Config"
+- Adjust the values as desired as per the explanation below
+- Click "Save" in the top right
+
+### BepInExConfigManager
+- Launch the game to the main menu
+- Open BepInExConfigManager (F6 by default)
+- Find MOManager in the list, and adjust the values as desired as per the explanation below
+- Click save preferences at the top of the window, and close it with the same key
+
+## Explanation
 
 The game selects killers in two stages:
 

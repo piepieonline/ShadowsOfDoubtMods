@@ -9,6 +9,7 @@ using static MurderController;
 using SOD.Common.Extensions;
 using DialogAdditions;
 using HireAHitman.Dialog;
+using Il2CppInterop.Runtime;
 
 namespace HireAHitman
 {
@@ -127,7 +128,7 @@ namespace HireAHitman
                         HitmanMOEasy.disabled = true;
                     }
 
-                    foreach (MurderMO murderMO in Toolbox.Instance.allMurderMOs)
+                    foreach (var murderMO in Toolbox.Instance.GetFromResourceCache<MurderMO>())
                     {
                         if (!murderMO.disabled && murderMO != HitmanMO && murderMO != HitmanMOEasy)
                         {
@@ -136,7 +137,7 @@ namespace HireAHitman
                         }
                     }
 
-                    foreach (MurderPreset murderPreset in Toolbox.Instance.allMurderPresets)
+                    foreach (var murderPreset in Toolbox.Instance.GetFromResourceCache<MurderPreset>())
                     {
                         if (!murderPreset.disabled && murderPreset.presetName != "ProfessionalHitPreset")
                         {
@@ -309,9 +310,9 @@ namespace HireAHitman
                         art.material.mainTexture = AssetBundleLoader.Texture2DLoader.CreateTexture2DFromPNG(System.Reflection.Assembly.GetExecutingAssembly(), System.IO.Path.Join("HireAHitman", "hireAHitmanWallArt.png"));
                     }
                 }
-
-                HitmanMO = Toolbox.Instance.allMurderMOs.Where(mo => mo.presetName == "ProfessionalHitMO").First();
-                HitmanMOEasy = Toolbox.Instance.allMurderMOs.Where(mo => mo.presetName == "EasyProfessionalHitMO").First();
+                
+                HitmanMO = Toolbox.Instance.GetFromResourceCache<MurderMO>("ProfessionalHitMO");
+                HitmanMOEasy = Toolbox.Instance.GetFromResourceCache<MurderMO>("EasyProfessionalHitMO");
                 HitmanMO.disabled = !HireAHitmanPlugin.EnableHitmanInNormalGameplay.Value;
             }
         }
