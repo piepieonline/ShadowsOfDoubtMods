@@ -1,3 +1,7 @@
+# 1.0.8
+
+* Updated for game version 42.02
+
 # 1.0.7
 
 * Fixed content (csv) overrides, vanilla content can be overridden by using the same GUID
