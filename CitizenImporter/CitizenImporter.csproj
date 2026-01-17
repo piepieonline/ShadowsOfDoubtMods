@@ -16,7 +16,6 @@
 		<PackageReference Include="UnityEngine.Modules" Version="2021.3.26" IncludeAssets="compile" />
 		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-		<PackageReference Include="SOD.Common" Version="2.0.6" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='MONO'">
@@ -31,6 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">
+		<PackageReference Include="SOD.Common" Version="2.1.1" />
 		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
 		<Reference Include="$(BepInExPath)interop/Il2Cppmscorlib.dll" />
 		<Reference Include="$(BepInExPath)interop/UnityEngine.CoreModule.dll" />
