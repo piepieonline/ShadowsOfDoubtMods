@@ -4,7 +4,7 @@
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/NewMurderTypes",
   "description": "Adds a touch more content and complexity to murders",
   "dependencies": [
-    "BepInEx-BepInExPack_IL2CPP-6.0.667",
+    "BepInEx-BepInExPack_IL2CPP-6.0.738",
     "Piepieonline-Asset_Bundle_Loader-1.0.2",
     "Piepieonline-DDSLoader-1.0.2"
   ]

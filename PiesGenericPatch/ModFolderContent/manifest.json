@@ -4,7 +4,7 @@
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/Pies_Generic_Patch",
   "description": "Fixes various vanilla bugs in Shadows Of Doubt. Contributions and suggestions welcome.",
   "dependencies": [
-    "BepInEx-BepInExPack_IL2CPP-6.0.733",
-    "Venomaus-SODCommon-2.1.0"
+    "BepInEx-BepInExPack_IL2CPP-6.0.738",
+    "Venomaus-SODCommon-2.1.1"
   ]
 }

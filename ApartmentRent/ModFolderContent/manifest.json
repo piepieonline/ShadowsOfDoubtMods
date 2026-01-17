@@ -4,7 +4,7 @@
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/ApartmentRent",
   "description": "Adds rental payments that are due on a regular schedule.",
   "dependencies": [
-    "BepInEx-BepInExPack_IL2CPP-6.0.733",
-    "Venomaus-SODCommon-2.0.6"
+    "BepInEx-BepInExPack_IL2CPP-6.0.738",
+    "Venomaus-SODCommon-2.1.1"
   ]
 }

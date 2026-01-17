@@ -16,17 +16,14 @@
 		<PackageReference Include="UnityEngine.Modules" Version="2021.3.26" IncludeAssets="compile" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
 		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
-		<PackageReference Include="SOD.Common" Version="2.0.6" />
+		<PackageReference Include="SOD.Common" Version="2.1.1" />
 		<ProjectReference Include="../AssetBundleLoader/AssetBundleLoader.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>
 		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <Reference Include="UniverseLib.IL2CPP.Interop">
-	    <HintPath>..\..\..\..\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\plugins\GTFOModding-UnityExplorer_IL2CPP\UniverseLib.IL2CPP.Interop.dll</HintPath>
-	  </Reference>
+		<Reference Include="UniverseLib.IL2CPP.Interop">
+		  <HintPath>..\..\..\..\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\plugins\GTFOModding-UnityExplorer_IL2CPP\UniverseLib.IL2CPP.Interop.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 </Project>

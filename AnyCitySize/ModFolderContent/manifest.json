@@ -4,7 +4,7 @@
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/RealEstateListingCruncherApp",
   "description": "Adds a new app to the city hall crunchers, that lists all available properties for sale and lets you purchase them.",
   "dependencies": [
-    "BepInEx-BepInExPack_IL2CPP-6.0.667",
+    "BepInEx-BepInExPack_IL2CPP-6.0.738",
     "Piepieonline-AssetBundleLoader-1.0.0",
     "Piepieonline-DDSLoader-1.0.0"
   ]
