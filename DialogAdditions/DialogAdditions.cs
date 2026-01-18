@@ -8,6 +8,8 @@ using HarmonyLib;
 using UniverseLib;
 using UnityEngine;
 using DialogAdditions.NewDialogOptions;
+using static AIActionPreset;
+
 
 #if MONO
 using BepInEx.Unity.Mono;
@@ -160,7 +162,7 @@ namespace DialogAdditions
     public abstract class CustomDialogPreset
     {
         public string Name { get; protected set; }
-        public DialogPreset Preset { get; protected set; }
+        public DialogPreset Preset { get; protected set; } = ScriptableObject.CreateInstance<DialogPreset>();
 
         public abstract bool IsAvailable(DialogPreset preset, Citizen saysTo, SideJob jobRef);
 

@@ -40,4 +40,9 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\AssetBundleLoader\AssetBundleLoader.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ModFolderContent\plugins\DoYouKnowThisPersonOverrides\DDSContent\DDS\Blocks\" />
+	  <Folder Include="ModFolderContent\plugins\DoYouKnowThisPersonOverrides\DDSContent\DDS\Messages\" />
+	</ItemGroup>
 </Project>

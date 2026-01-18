@@ -1,3 +1,12 @@
+# 0.15.0
+* Added acquaintance connections between staff and regular customers
+  * This creates the connection when asking, so it's backwards compatible
+  * They don't always know the person's name
+* Updated various lines to sound more natural
+
+# 0.14.1
+* Updated to work with AssetBundleLoader 2.1.2
+
 # 0.14.0
 * Updated to work with game version v40.02
 

@@ -17,8 +17,28 @@
       "traitConditions": 0,
       "traits": [],
       "useTraits": false
+    },
+    {
+      "alwaysDisplay": false,
+      "blockID": "ea749543-c1cd-4388-938d-a0ccff59d292",
+      "forceScope": 0,
+      "group": 1,
+      "instanceID": "ded6a94a-05a6-44ff-ba35-da93b88b72f0",
+      "traitConditions": 0,
+      "traits": [],
+      "useTraits": false
+    },
+    {
+      "alwaysDisplay": false,
+      "blockID": "57572420-51ad-4b2c-a9dd-8827c695a222",
+      "forceScope": 0,
+      "group": 1,
+      "instanceID": "ddb11f4a-4a60-4839-8698-e9da040cdccd",
+      "traitConditions": 0,
+      "traits": [],
+      "useTraits": false
     }
   ],
   "id": "9f436995-fd25-4116-8eab-68509be5721b",
-  "name": "TalkToPartner-DefaultBlock"
+  "name": "TalkToPartner-NotHome"
 }

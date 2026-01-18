@@ -2,7 +2,7 @@
 
 namespace DialogAdditions.NewDialogOptions
 {
-    class TalkToPartner : CustomDialogPreset
+    internal class TalkToPartner : CustomDialogPreset
     {
         public TalkToPartner(bool canFail, float chanceToSucceed)
         {
@@ -74,7 +74,7 @@ namespace DialogAdditions.NewDialogOptions
                 }
                 else if (!saysTo.partner.isHome)
                 {
-                    // Partner not home
+                    // Partner is not home
                     saysTo.speechController.Speak("9f436995-fd25-4116-8eab-68509be5721b");
                 }
                 else

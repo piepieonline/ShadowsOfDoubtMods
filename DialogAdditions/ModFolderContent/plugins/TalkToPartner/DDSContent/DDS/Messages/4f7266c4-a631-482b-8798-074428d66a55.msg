@@ -17,8 +17,18 @@
       "traitConditions": 0,
       "traits": [],
       "useTraits": false
+    },
+    {
+      "alwaysDisplay": false,
+      "blockID": "6b130ac4-3031-4cdd-987f-0ccd07244fd4",
+      "forceScope": 0,
+      "group": 1,
+      "instanceID": "524f431f-c578-4c06-a225-22ac774a59b6",
+      "traitConditions": 0,
+      "traits": [],
+      "useTraits": false
     }
   ],
   "id": "4f7266c4-a631-482b-8798-074428d66a55",
-  "name": "TalkToPartner-DefaultBlock"
+  "name": "TalkToPartner-NoPartner"
 }

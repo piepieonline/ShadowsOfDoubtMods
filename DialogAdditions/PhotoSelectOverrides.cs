@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BepInEx.Logging;
 using UnityEngine;
 using SOD.Common.Extensions;
 using SOD.Common.Helpers;
@@ -21,10 +22,31 @@ namespace DialogAdditions
         {
             bool letMethodContinue = true;
 
+            // TODO: Possible for talkingTo to be null if the player closes the dialog too early, or interrupts the speech in some way
+
             Human speaker = ((dynamic)InteractionController.Instance.talkingTo.isActor).Cast<Human>();
             Human askTarget = __instance.citizen;
             Il2CppSystem.Collections.Generic.List<Evidence.DataKey> askTargetKeys = __instance.citizen.evidenceEntry.GetTiedKeys(__instance.element.dk);
 
+            // Update acquaintance so that SpeakOverrides can fall into the right branch
+            if(speaker.job != null && speaker.job.employer != null)
+            {
+                foreach (NewAddress favAddress in askTarget.favouritePlaces.Values)
+                {
+                    if (favAddress.company.companyID == speaker.job.employer.companyID)
+                    {
+                        // DialogAdditionPlugin.PluginLogger.Log(LogLevel.Warning, "Found a regular customer, adding connection");
+                        var seed = speaker.seed;
+                        speaker.AddAcquaintance(askTarget, Toolbox.Instance.VectorToRandomSeedContained(SocialControls.Instance.knowRegularCustomerRange, ref seed), Acquaintance.ConnectionType.regularCustomer, false);
+                        speaker.seed = seed;
+                        seed = askTarget.seed;
+                        askTarget.AddAcquaintance(speaker, Toolbox.Instance.VectorToRandomSeedContained(SocialControls.Instance.knowRegularCustomerRange, ref seed), Acquaintance.ConnectionType.regularStaff, false);
+                        askTarget.seed = seed;
+                        break;
+                    }
+                }
+            }
+            
             CallTypes[callType](speaker, askTarget, askTargetKeys);
 
             // We only continue on the normal "DoYouKnowThisPerson" version, otherwise we short circuit
