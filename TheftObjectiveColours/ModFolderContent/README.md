@@ -1,6 +1,8 @@
 # Pie's Theft Objective Colours
 
-Adds colour variety to corporate theft objectives in SOD. No more looking at 5 envelopes with no way to know the right one!
+Adds colour variety to corporate theft objectives in SOD, making it easy to tell them apart. No more looking at a stack of identical envelopes and guessing.
+
+Note: Once the job has been accepted, you can find the colour of the details tab of the Job Listing.
 
 # Manual Installation
 
