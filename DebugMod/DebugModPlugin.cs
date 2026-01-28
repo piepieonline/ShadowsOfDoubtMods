@@ -16,6 +16,7 @@ using AssetBundleLoader;
 using UniverseLib;
 using BepInEx.Configuration;
 using System.Reflection;
+using Logger = BepInEx.Logging.Logger;
 
 namespace DebugMod
 {
@@ -39,6 +40,7 @@ namespace DebugMod
         
         public static ConfigEntry<string> ActorLogName;
         public static ConfigEntry<LoggingHelpers.HumanDebugOverloaded> ActorLogCategory;
+        public static ConfigEntry<bool> ActorHighlight;
 
 #if MONO
     public void Awake()
@@ -59,8 +61,18 @@ namespace DebugMod
             GameLogFilter = Config.Bind("Game Logging", "Filter Game.Log output (Must contain)", "");
             GameLogInverseFilter = Config.Bind("Game Logging", "Filter Game.Log output (Must not contain)", "");
 
+            GameLogFilter.SettingChanged += LoggingHelpers.UpdateMustInclude;
+            GameLogInverseFilter.SettingChanged += LoggingHelpers.UpdateMustNotInclude;
+
+            LoggingHelpers.UpdateMustInclude(null, null);
+            LoggingHelpers.UpdateMustNotInclude(null, null);
+
             ActorLogName = Config.Bind("Actor Logging", "Log actions for this actor name", "");
             ActorLogCategory = Config.Bind("Actor Logging", "Log these actions", LoggingHelpers.HumanDebugOverloaded.none);
+            ActorHighlight = Config.Bind("Actor Logging", "Highlight the actor", false);
+
+            ActorLogName.SettingChanged += LoggingHelpers.UpdateActorHighlight;
+            ActorHighlight.SettingChanged += LoggingHelpers.UpdateActorHighlight;
 
             EnableGameLog.SettingChanged += EnableGameLog_SettingChanged;
 
@@ -96,9 +108,31 @@ namespace DebugMod
                     newOptions.Add("1920 x 1080 @ 60Hz");
                     newOptions.Add("2560 x 1440 @ 60Hz");
                 }
+
+                /*
+                if (!Strings.stringTable["ui.popups"].ContainsKey("pie_abl_quit"))
+                {
+                    Strings.stringTable["ui.popups"].Add("pie_abl_quit", new Strings.DisplayString() { displayStr = "Open instructions" });
+                    Strings.stringTable["ui.popups"].Add("pie_abl_continuebroken", new Strings.DisplayString() { displayStr = "Continue (Some mods may not work)" });
+                    Strings.stringTable["ui.popups"].Add("pie_abl_modloaderror_title", new Strings.DisplayString() { displayStr = "Bepinex Required" });
+                    Strings.stringTable["ui.popups"].Add("pie_abl_modloaderror_body", new Strings.DisplayString() { displayStr = "Some mods that have loaded require Bepinex installed to function.\nFollow the instructions to install bepinex" });
+                }
+
+                PopupMessageController.Instance.PopupMessage($"pie_abl_modloaderror", true, true, "pie_abl_quit", "pie_abl_continuebroken", true, PopupMessageController.AffectPauseState.automatic);
+                */
             }
         }
 
+        [HarmonyPatch(typeof(LoadResolutionController), nameof(LoadResolutionController.Awake))]
+        public class LoadResolutionController_Awake
+        {
+            public static bool Prefix(LoadResolutionController __instance)
+            {
+                Screen.SetResolution(1920, 1080, FullScreenMode.Windowed, 60);
+                return false;
+            }
+        }
+        
         /* 
          * not working
         // Skip splash screens
@@ -146,23 +180,6 @@ namespace DebugMod
          }
          */
 
-        // [HarmonyPatch(typeof(NewAIController), nameof(NewAIController.AITick))]
-        public class NewAIController_AITick
-        {
-            public static void Postfix(NewAIController __instance)
-            {
-                if (__instance != null && __instance.currentGoal != null && __instance.currentGoal.name.Contains("MeetUpEvent"))
-                {
-                    PluginLogger.LogInfo($"{__instance.currentGoal.name}: {__instance.currentGoal.triggerTime} @ {__instance?.human?.citizenName} at {__instance?.currentGoal?.gameLocation?.name}");
-                    __instance.human.outline.SetOutlineActive(true);
-                }
-                else
-                {
-                    __instance.human.outline.SetOutlineActive(false);
-                }
-            }
-        }
-
         /*
         [HarmonyPatch(typeof(InterfaceController), nameof(InterfaceController.ToggleNotebook))]
         public class InterfaceController_ToggleNotebook
@@ -173,8 +190,9 @@ namespace DebugMod
                 SessionData.Instance.ResumeGame();
             }
         }
-        */  
-        
+        */
+
+
         [HarmonyPatch(typeof(ComputerController), nameof(ComputerController.OnPlayerControlChange))]
         public class ComputerController_OnPlayerControlChange
         {
@@ -325,6 +343,8 @@ namespace DebugMod
         }
         */
 
+        static GameObject TestNewInteractable;
+
 
         [HarmonyPatch(typeof(MainMenuController), "Start")]
         public class MainMenuController_Start
@@ -336,6 +356,12 @@ namespace DebugMod
                 EnableGameLog_SettingChanged(null, null);
 
                 GameObject.Find("GameController").AddComponent<CanvasScreenShot>();
+
+                var moddedAssetBundle2 = BundleLoader.LoadBundle(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "customcontent"), stable: true);
+                TestNewInteractable = moddedAssetBundle2.LoadAsset<GameObject>("TestNewInteractable");
+
+                PluginLogger.LogInfo("Loading custom asset bundle complete");
+
 
                 return;
                 if (hasInit) return;
@@ -349,11 +375,13 @@ namespace DebugMod
                 
                 // Toolbox.Instance.ProcessLoadedScriptableObject(tophat);
 
+                /*
                 foreach(var job in Toolbox.Instance.allJobs)
                 {
                     job.workOutfit.Clear();
                     job.workOutfit.Add(tophat);
                 }
+                */
 
                 PluginLogger.LogInfo("Loading custom asset bundle complete");
             }
