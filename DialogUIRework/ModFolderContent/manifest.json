@@ -1,0 +1,9 @@
+{
+  "name": "DialogUIRework",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/DialogUIRework",
+  "description": "",
+  "dependencies": [
+    "BepInEx-BepInExPack_IL2CPP-6.0.738"
+  ]
+}
