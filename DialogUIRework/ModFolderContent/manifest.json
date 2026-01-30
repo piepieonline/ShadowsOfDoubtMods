@@ -2,7 +2,7 @@
   "name": "DialogUIRework",
   "version_number": "1.0.0",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/DialogUIRework",
-  "description": "",
+  "description": "Reworks the dialog UI to organize options into tabs by category. Adds optional WASD navigation support for dialog navigation.",
   "dependencies": [
     "BepInEx-BepInExPack_IL2CPP-6.0.738"
   ]

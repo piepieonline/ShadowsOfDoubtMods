@@ -10,7 +10,6 @@ public class DialogUIReworkHooks
     {
         public static void Postfix()
         {
-            DialogUIReworkPlugin.PluginLogger.LogWarning($"Creating UI");
             if (DialogUIReworkPlugin.TabbedDialogUI == null)
             {
                 DialogUIReworkPlugin.TabbedDialogUI = new TabbedDialogUI();
@@ -69,8 +68,6 @@ public class DialogUIReworkHooks
             {
                 DialogUIReworkPlugin.TabbedDialogUI.ClearDialogOptions();
             }
-
-            DialogUIReworkPlugin.TabbedDialogUI.SwitchToTab("All");
         }
     }
 
