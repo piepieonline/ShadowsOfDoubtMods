@@ -252,7 +252,14 @@ namespace DDSLoader
                                         }
 
                                         const bool overwrite = true;
-                                        StringsLoadIntoDictionaryMI.Invoke(null, (new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<Il2CppSystem.Object>(new Il2CppSystem.Object[] { fileName, Strings.stringTable[fileName].Count + 1, key, display.Replace("\\r\\n", "\r\n"), alt, freq, suffix, overwrite })));
+                                        if(StringsLoadIntoDictionaryMI.GetParametersCount() == 8)
+                                        {
+                                            StringsLoadIntoDictionaryMI.Invoke(null, (new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<Il2CppSystem.Object>(new Il2CppSystem.Object[] { fileName, Strings.stringTable[fileName].Count + 1, key, display.Replace("\\r\\n", "\r\n"), alt, freq, suffix, overwrite })));
+                                        }
+                                        else
+                                        {
+                                            StringsLoadIntoDictionaryMI.Invoke(null, (new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<Il2CppSystem.Object>(new Il2CppSystem.Object[] { fileName, Strings.stringTable[fileName].Count + 1, key, display.Replace("\\r\\n", "\r\n"), alt, freq, suffix })));
+                                        }
 
                                         if (DDSLoaderPlugin.debugPrintLoadedStrings.Value)
                                         {

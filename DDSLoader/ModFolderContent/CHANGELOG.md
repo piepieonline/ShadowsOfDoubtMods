@@ -1,3 +1,7 @@
+# 1.0.9
+
+* Made compatible with both 42.01 and 42.02 
+
 # 1.0.8
 
 * Updated for game version 42.02
