@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
@@ -30,14 +31,14 @@ namespace AutoWalk
         }
     }
 
-    [HarmonyPatch(typeof(InputController), nameof(InputController.GetAxisRelative))]
-    public class InputController_GetAxisRelative
+    [HarmonyPatch(typeof(Rewired.Player), nameof(Rewired.Player.GetAxis), new Type[] { typeof(string) })]
+    public class InputController_GetAxis
     {
         static bool isAutoWalking = false;
         static float lastActivationGameTime;
-        public static void Postfix(ref float __result, string actionId)
+        public static void Postfix(ref float __result, string actionName)
         {
-            if(actionId == "MoveVertical")
+            if(actionName == "MoveForward")
             {
                 if(__result > 0 && Input.GetKey(AutoWalk.autoWalkKey.Value))
                 {

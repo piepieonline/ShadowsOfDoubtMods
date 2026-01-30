@@ -10,15 +10,17 @@
 			https://nuget.bepinex.dev/v3/index.json
 		</RestoreAdditionalProjectSources>
 		<RootNamespace>AutoWalk</RootNamespace>
-		<BepInExPath>D:\Game Modding\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\</BepInExPath>
 	</PropertyGroup>
 
 	<ItemGroup>
+        <PackageReference Include="UnityEngine.Modules" Version="2021.3.26" IncludeAssets="compile" />
 		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
 	</ItemGroup>
-	
-	<ItemGroup>
-		<Reference Include="$(BepInExPath)/interop/*.dll" />
+
+	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">
+		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
+		<Reference Include="$(BepInExPath)interop/Rewired_Core.dll" />
+		<Reference Include="$(BepInExPath)interop/Il2Cppmscorlib.dll" />
 	</ItemGroup>
 </Project>
