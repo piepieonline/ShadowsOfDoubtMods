@@ -1,72 +1,80 @@
+# 0.16.0
+
+- Added DialogUIRework compatibility
+- Updated "What is your passcode?" to "Could you provide your passcode for an investigation?"
+
 # 0.15.0
-* Added acquaintance connections between staff and regular customers
-  * This creates the connection when asking, so it's backwards compatible
-  * They don't always know the person's name
-* Updated various lines to sound more natural
+
+- Added acquaintance connections between staff and regular customers
+  - This creates the connection when asking, so it's backwards compatible
+  - They don't always know the person's name
+- Updated various lines to sound more natural
 
 # 0.14.1
-* Updated to work with AssetBundleLoader 2.1.2
+
+- Updated to work with AssetBundleLoader 2.1.2
 
 # 0.14.0
-* Updated to work with game version v40.02
+
+- Updated to work with game version v40.02
 
 # 0.13.0
 
-* Updated to AssetBundleLoader 2.0
-* Introduced "What is your passcode?"
-  * It has a very low pass rate by default, though restraining someone changes that
-  * It can be bribed, but is expensive
-  * Can be turned off in configuration, but requires launching the game once to do so (and a restart when changed)
+- Updated to AssetBundleLoader 2.0
+- Introduced "What is your passcode?"
+  - It has a very low pass rate by default, though restraining someone changes that
+  - It can be bribed, but is expensive
+  - Can be turned off in configuration, but requires launching the game once to do so (and a restart when changed)
 
 # 0.12.0
 
-* Modified "DoYouKnowThisPerson"
-  * Added "Yes, that is the suspicious person I saw earlier!" if someone says they saw something suspcious earlier and a correct photo is presented (Can be turned off in config)
-  * Removed "Murderers will no longer 'know' the person they murdered to prevent self-incrimination" as this was introduced into the base game
+- Modified "DoYouKnowThisPerson"
+  - Added "Yes, that is the suspicious person I saw earlier!" if someone says they saw something suspcious earlier and a correct photo is presented (Can be turned off in config)
+  - Removed "Murderers will no longer 'know' the person they murdered to prevent self-incrimination" as this was introduced into the base game
 
 # 0.11.6
 
-* Removed changes that were incomplete and broke gameplay
+- Removed changes that were incomplete and broke gameplay
 
 # 0.11.5
 
-* Fixed for game version 1.0
+- Fixed for game version 1.0
 
 # 0.11.4
 
-* "I'd like to ask you about some friends of mine"
-  * Fixed an error when procedural murderers are turned off
+- "I'd like to ask you about some friends of mine"
+  - Fixed an error when procedural murderers are turned off
 
 # 0.11.3
 
-* "I'd like to ask you about some friends of mine"
-  * Fixed when talking about groups 2 of, the description would be for the wrong person
-  * Slightly less stilted dialog
+- "I'd like to ask you about some friends of mine"
+  - Fixed when talking about groups 2 of, the description would be for the wrong person
+  - Slightly less stilted dialog
 
 # 0.11.2
 
-* Minor change to how murders avoid self-incrimination
+- Minor change to how murders avoid self-incrimination
 
 # 0.11.1
 
-* Doco update
+- Doco update
 
 # 0.11.0
 
-* Added showing a photo of someone at an eatery, to find out if they regularly meet up with anyone there ("I'd like to ask you about some friends of mine")
-* Added more answers to "Have you seen or heard anything" (If they have, and they like the person, they won't answer. If they don't like them, they might give you a name)
-* Modified "DoYouKnowThisPerson"
-  * People won't always answer if you present a photo of themselves (Depends if they would have answered "What is your name?").
-  * Murderers will no longer 'know' the person they murdered to prevent self-incrimination
+- Added showing a photo of someone at an eatery, to find out if they regularly meet up with anyone there ("I'd like to ask you about some friends of mine")
+- Added more answers to "Have you seen or heard anything" (If they have, and they like the person, they won't answer. If they don't like them, they might give you a name)
+- Modified "DoYouKnowThisPerson"
+  - People won't always answer if you present a photo of themselves (Depends if they would have answered "What is your name?").
+  - Murderers will no longer 'know' the person they murdered to prevent self-incrimination
 
 # 0.10.0
 
-* Added config for the request being rejected, added more dialog lines.
+- Added config for the request being rejected, added more dialog lines.
 
 # 0.9.1
 
-* Fixed broken manifest and icon.
+- Fixed broken manifest and icon.
 
 # 0.9.0
- 
-* Initial release. Working "Ask for partner", but limited in scope
+
+- Initial release. Working "Ask for partner", but limited in scope

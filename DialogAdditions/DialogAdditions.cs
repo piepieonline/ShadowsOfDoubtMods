@@ -1,5 +1,7 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using BepInEx;
 using BepInEx.Logging;
 using Il2CppSystem.Reflection;
@@ -8,8 +10,6 @@ using HarmonyLib;
 using UniverseLib;
 using UnityEngine;
 using DialogAdditions.NewDialogOptions;
-using static AIActionPreset;
-
 
 #if MONO
 using BepInEx.Unity.Mono;
@@ -29,6 +29,7 @@ using BepInEx.Unity.IL2CPP;
 
 namespace DialogAdditions
 {
+    [BepInDependency("DialogUIRework", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 #if MONO
     public class DialogAdditionPlugin : BaseUnityPlugin
@@ -76,6 +77,25 @@ namespace DialogAdditions
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is patched!");
 
             AssetBundleLoader.BundleLoader.loadObjectDelegates.Add(LoadObjectsCallback);
+
+            if (IL2CPPChainloader.Instance.Plugins.ContainsKey("DialogUIRework"))
+            {
+                AddDialogUIReworkIDs();
+            }
+        }
+
+        private void AddDialogUIReworkIDs()
+        {
+            DialogUIRework.TabbedDialogUI.AddIDs("Dialogue",
+            "cfa7463c-a03d-4c2c-87e9-124a39290716" // Can I please talk to your partner?
+            );
+
+            DialogUIRework.TabbedDialogUI.AddIDs("Investigation",
+                "a8267eeb-1d40-442f-9edb-1176bfd51986", // Have you seen this person come in with others?
+                "13af9b0e-f6ba-484b-9556-1daa7bce9415" // Can you provide your passcode for an investigation?
+            );
+
+            PluginLogger.LogInfo("DialogUIRework integration successful");
         }
 
         public List<ScriptableObject> LoadObjectsCallback(Il2CppSystem.Collections.Generic.List<ScriptableObject> loadedScriptableObjects)
@@ -84,7 +104,7 @@ namespace DialogAdditions
 
             foreach (var so in loadedScriptableObjects)
             {
-                if(so.GetActualType() == typeof(DialogPreset))
+                if (so.GetActualType() == typeof(DialogPreset))
                 {
                     DialogPreset dialogPreset = so.TryCast<DialogPreset>();
                     dialogPresetRefs[dialogPreset.name] = dialogPreset;
@@ -112,7 +132,7 @@ namespace DialogAdditions
 
             var dialogFilesToLoad = new List<string>();
 
-            if(AddAskForPasscode.Value)
+            if (AddAskForPasscode.Value)
             {
                 dialogFilesToLoad.Add("WhatIsYourPasscode/WhatIsYourPasscodeTemplate");
                 dialogFilesToLoad.Add("WhatIsYourPasscode/WhatIsYourPasscodeBribe2");
@@ -143,7 +163,7 @@ namespace DialogAdditions
 
         public static void AddDialogInterceptor(CustomDialogPreset customDialogPreset)
         {
-            if(!customDialogInterceptors.ContainsKey(customDialogPreset.Name))
+            if (!customDialogInterceptors.ContainsKey(customDialogPreset.Name))
             {
                 customDialogInterceptors[customDialogPreset.Name] = customDialogPreset;
             }
@@ -185,7 +205,7 @@ namespace DialogAdditions
                     break;
                 }
             }
-            
+
             foreach (var customDialogKV in DialogAdditionPlugin.customDialogInterceptors)
             {
                 DialogAdditionPlugin.AddDialogInterceptor(customDialogKV.Value);
@@ -220,7 +240,7 @@ namespace DialogAdditions
         {
             if (DialogAdditionPlugin.customDialogInterceptors.ContainsKey(preset.name) && DialogAdditionPlugin.customDialogInterceptors[preset.name] != null)
             {
-                if(!saysTo)
+                if (!saysTo)
                 {
                     __result = false;
                 }
