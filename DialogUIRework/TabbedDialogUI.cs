@@ -48,8 +48,18 @@ public class TabbedDialogUI
 
     public void CreateDialogUI()
     {
+        if (tabContainer != null)
+            return;
+        
         var dialogContainer = PrefabControls.Instance.dialogOptionContainer.gameObject;
-
+        
+        PrefabControls.Instance.dialogOptionContainer.parent.Find("Header").localPosition +=
+            new Vector3(0, 45, 0);
+        PrefabControls.Instance.dialogOptionContainer.parent.Find("Border").gameObject.SetActive(false);
+        var nav =
+            PrefabControls.Instance.dialogOptionContainer.gameObject.AddComponent<TabNavigationComponent>();
+        nav.DialogUI = DialogUIReworkPlugin.TabbedDialogUI;
+        
         tabContainer = new GameObject("TabContainer");
         tabContainer.transform.SetParent(dialogContainer.transform.parent, false);
         tabContainer.transform.SetSiblingIndex(2);
@@ -297,9 +307,12 @@ public class TabbedDialogUI
 
     public void ClearDialogOptions()
     {
-        for (int i = categorizedOptions["All"].Count - 1; i >= 0; i--)
+        if (categorizedOptions.ContainsKey("All"))
         {
-            GameObject.Destroy(categorizedOptions["All"][i].gameObject);
+            for (int i = categorizedOptions["All"].Count - 1; i >= 0; i--)
+            {
+                GameObject.Destroy(categorizedOptions["All"][i].gameObject);
+            }
         }
 
         categorizedOptions.Clear();

@@ -13,15 +13,10 @@ public class DialogUIReworkHooks
             if (DialogUIReworkPlugin.TabbedDialogUI == null)
             {
                 DialogUIReworkPlugin.TabbedDialogUI = new TabbedDialogUI();
-                PrefabControls.Instance.dialogOptionContainer.parent.Find("Header").localPosition +=
-                    new Vector3(0, 45, 0);
-                PrefabControls.Instance.dialogOptionContainer.parent.Find("Border").gameObject.SetActive(false);
                 Il2CppInterop.Runtime.Injection.ClassInjector.RegisterTypeInIl2Cpp<TabNavigationComponent>();
-                var nav =
-                    PrefabControls.Instance.dialogOptionContainer.gameObject.AddComponent<TabNavigationComponent>();
-                nav.DialogUI = DialogUIReworkPlugin.TabbedDialogUI;
-                DialogUIReworkPlugin.TabbedDialogUI.CreateDialogUI();
             }
+            
+            DialogUIReworkPlugin.TabbedDialogUI.CreateDialogUI();
         }
     }
     
