@@ -1,0 +1,10 @@
+{
+  "name": "Snailpocalypse",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/Snailpocalypse",
+  "description": "",
+  "dependencies": [
+    "BepInEx-BepInExPack_IL2CPP-6.0.738",
+    "Venomaus-SODCommon-2.1.1"
+  ]
+}
