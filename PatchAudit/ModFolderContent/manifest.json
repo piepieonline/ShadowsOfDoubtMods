@@ -1,0 +1,9 @@
+{
+  "name": "PatchAudit",
+  "version_number": "1.0.0",
+  "website_url": "",
+  "description": "Diagnostic: reports how many distinct methods each mod Harmony-patches, to find what consumes the trampoline budget",
+  "dependencies": [
+    "BepInEx-BepInExPack_IL2CPP-6.0.738"
+  ]
+}
