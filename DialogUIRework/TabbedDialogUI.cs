@@ -14,7 +14,12 @@ public class TabbedDialogUI
     private GameObject rightArrow;
     private GameObject tabSpacerLeft;
     private GameObject tabSpacerRight;
-    private string controlGlyphFormat = """<sprite="desktop" name="Keyboard Key">""";
+    private const string KeyboardGlyphFormat = """<sprite="desktop" name="Keyboard Key">""";
+
+    private const InteractablePreset.InteractionKey PreviousTabKey = InteractablePreset.InteractionKey.SelectLeft;
+    private const InteractablePreset.InteractionKey NextTabKey = InteractablePreset.InteractionKey.SelectRight;
+
+    private bool loggedMissingControllerGlyph;
 
     private Dictionary<string, Il2CppSystem.Collections.Generic.List<DialogButtonController>> categorizedOptions =
         new Dictionary<string, Il2CppSystem.Collections.Generic.List<DialogButtonController>>();
@@ -91,7 +96,7 @@ public class TabbedDialogUI
         leftArrow = new GameObject("LeftArrow");
         leftArrow.transform.SetParent(tabContainer.transform, false);
         var lArrowText = leftArrow.AddComponent<TMPro.TextMeshProUGUI>();
-        lArrowText.text = controlGlyphFormat;
+        lArrowText.text = KeyboardGlyphFormat;
         lArrowText.fontSize = 16;
         lArrowText.alignment = TMPro.TextAlignmentOptions.MidlineLeft;
         lArrowText.margin = new Vector4(20, 0, 0, 0);
@@ -109,7 +114,7 @@ public class TabbedDialogUI
         rightArrow = new GameObject("RightArrow");
         rightArrow.transform.SetParent(tabContainer.transform, false);
         var rArrowText = rightArrow.AddComponent<TMPro.TextMeshProUGUI>();
-        rArrowText.text = controlGlyphFormat;
+        rArrowText.text = KeyboardGlyphFormat;
         rArrowText.fontSize = 16;
         rArrowText.alignment = TMPro.TextAlignmentOptions.MidlineRight;
         rArrowText.margin = new Vector4(0, 0, 15, 0);
@@ -121,19 +126,50 @@ public class TabbedDialogUI
         UpdateControlGlyphs();
     }
 
-    private void UpdateControlGlyphs()
+    internal static bool ControllerMode =>
+        InputController.Instance != null && !InputController.Instance.mouseInputMode;
+
+    internal void UpdateControlGlyphs()
     {
+        if (leftArrow == null || rightArrow == null)
+            return;
+
         leftArrow.SetActive(DialogUIReworkPlugin._enableControlGlyphs.Value);
         rightArrow.SetActive(DialogUIReworkPlugin._enableControlGlyphs.Value);
 
-        leftArrow.GetComponent<TMPro.TextMeshProUGUI>().text = controlGlyphFormat + (DialogUIReworkPlugin._enableWASDNavigation.Value ? "A" : "←");
-        rightArrow.GetComponent<TMPro.TextMeshProUGUI>().text = controlGlyphFormat + (DialogUIReworkPlugin._enableWASDNavigation.Value ? "D" : "→");
+        if (!DialogUIReworkPlugin._enableControlGlyphs.Value)
+            return;
+
+        leftArrow.GetComponent<TMPro.TextMeshProUGUI>().text =
+            GetTabSwitchGlyph(PreviousTabKey, DialogUIReworkPlugin._enableWASDNavigation.Value ? "A" : "←");
+        rightArrow.GetComponent<TMPro.TextMeshProUGUI>().text =
+            GetTabSwitchGlyph(NextTabKey, DialogUIReworkPlugin._enableWASDNavigation.Value ? "D" : "→");
+    }
+
+    private string GetTabSwitchGlyph(InteractablePreset.InteractionKey key, string keyboardLabel)
+    {
+        if (ControllerMode && ControlsDisplayController.Instance != null)
+        {
+            var icon = ControlsDisplayController.Instance.GetControlIcon(key, out _, out var foundControl);
+            if (foundControl)
+                return icon;
+
+            if (!loggedMissingControllerGlyph)
+            {
+                loggedMissingControllerGlyph = true;
+                DialogUIReworkPlugin.PluginLogger.LogWarning(
+                    $"No controller binding found for {key}, falling back to keyboard glyphs");
+            }
+        }
+
+        return KeyboardGlyphFormat + keyboardLabel;
     }
 
     public void ModifyDialogContainer()
     {
         CategorizeDialogOptions(PrefabControls.Instance.dialogOptionContainer.gameObject);
         CreateCategorizedUI(PrefabControls.Instance.dialogOptionContainer.gameObject);
+        UpdateControlGlyphs();
     }
 
     private void CategorizeDialogOptions(GameObject dialogContainer)
@@ -444,6 +480,20 @@ public class TabNavigationComponent : MonoBehaviour
     {
         if (DialogUI == null || !InteractionController.Instance.dialogMode)
             return;
+        
+        if (TabbedDialogUI.ControllerMode)
+        {
+            var player = InputController.Instance.player;
+            if (player == null)
+                return;
+
+            if (player.GetButtonDown("SelectLeft"))
+                DialogUI.SwitchToPreviousTab();
+            else if (player.GetButtonDown("SelectRight"))
+                DialogUI.SwitchToNextTab();
+
+            return;
+        }
 
         if (Input.GetKeyDown(KeyCode.LeftArrow) ||
             (DialogUIReworkPlugin._enableWASDNavigation.Value && Input.GetKeyDown(KeyCode.A)))

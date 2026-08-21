@@ -1,7 +1,7 @@
 {
   "name": "DialogUIRework",
   "author": "piepieonline",
-  "version_number": "1.0.2",
+  "version_number": "1.0.3",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/DialogUIRework",
   "description": "Reworks the dialog UI to organize options into tabs by category. Adds optional WASD navigation support for dialog navigation.",
   "dependencies": [

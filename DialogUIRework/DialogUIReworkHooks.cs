@@ -20,6 +20,15 @@ public class DialogUIReworkHooks
         }
     }
     
+    [HarmonyPatch(typeof(InputController), nameof(InputController.SetMouseInputMode))]
+    public class InputController_SetMouseInputMode
+    {
+        public static void Postfix()
+        {
+            DialogUIReworkPlugin.TabbedDialogUI?.UpdateControlGlyphs();
+        }
+    }
+
     [HarmonyPatch(typeof(InteractionController), nameof(InteractionController.Update))]
     public class InteractionController_Update
     {
