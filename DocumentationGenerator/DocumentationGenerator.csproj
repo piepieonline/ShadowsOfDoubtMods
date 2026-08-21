@@ -9,7 +9,6 @@
 			https://nuget.bepinex.dev/v3/index.json
 		</RestoreAdditionalProjectSources>
 		<RootNamespace>DocumentationGenerator</RootNamespace>
-		<BepInExPath>D:\Game Modding\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\</BepInExPath>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -23,7 +22,7 @@
 	<ItemGroup>
 		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
 		<Reference Include="UniverseLib.IL2CPP.Interop">
-		  <HintPath>..\..\..\..\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\plugins\GTFOModding-UnityExplorer_IL2CPP\UniverseLib.IL2CPP.Interop.dll</HintPath>
+		  <HintPath>$(BepInExPath)plugins/GTFOModding-UnityExplorer_IL2CPP/UniverseLib.IL2CPP.Interop.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 </Project>

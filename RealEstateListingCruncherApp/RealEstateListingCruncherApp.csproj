@@ -22,9 +22,9 @@
 		<Reference Include="UniverseLib.Mono">
 			<HintPath>$(BepInExPath)plugins/AssetBundleLoader/UniverseLib.Mono.dll</HintPath>
 		</Reference>
-		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/UnityEngine.CoreModule.dll" />
-		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/UnityEngine.UI.dll" />
-		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/Assembly-CSharp.dll" />
+		<Reference Include="$(GameManagedPath)UnityEngine.CoreModule.dll" />
+		<Reference Include="$(GameManagedPath)UnityEngine.UI.dll" />
+		<Reference Include="$(GameManagedPath)Assembly-CSharp.dll" />
 	</ItemGroup>
 
 

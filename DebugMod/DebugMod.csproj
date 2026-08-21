@@ -14,7 +14,6 @@
 	
 	<ItemGroup>
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-		<PackageReference Include="SOD.Common" Version="2.1.1" />
 		<PackageReference Include="UnityEngine.Modules" Version="2021.3.26" IncludeAssets="compile" />
 		<ProjectReference Include="..\AssetBundleLoader\AssetBundleLoader.csproj" />
 		<ProjectReference Include="..\DDSScriptExtensions\DDSScriptExtensions.csproj" />
@@ -26,14 +25,15 @@
 		<Reference Include="UniverseLib.Mono">
 			<HintPath>$(BepInExPath)plugins/AssetBundleLoader/UniverseLib.Mono.dll</HintPath>
 		</Reference>
-		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/UnityEngine.CoreModule.dll" />
-		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/UnityEngine.UI.dll" />
-		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/UnityEngine.JSONSerializeModule.dll" />
-		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/Assembly-CSharp.dll" />
+		<Reference Include="$(GameManagedPath)UnityEngine.CoreModule.dll" />
+		<Reference Include="$(GameManagedPath)UnityEngine.UI.dll" />
+		<Reference Include="$(GameManagedPath)UnityEngine.JSONSerializeModule.dll" />
+		<Reference Include="$(GameManagedPath)Assembly-CSharp.dll" />
 	</ItemGroup>
 
 
 	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">
+		<PackageReference Include="SOD.Common" Version="2.1.1" />
 		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
 		<Reference Include="UniverseLib.IL2CPP.Interop">
 			<HintPath>$(BepInExPath)plugins/GTFOModding-UnityExplorer_IL2CPP/UniverseLib.IL2CPP.Interop.dll</HintPath>

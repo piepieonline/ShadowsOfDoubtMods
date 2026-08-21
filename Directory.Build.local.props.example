@@ -1,0 +1,18 @@
+<!-- Copy to Directory.Build.local.props (gitignored) and set the paths for this machine.
+     Anything set here overrides the per-OS defaults in Directory.Build.props. Environment
+     variables of the same name work too and take precedence over the defaults as well. -->
+<Project>
+    <PropertyGroup>
+        <!-- Steam library holding the mono build of the game. Everything below it is derived. -->
+        <!-- <SteamLibraryPath>E:/SteamLibrary</SteamLibraryPath> -->
+
+        <!-- Set these only if your layout does not follow from SteamLibraryPath. -->
+        <!-- <MonoGamePath>E:/SteamLibrary/steamapps/common/shadows of doubt mono</MonoGamePath> -->
+        <!-- <GameManagedPath>$(MonoGamePath)/Shadows of Doubt_Data/Managed/</GameManagedPath> -->
+
+        <!-- BepInEx profile to build against and deploy into. Configuration-specific:
+             the Mono default is $(MonoGamePath)/BepInEx/, IL2CPP defaults to the
+             LocalModding r2modman profile. Deployment is skipped if the path is absent. -->
+        <!-- <BepInExPath>D:/Game Modding/r2modman/_Data/ShadowsofDoubt/profiles/LocalModding/BepInEx/</BepInExPath> -->
+    </PropertyGroup>
+</Project>

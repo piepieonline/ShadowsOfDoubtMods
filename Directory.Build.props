@@ -1,4 +1,10 @@
 <Project>
+    <!-- Machine-specific paths live in Directory.Build.local.props (gitignored) or in
+         environment variables of the same name. Both win over the defaults below, so a
+         new machine should never need to edit this file. See the .example alongside it. -->
+    <Import Project="$(MSBuildThisFileDirectory)Directory.Build.local.props"
+            Condition="Exists('$(MSBuildThisFileDirectory)Directory.Build.local.props')" />
+
     <PropertyGroup>
         <Platforms>x64</Platforms>
         <Configurations>Mono;IL2CPP</Configurations>
@@ -12,13 +18,30 @@
     <PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
         <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
-    
-    <PropertyGroup Condition="'$(Configuration)'=='MONO'">
-        <BepInExPath>E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/BepInEx/</BepInExPath>
+
+    <!-- The Steam library root is the only part of the mono game path that differs per OS.
+         Paths below it are case-insensitive on Windows, so one literal serves both. -->
+    <PropertyGroup>
+        <SteamLibraryPath Condition="'$(SteamLibraryPath)'=='' And $([MSBuild]::IsOSPlatform('Windows'))">E:/SteamLibrary</SteamLibraryPath>
+        <SteamLibraryPath Condition="'$(SteamLibraryPath)'=='' And $([MSBuild]::IsOSPlatform('Linux'))">/mnt/m2/SteamLibrary</SteamLibraryPath>
+
+        <MonoGamePath Condition="'$(MonoGamePath)'==''">$(SteamLibraryPath)/steamapps/common/shadows of doubt mono</MonoGamePath>
+        <GameManagedPath Condition="'$(GameManagedPath)'==''">$(MonoGamePath)/Shadows of Doubt_Data/Managed/</GameManagedPath>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
-        <BepInExPath Condition="!$([System.OperatingSystem]::IsLinux())">D:/Game Modding/r2modman/_Data/ShadowsofDoubt/profiles/LocalModding/BepInEx/</BepInExPath>
-        <BepInExPath Condition="$([System.OperatingSystem]::IsLinux())">$(HOME)/.config/r2modmanPlus-local/ShadowsofDoubt/profiles/LocalModding/BepInEx/</BepInExPath>
+    <PropertyGroup Condition="'$(Configuration)'=='MONO'">
+        <BepInExPath Condition="'$(BepInExPath)'==''">$(MonoGamePath)/BepInEx/</BepInExPath>
     </PropertyGroup>
+
+    <!-- The r2modman profile roots differ structurally, not just by drive, so these stay a pair. -->
+    <PropertyGroup Condition="'$(Configuration)'=='IL2CPP'">
+        <BepInExPath Condition="'$(BepInExPath)'=='' And $([MSBuild]::IsOSPlatform('Windows'))">D:/Game Modding/r2modman/_Data/ShadowsofDoubt/profiles/LocalModding/BepInEx/</BepInExPath>
+        <BepInExPath Condition="'$(BepInExPath)'=='' And $([MSBuild]::IsOSPlatform('Linux'))">$(HOME)/.config/r2modmanPlus-local/ShadowsofDoubt/profiles/LocalModding/BepInEx/</BepInExPath>
+    </PropertyGroup>
+
+    <!-- Windows resolves net4x against machine-wide targeting packs; Linux has none, so the
+         reference assemblies have to come from this package. Harmless on Windows. -->
+    <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+    </ItemGroup>
 </Project>

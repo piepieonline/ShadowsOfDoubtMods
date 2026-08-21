@@ -22,7 +22,7 @@
 		<Reference Include="UniverseLib.Mono">
 			<HintPath>$(BepInExPath)plugins/AssetBundleLoader/UniverseLib.Mono.dll</HintPath>
 		</Reference>
-		<Reference Include="$(BepInExPath)../Shadows of Doubt_Data/Managed/Assembly-CSharp.dll" />
+		<Reference Include="$(GameManagedPath)Assembly-CSharp.dll" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">

@@ -21,6 +21,11 @@
   </ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="xcopy /Y /S /E &quot;$(ProjectDir)\CopyToBuild\*&quot; &quot;$(TargetDir)&quot;" />
+		<ItemGroup>
+			<CopyToBuildContent Include="$(ProjectDir)CopyToBuild/**/*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(CopyToBuildContent)"
+		      DestinationFiles="@(CopyToBuildContent->'$(TargetDir)%(RecursiveDir)%(Filename)%(Extension)')"
+		      SkipUnchangedFiles="true" />
 	</Target>
 </Project>

@@ -1,18 +1,28 @@
 <Project>
-    <!-- Windows - Copy builds to game -->
-    <Target Name="PostBuildWindows" AfterTargets="PostBuildEvent" Condition="!$([System.OperatingSystem]::IsLinux())">
-        <Exec Command="mkdir &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" Condition="!Exists('$(BepInExPath)plugins/$(ProjectName)')" />
-        <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;&#xD;&#xA;copy /Y &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
-        <Exec Command="xcopy /S /Y /d &quot;$(ProjectDir)ModFolderContent\*&quot; &quot;$(BepInExPath)plugins/$(ProjectName)&quot;" />
-        <!-- TODO: Create the zip archive like linux builds -->
-    </Target>
+    <!-- Deploy the built plugin into the BepInEx profile and zip it for distribution.
+         Built-in MSBuild tasks cover every OS, so there is no copy/xcopy vs cp/rsync/7z
+         split and nothing extra has to be on PATH. Skipped when BepInEx is not installed
+         at the configured path, so a build still succeeds on a machine without it. -->
+    <Target Name="DeployToBepInEx" AfterTargets="PostBuildEvent"
+            Condition="'$(BepInExPath)'!='' And Exists('$(BepInExPath)')">
+        <PropertyGroup>
+            <PluginDeployPath>$(BepInExPath)plugins/$(ProjectName)</PluginDeployPath>
+        </PropertyGroup>
 
-    <!-- Linux - Copy builds to game -->
-    <Target Name="PostBuildLinux" AfterTargets="PostBuildEvent" Condition="$([System.OperatingSystem]::IsLinux())">
-        <Exec Command="mkdir -p &quot;$(BepInExPath)/plugins/$(ProjectName)&quot;" Condition="!Exists('$(BepInExPath)/plugins/$(ProjectName)')" />
-        <Exec Command="cp -u &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(BepInExPath)/plugins/$(ProjectName)&quot;" />
-        <Exec Command="cp -u &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(BepInExPath)/plugins/$(ProjectName)&quot;" />
-        <Exec Command="rsync -av --update &quot;$(ProjectDir)ModFolderContent/&quot; &quot;$(BepInExPath)/plugins/$(ProjectName)&quot;" />
-        <Exec Command="7z a -r $(BepInExPath)/plugins/$(ProjectName).zip &quot;$(BepInExPath)/plugins/$(ProjectName)/*&quot;" />
+        <ItemGroup>
+            <DeployBinary Include="$(TargetDir)$(TargetName).dll" />
+            <DeployBinary Include="$(TargetDir)$(TargetName).pdb" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+            <DeployContent Include="$(ProjectDir)ModFolderContent/**/*" />
+        </ItemGroup>
+
+        <MakeDir Directories="$(PluginDeployPath)" />
+        <Copy SourceFiles="@(DeployBinary)" DestinationFolder="$(PluginDeployPath)" SkipUnchangedFiles="true" />
+        <Copy SourceFiles="@(DeployContent)"
+              DestinationFiles="@(DeployContent->'$(PluginDeployPath)/%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true" />
+
+        <ZipDirectory SourceDirectory="$(PluginDeployPath)"
+                      DestinationFile="$(BepInExPath)plugins/$(ProjectName).zip"
+                      Overwrite="true" />
     </Target>
 </Project>

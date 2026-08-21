@@ -20,12 +20,12 @@
 
 	<ItemGroup Condition="'$(Configuration)'=='MONO'">
 		<PackageReference Include="BepInEx.Unity.Mono" Version="6.0.0-be.*" IncludeAssets="compile" />
-		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/UnityEngine.CoreModule.dll" />
-		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/UnityEngine.UI.dll" />
-		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/Assembly-CSharp.dll" />
+		<Reference Include="$(GameManagedPath)UnityEngine.CoreModule.dll" />
+		<Reference Include="$(GameManagedPath)UnityEngine.UI.dll" />
+		<Reference Include="$(GameManagedPath)Assembly-CSharp.dll" />
 
 		<Reference Include="UniverseLib.Mono">
-			<HintPath>E:\SteamLibrary\steamapps\common\Shadows of Doubt mono\BepInEx\plugins\AssetBundleLoader\UniverseLib.Mono.dll</HintPath>
+			<HintPath>$(BepInExPath)plugins/AssetBundleLoader/UniverseLib.Mono.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 
@@ -38,13 +38,9 @@
 		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-	</ItemGroup>
-
 	<ItemGroup>
 	  <Reference Include="UniverseLib.IL2CPP.Interop">
-	    <HintPath>..\..\..\..\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\plugins\GTFOModding-UnityExplorer_IL2CPP\UniverseLib.IL2CPP.Interop.dll</HintPath>
+	    <HintPath>$(BepInExPath)plugins/GTFOModding-UnityExplorer_IL2CPP/UniverseLib.IL2CPP.Interop.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 </Project>

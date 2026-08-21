@@ -28,7 +28,7 @@
 	
 	<ItemGroup>
 	  <Reference Include="UniverseLib.IL2CPP.Interop">
-	    <HintPath>..\..\..\..\r2modman\_Data\ShadowsofDoubt\profiles\LocalModding\BepInEx\plugins\GTFOModding-UnityExplorer_IL2CPP\UniverseLib.IL2CPP.Interop.dll</HintPath>
+	    <HintPath>$(BepInExPath)plugins/GTFOModding-UnityExplorer_IL2CPP/UniverseLib.IL2CPP.Interop.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 </Project>

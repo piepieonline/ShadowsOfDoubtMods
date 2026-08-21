@@ -14,15 +14,15 @@
 	<ItemGroup>
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
 		<PackageReference Include="UnityEngine.Modules" Version="2021.3.26" IncludeAssets="compile" />
-        <PackageReference Include="SOD.Common" Version="2.1.1" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='MONO'">
 		<PackageReference Include="BepInEx.Unity.Mono" Version="6.0.0-be.*" IncludeAssets="compile" />
-		<Reference Include="E:/SteamLibrary/steamapps/common/Shadows of Doubt mono/Shadows of Doubt_Data/Managed/Assembly-CSharp.dll" />
+		<Reference Include="$(GameManagedPath)Assembly-CSharp.dll" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">
+        <PackageReference Include="SOD.Common" Version="2.1.1" />
 		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
 		<Reference Include="$(BepInExPath)interop/Il2Cppmscorlib.dll" />
 		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
@@ -30,7 +30,4 @@
 		<Reference Include="$(BepInExPath)interop/UnityEngine.UI.dll" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-	</ItemGroup>
 </Project>
