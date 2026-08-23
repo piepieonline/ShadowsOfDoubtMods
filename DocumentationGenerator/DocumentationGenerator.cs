@@ -13,6 +13,7 @@ using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using UniverseLib;
 using static AssetBundleLoader.JsonLoader;
+using static MurderController;
 
 namespace DocumentationGenerator
 {
@@ -22,14 +23,28 @@ namespace DocumentationGenerator
         public static ManualLogSource Logger;
         public static bool IsFullExportEnabled = false;
 
-        private static string DDS_GAME_PATH = @"E:\Program Files (x86)\Steam\steamapps\common\Shadows of Doubt\Shadows of Doubt_Data\StreamingAssets\DDS\";
-        private static string MONO_ASSEMBLY_PATH = @"F:\SteamLibrary\steamapps\common\shadows of doubt mono\Shadows of Doubt_Data\Managed\Assembly-CSharp.dll";
-        private static string DOC_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\Documentation\";
-        private static string MEDIAWIKI_DOC_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\Documentation\MediaWikiExports\";
-        private static string SO_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\Documentation\ExportedSOs\";
-        private static string TEXTASSET_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\Documentation\ExportedTextAssets\";
-        private static string MURDER_BUILDER_DOC_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\PieMurderBuilder\scripts\ref\";
-        private static string DDS_EDITOR_DOC_EXPORT_PATH = @"D:\Game Modding\ShadowsOfDoubt\SOD_DDS_Editor_Pie\scripts\ref\"; 
+        private static string DDS_GAME_PATH = "Z:/mnt/m2/SteamLibrary/steamapps/common/Shadows of Doubt/Shadows of Doubt_Data/StreamingAssets/DDS/";
+        private static string MONO_ASSEMBLY_PATH = "Z:/mnt/m2/SteamLibrary/steamapps/common/shadows of doubt mono/Shadows of Doubt_Data/Managed/Assembly-CSharp.dll";
+        private static string DOC_EXPORT_PATH = "Z:/mnt/38BC2DAABC2D639A/Game Modding/ShadowsOfDoubt/Documentation/";
+        private static string MEDIAWIKI_DOC_EXPORT_PATH = "Z:/mnt/38BC2DAABC2D639A/Game Modding/ShadowsOfDoubt/Documentation/MediaWikiExports/";
+        private static string SO_EXPORT_PATH = "Z:/mnt/38BC2DAABC2D639A/Game Modding/ShadowsOfDoubt/Documentation/ExportedSOs/";
+        private static string TEXTASSET_EXPORT_PATH = "Z:/mnt/38BC2DAABC2D639A/Game Modding/ShadowsOfDoubt/Documentation/ExportedTextAssets/";
+        private static string MURDER_BUILDER_DOC_EXPORT_PATH = "Z:/mnt/38BC2DAABC2D639A/Game Modding/ShadowsOfDoubt/PieMurderBuilder/scripts/ref/";
+        private static string DDS_EDITOR_DOC_EXPORT_PATH = "Z:/mnt/38BC2DAABC2D639A/Game Modding/ShadowsOfDoubt/SOD_DDS_Editor_Pie/scripts/ref/"; 
+        private static string ONLINE_TYPE_EXPORT_PATH = "Z:/mnt/38BC2DAABC2D639A/Game Modding/ShadowsOfDoubt/PieMurderBuilder/data/";
+
+        private static readonly string[] OnlineTypes = new string[]
+        {
+            "CharacterTrait",
+            "CompanyPreset",
+            "EvidencePreset",
+            "InteractablePreset",
+            "JobPreset",
+            "MurderMO",
+            "MurderPreset",
+            "MurderWeaponsPool",
+            "RetailItemPreset"
+        };
 
         public override void Load()
         {
@@ -64,6 +79,13 @@ namespace DocumentationGenerator
                 {
                     System.IO.Directory.Delete(SO_EXPORT_PATH, true);
                     System.IO.Directory.CreateDirectory(SO_EXPORT_PATH);
+                }
+
+                foreach (var onlineType in OnlineTypes)
+                {
+                    var onlineTypeDirectory = System.IO.Path.Combine(ONLINE_TYPE_EXPORT_PATH, onlineType);
+                    if (System.IO.Directory.Exists(onlineTypeDirectory)) System.IO.Directory.Delete(onlineTypeDirectory, true);
+                    System.IO.Directory.CreateDirectory(onlineTypeDirectory);
                 }
 
                 var typesToForceInclude = new string[] { "UnityEngine.Sprite", "UnityEngine.GameObject", "UnityEngine.TextAsset" };
@@ -101,7 +123,12 @@ namespace DocumentationGenerator
                             {
                                 System.IO.Directory.CreateDirectory(System.IO.Path.Combine(SO_EXPORT_PATH, soTypeName));
                             }
-                            System.IO.File.WriteAllText(System.IO.Path.Combine(SO_EXPORT_PATH, soTypeName, soName + ".json"), RestoredJsonUtility.ToJsonInternal(so, true));
+                            System.IO.File.WriteAllText(System.IO.Path.Combine(SO_EXPORT_PATH, soTypeName, soName + ".json"), RestoredJsonUtility.ToJsonInternal((dynamic)so, true));
+                        }
+
+                        if (soName != "" && OnlineTypes.Contains(soTypeName))
+                        {
+                            System.IO.File.WriteAllText(System.IO.Path.Combine(ONLINE_TYPE_EXPORT_PATH, soTypeName, soName + ".json"), RestoredJsonUtility.ToJsonInternal((dynamic)so, true));
                         }
 
                         if (soName != "")
@@ -122,7 +149,7 @@ namespace DocumentationGenerator
 
                         if (soName != "")
                         {
-                            ScriptableObjectIDSystem scriptableObjectID = so.Cast<ScriptableObjectIDSystem>();
+                            ScriptableObjectIDSystem scriptableObjectID = so.TryCast<ScriptableObjectIDSystem>();
                             if (!codegenSOMap.ScriptableObjectID[soTypeName].ContainsKey(scriptableObjectID.id)) codegenSOMap.ScriptableObjectID[soTypeName].Add(scriptableObjectID.id, soName);
                         }
                     }
@@ -154,7 +181,7 @@ namespace DocumentationGenerator
                 assemblyLoadContext.LoadFromAssemblyPath(MONO_ASSEMBLY_PATH);
                 var monoAssembly = assemblyLoadContext.Assemblies.Where(a => a.GetName().Name == "Assembly-CSharp").First();
 
-                foreach (var type in typeof(MurderMO).Assembly.DefinedTypes)
+                foreach (var type in typeof(Murder).Assembly.DefinedTypes)
                 {
                     if (type.IsEnum)
                     {
@@ -217,7 +244,7 @@ namespace DocumentationGenerator
 
                             if (type.IsSubclassOf(typeof(ScriptableObject)))
                             {
-                                serializedObject = RestoredJsonUtility.ToJsonInternal(ScriptableObject.CreateInstance(type.Name), false);
+                                serializedObject = RestoredJsonUtility.ToJsonInternal((dynamic)ScriptableObject.CreateInstance(type.Name), false);
                                 serializedObject = Regex.Replace(serializedObject, """{"m_FileID":\s?(\d+),\s?"m_PathID":\s?(\d+)}""", m => "null");
                                 codegenTemplates[type.Name] = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(serializedObject);
                             }
@@ -249,9 +276,12 @@ namespace DocumentationGenerator
                 System.IO.File.WriteAllText(System.IO.Path.Join(DDS_EDITOR_DOC_EXPORT_PATH, "ddsMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(ddsMap).ToString());
 
                 System.IO.File.WriteAllText(System.IO.Path.Join(MURDER_BUILDER_DOC_EXPORT_PATH, "soMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenSOMap).ToString());
+                System.IO.File.WriteAllText(System.IO.Path.Join(DOC_EXPORT_PATH, "soIdMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenIDMap).ToString());
                 System.IO.File.WriteAllText(System.IO.Path.Join(MURDER_BUILDER_DOC_EXPORT_PATH, "soIdMap.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenIDMap).ToString());
                 System.IO.File.WriteAllText(System.IO.Path.Join(MURDER_BUILDER_DOC_EXPORT_PATH, "templates.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenTemplates).ToString());
                 System.IO.File.WriteAllText(System.IO.Path.Join(MURDER_BUILDER_DOC_EXPORT_PATH, "soChildTypes.json"), NewtonsoftExtensions.NewtonsoftJson.JObject_FromObject(codegenSOTypeMapping).ToString());
+
+                System.IO.File.WriteAllText(System.IO.Path.Join(ONLINE_TYPE_EXPORT_PATH, "onlineTypes.json"), NewtonsoftExtensions.NewtonsoftJson.JToken_Parse("[" + string.Join(",", OnlineTypes.Select(t => $"\"{t}\"")) + "]").ToString());
 
                 Logger.LogWarning($"Documentation Regenerated. Turn off documentation generation and restart the game!");
             }

@@ -9,6 +9,7 @@
 			https://nuget.bepinex.dev/v3/index.json
 		</RestoreAdditionalProjectSources>
 		<RootNamespace>DocumentationGenerator</RootNamespace>
+		<BepInExPath>$(BepInExPath.Replace('/profiles/LocalModding/','/profiles/DocumentationGenerator/'))</BepInExPath>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -18,11 +19,15 @@
 		<PackageReference Include="SOD.Common" Version="2.1.1" />
 		<ProjectReference Include="../AssetBundleLoader/AssetBundleLoader.csproj" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
+		<Reference Include="$(BepInExPath)interop/Il2Cppmscorlib.dll" />
+		<Reference Include="$(BepInExPath)interop/Il2CppSystem.Core.dll" />
+		<Reference Include="$(BepInExPath)interop/UnityEngine.CoreModule.dll" />
+		<Reference Include="$(BepInExPath)interop/UnityEngine.UI.dll" />
 		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
 		<Reference Include="UniverseLib.IL2CPP.Interop">
-		  <HintPath>$(BepInExPath)plugins/GTFOModding-UnityExplorer_IL2CPP/UniverseLib.IL2CPP.Interop.dll</HintPath>
+			<HintPath>$(BepInExPath)plugins/GTFOModding-UnityExplorer_IL2CPP/UniverseLib.IL2CPP.Interop.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 </Project>
