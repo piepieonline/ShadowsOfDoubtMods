@@ -1,8 +1,7 @@
 {
   "enabled": true,
   "fileOrder": [
-    "REF:EP_CrumpledPasswordNoteBin",
-    "REF:IP_CrumpledPasswordNoteBin"
+    "REF:IP_BinPasscodeNote"
   ],
   "loadBefore": "",
   "version": 1

@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "fileOrder": [
+    "REF:EP_ClubMeetFlyer",
+    "REF:IP_ClubMeetFlyer",
+    "REF:IP_ClubMeetFlyerLoose",
+    "REF:BookClub",
+    "REF:BotanyClub",
+    "REF:ChessClub",
+    "REF:DramaGroup",
+    "REF:GunClub",
+    "REF:HistoryClub",
+    "REF:KnittingClub",
+    "REF:PokerClub",
+    "REF:SciFiClub",
+    "REF:TarotClub",
+    "REF:WineTastersClub"
+  ],
+  "loadBefore": "",
+  "version": 1
+}

@@ -1,5 +1,4 @@
 ﻿using AssetBundleLoader;
-using Cpp2IL.Core.Api;
 using DDSScriptExtensions;
 using HarmonyLib;
 using SOD.Common;
@@ -215,7 +214,6 @@ namespace AdditionalEvidence
                 var passedObjects = new Il2CppSystem.Collections.Generic.List<Il2CppSystem.Object>();
                 passedObjects.Add(interactable);
                 createdEvidence = EvidenceCreator.Instance.CreateEvidence(evidencePresetName, weaponStampBulletEvidenceKey, passedObjects: passedObjects);
-                createdEvidence.AddFactLink(EvidenceCreator.Instance.CreateFact("FC_WeaponSerial", createdEvidence, interactable.evidence), Evidence.DataKey.name, true);
             }
 
             return createdEvidence;
@@ -223,18 +221,91 @@ namespace AdditionalEvidence
 
         private static void CreateBulletStampMatch(Evidence gun, Evidence bullet)
         {
+            // Intentionally left unused for now.
             return;
-            // TODO: Broken
-            // - Only create one mapping between each bullet and gun
-            // - Only show for known evidence
+        }
 
-            Log($"Adding fact between stamps");
-            // TODO: Config, matches label
-            gun.AddFactLink(EvidenceCreator.Instance.CreateFact(
-                "FC_WeaponSerial",
-                gun,
-                bullet
-            ), Evidence.DataKey.name, false);
+        // Minimal on-scan/link-time helper: ensure FC_WeaponSerial facts exist from our mod evidence to the
+        // appropriate vanilla evidence target(s). De-duplicates before creating.
+        internal static void EnsureSerialLinks(Evidence fromEvidence, Interactable context)
+        {
+            if (fromEvidence == null || context == null)
+                return;
+
+            Evidence target = null;
+            bool casingWithMappedGun = false;
+
+            try
+            {
+                if (IsInteractableACasing(context) && SpawnedBulletsToGunIdMap.ContainsKey(context.id))
+                {
+                    var mappedGun = SpawnedBulletsToGunIdMap[context.id];
+                    if (mappedGun?.evidence != null)
+                    {
+                        target = mappedGun.evidence;
+                        casingWithMappedGun = true;
+                    }
+                }
+
+                if (target == null)
+                {
+                    target = context.evidence;
+                }
+            }
+            catch { }
+
+            if (target == null)
+                return;
+
+            bool HasExistingSerialLink(Evidence from, Evidence to)
+            {
+                try
+                {
+                    var links = from.GetFactsForDataKey(Evidence.DataKey.name);
+                    if (links != null)
+                    {
+                        foreach (var link in links)
+                        {
+                            if (link == null) continue;
+                            Fact f = null; try { f = link.fact; } catch { }
+                            if (f == null) continue;
+                            string presetName = string.Empty; try { presetName = f.preset?.name ?? string.Empty; } catch { }
+                            if (presetName != "FC_WeaponSerial") continue;
+                            try
+                            {
+                                var dests = link.destinationEvidence;
+                                if (dests != null)
+                                {
+                                    foreach (var d in dests)
+                                    {
+                                        if (d == to) return true;
+                                    }
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+                }
+                catch { }
+                return false;
+            }
+
+            try
+            {
+                if (!HasExistingSerialLink(fromEvidence, target))
+                {
+                    var fact = EvidenceCreator.Instance.CreateFact("FC_WeaponSerial", fromEvidence, target);
+                    fromEvidence.AddFactLink(fact, Evidence.DataKey.name, true);
+                }
+
+                // Optionally also link to the casing's own base evidence for context if different
+                if (casingWithMappedGun && context.evidence != null && context.evidence != target && !HasExistingSerialLink(fromEvidence, context.evidence))
+                {
+                    var fact2 = EvidenceCreator.Instance.CreateFact("FC_WeaponSerial", fromEvidence, context.evidence);
+                    fromEvidence.AddFactLink(fact2, Evidence.DataKey.name, true);
+                }
+            }
+            catch { }
         }
 
         static void Log(object data, BepInEx.Logging.LogLevel logLevel = BepInEx.Logging.LogLevel.Info)
@@ -284,9 +355,14 @@ namespace AdditionalEvidence
                     */
 
                     InterfaceController.Instance.SpawnWindow(gunSerialEvidence, passedInteractable: scanCompleteOn);
+                    // Ensure facts exist (on-scan linking)
+                    EnsureSerialLinks(gunSerialEvidence, scanCompleteOn);
 
                     if (AdditionalEvidencePlugin.GunForensics_ScanGunForHeadPrint.Value)
+                    {
                         InterfaceController.Instance.SpawnWindow(gunStampEvidence, passedInteractable: scanCompleteOn);
+                        EnsureSerialLinks(gunStampEvidence, scanCompleteOn);
+                    }
                 }
                 // Check if it was a bullet that was scanned
                 else if(IsInteractableACasing(scanCompleteOn))
@@ -301,6 +377,9 @@ namespace AdditionalEvidence
                         // CreateBulletStampMatch(gunStampEvidence, gunBulletStampEvidence);
 
                         InterfaceController.Instance.SpawnWindow(gunBulletStampEvidence, passedInteractable: scanCompleteOn);
+                        // Ensure facts exist (on-scan linking)
+                        EnsureSerialLinks(gunBulletStampEvidence, scanCompleteOn);
+                        EnsureSerialLinks(gunStampEvidence, scanCompleteOn);
                     }
                     else
                     {

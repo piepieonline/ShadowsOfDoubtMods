@@ -1,0 +1,41 @@
+{
+  "presetName": "IP_ClubMeetFlyer",
+  "fileType": "InteractablePreset",
+  "name": "IP_ClubMeetFlyer",
+  "type": "InteractablePreset",
+  "copyFrom": "REF:InteractablePreset|BookGroupPoster",
+  "spawnEvidence": "REF:EvidencePreset|EP_ClubMeetFlyer",
+  "prefabLocalEuler": {
+    "x": 90.0,
+    "y": 0.0,
+    "z": 0.0
+  },
+  "subObjectClasses": [
+    "REF:SubObjectClassPreset|LargeNoticeBoardItem"
+  ],
+  "backupClasses": [],
+  "limitToCertainRooms": true,
+  "onlyInRooms": [
+    "REF:RoomConfiguration|AmericanDiner",
+    "REF:RoomConfiguration|BarDiningRoom",
+    "REF:RoomConfiguration|AsianDiningRoom",
+    "REF:RoomConfiguration|FastFoodDiningRoom",
+    "REF:RoomConfiguration|RooftopBar"
+  ],
+  "banFromRooms": [],
+  "autoPlacement": 4,
+  "limitPerObject": true,
+  "perObjectLimit": 1,
+  "limitPerAddress": true,
+  "perAddressLimit": 1,
+  "frequencyPerGamelocationMin": 0,
+  "frequencyPerGameLocationMax": 0,
+  "frequencyPerOwnerMin": 0,
+  "frequencyPerOwnerMax": 0,
+  "placeAtHome": false,
+  "placeAtWork": false,
+  "placeIfFiltersPresentInOwner": false,
+  "attemptToStoreInFolder": null,
+  "dontPlaceIfNoFolder": false,
+  "traitModifiers": []
+}

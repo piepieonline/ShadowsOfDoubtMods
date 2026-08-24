@@ -14,7 +14,6 @@
 	<ItemGroup>
 		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
 		<PackageReference Include="UnityEngine.Modules" Version="2021.3.26" IncludeAssets="compile" />
-		<PackageReference Include="SOD.Common" Version="2.0.8" IncludeAssets="compile" />
 		<ProjectReference Include="..\DDSScriptExtensions\DDSScriptExtensions.csproj" />
 	</ItemGroup>
 
@@ -24,8 +23,10 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">
+		<PackageReference Include="SOD.Common" Version="2.1.1" />
 		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
 		<Reference Include="$(BepInExPath)interop/Il2Cppmscorlib.dll" />
+		<Reference Include="$(BepInExPath)interop/Il2CppSystem.Core.dll" />
 		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
 		<Reference Include="$(BepInExPath)interop/Unity.TextMeshPro.dll" />
 		<Reference Include="$(BepInExPath)interop/UnityEngine.UI.dll" />

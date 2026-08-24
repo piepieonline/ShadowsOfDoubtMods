@@ -1,0 +1,14 @@
+{
+  "presetName": "KnittingClub",
+  "clues": [
+    {
+      "name": "Club Meet Flyer",
+      "preset": "REF:InteractablePreset|IP_ClubMeetFlyer",
+      "spawnAt": 0
+    }
+  ],
+  "copyFrom": null,
+  "fileType": "GroupPreset",
+  "name": "KnittingClub",
+  "type": "GroupPreset"
+}

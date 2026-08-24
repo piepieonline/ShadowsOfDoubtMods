@@ -1,0 +1,14 @@
+{
+  "presetName": "GunClub",
+  "clues": [
+    {
+      "name": "Club Meet Flyer",
+      "preset": "REF:InteractablePreset|IP_ClubMeetFlyer",
+      "spawnAt": 0
+    }
+  ],
+  "copyFrom": null,
+  "fileType": "GroupPreset",
+  "name": "GunClub",
+  "type": "GroupPreset"
+}

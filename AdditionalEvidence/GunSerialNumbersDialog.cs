@@ -42,6 +42,9 @@ namespace AdditionalEvidence
                                     var gunStampEvidence = GunSerialNumbers.GetOrCreateEvidence("EP_GunHeadStamp|", "EP_GunHeadStamp", givenItem);
                                     InterfaceController.Instance.SpawnWindow(gunSerialEvidence, passedInteractable: givenItem);
                                     InterfaceController.Instance.SpawnWindow(gunStampEvidence, passedInteractable: givenItem);
+                                    // Ensure facts exist (on-scan linking)
+                                    GunSerialNumbers.EnsureSerialLinks(gunSerialEvidence, givenItem);
+                                    GunSerialNumbers.EnsureSerialLinks(gunStampEvidence, givenItem);
 
                                     GunSerialNumbers.ItemGivenToHuman = givenItem;
 
@@ -56,6 +59,8 @@ namespace AdditionalEvidence
                                 {
                                     var gunBulletStampEvidence = GunSerialNumbers.GetOrCreateEvidence("EP_GunBulletHeadStamp|", "EP_GunHeadStamp", givenItem);
                                     InterfaceController.Instance.SpawnWindow(gunBulletStampEvidence, passedInteractable: givenItem);
+                                    // Ensure facts exist (on-scan linking)
+                                    GunSerialNumbers.EnsureSerialLinks(gunBulletStampEvidence, givenItem);
 
                                     GunSerialNumbers.ItemGivenToHuman = givenItem;
 

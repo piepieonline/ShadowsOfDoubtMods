@@ -1,0 +1,20 @@
+{
+  "presetName": "EP_ClubMeetFlyer",
+  "ddsDocumentID": "5b60f760-1ebd-4448-bcd3-0fc850385db5",
+  "fileType": "EvidencePreset",
+  "name": "EP_ClubMeetFlyer",
+  "type": "EvidencePreset",
+  "copyFrom": "REF:EvidencePreset|BookCubPoster",
+  "factSetup": [
+    {
+      "preset": "REF:FactPreset|FoundAt",
+      "link": 5,
+      "onlyIfInOwnedPosition": 0,
+      "createOnDiscovery": 1,
+      "forceDiscoveryOnCreation": 1,
+      "switchFindingFactToFrom": 0
+    }
+  ],
+  "keyMergeOnDiscovery": [],
+  "useWriter": false
+}

@@ -1,0 +1,50 @@
+{
+  "name": "Club Meet Flyer",
+  "id": "5b60f760-1ebd-4448-bcd3-0fc850385db5",
+  "participantA": { "required": false, "connection": 15, "useJobs": false, "disableInbox": false, "jobs": [], "useTraits": false, "traits": [], "traitConditions": 0, "triggers": [] },
+  "participantB": { "required": false, "connection": 15, "useJobs": false, "disableInbox": false, "jobs": [], "useTraits": false, "traits": [], "traitConditions": 0, "triggers": [] },
+  "participantC": { "required": false, "connection": 15, "useJobs": false, "disableInbox": false, "jobs": [], "useTraits": false, "traits": [], "traitConditions": 0, "triggers": [] },
+  "participantD": { "required": false, "connection": 15, "useJobs": false, "disableInbox": false, "jobs": [], "useTraits": false, "traits": [], "traitConditions": 0, "triggers": [] },
+  "repeat": 1,
+  "triggerPoint": 0,
+  "messages": [
+    {
+      "msgID": "88ed9181-e6ab-425c-9d80-55b9ac5eb9e1",
+      "elementName": "",
+      "instanceID": "7a2e6d94-3c81-4b5f-9e02-1f8ab6c47d33",
+      "saidBy": 0,
+      "saidTo": 1,
+      "pos": { "x": -2.0, "y": -1.5 },
+      "size": { "x": 316.0, "y": 461.0 },
+      "rot": 0,
+      "font": "Halogen SDF",
+      "col": { "r": 0.1176471, "g": 0.1176471, "b": 0.1176471, "a": 1 },
+      "fontSize": 20,
+      "charSpace": 0,
+      "wordSpace": 0,
+      "lineSpace": 0,
+      "paraSpace": 0,
+      "alignH": 1,
+      "alignV": 0,
+      "fontStyle": 0,
+      "order": 0,
+      "usePages": false,
+      "isHandwriting": false,
+      "links": []
+    }
+  ],
+  "stopMovement": true,
+  "ignoreGlobalRepeat": false,
+  "treeType": 2,
+  "document": {
+    "background": "Paper",
+    "fill": 1,
+    "size": { "x": 342.0, "y": 482.0 },
+    "colour": { "r": 1, "g": 1, "b": 1, "a": 1 }
+  },
+  "startingMessage": "7a2e6d94-3c81-4b5f-9e02-1f8ab6c47d33",
+  "treeChance": 1,
+  "priority": 3,
+  "newspaperCategory": 0,
+  "newspaperContext": 0
+}

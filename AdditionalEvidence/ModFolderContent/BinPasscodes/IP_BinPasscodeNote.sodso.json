@@ -1,0 +1,27 @@
+{
+  "presetName": "IP_BinPasscodeNote",
+  "spawnEvidence": "REF:EvidencePreset|Note",
+  "copyFrom": "REF:InteractablePreset|BinNote",
+  "fileType": "InteractablePreset",
+  "name": "IP_BinPasscodeNote",
+  "type": "InteractablePreset",
+  "autoPlacement": 0,
+  "placeIfFiltersPresentInOwner": true,
+  "frequencyPerOwnerMin": 1,
+  "frequencyPerOwnerMax": 1,
+  "limitPerAddress": true,
+  "perAddressLimit": 1,
+  "traitModifiers": [
+    {
+      "rule": 0,
+      "traitList": [
+        "REF:CharacterTrait|Quirk-Forgetful",
+        "REF:CharacterTrait|Char-Ditzy",
+        "REF:CharacterTrait|Char-Detached"
+      ],
+      "mustPassForApplication": true,
+      "appliedFrequencyMin": 0,
+      "appliedFrequencyMax": 0
+    }
+  ]
+}
