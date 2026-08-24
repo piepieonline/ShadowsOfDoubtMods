@@ -48,12 +48,25 @@ namespace AssetBundleLoader
             }
         }
 
+        [Obsolete("Use the overload taking the folder the mod's content was loaded from, so that file based references can be resolved")]
+        public static ScriptableObject LoadFileToGame(string json)
+        {
+            return LoadFileToGame(json, true, null);
+        }
+        
+        [Obsolete("Use the overload taking the folder the mod's content was loaded from, so that file based references can be resolved")]
         public static ScriptableObject LoadFileToGame(string json, bool isNewObject = true)
+        {
+            return LoadFileToGame(json, isNewObject, null);
+        }
+        
+        public static ScriptableObject LoadFileToGame(string json, bool isNewObject = true, string modFolderPath = null)
         {
             var newSOJSON = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(json);
 
-            var fileName = newSOJSON.Value<string>("name");
-            var fileType = newSOJSON.Value<string>("fileType");
+            // Explicitly typed, otherwise anything they are passed to binds dynamically, and extension methods and tuple names don't survive that
+            string fileName = newSOJSON.Value<string>("name");
+            string fileType = newSOJSON.Value<string>("fileType");
 
             /*
             // Doesn't work, use reflection
@@ -69,6 +82,13 @@ namespace AssetBundleLoader
             {
                 newSOJSON.SelectToken("copyFrom").Replace(null);
             }
+
+            // Assets built at runtime have no file ID, so they are blanked out here and assigned once Unity has deserialised
+            List<dynamic> floorTokens = JsonExtensions.FindTokensByValueMatch(newSOJSON, new System.Text.RegularExpressions.Regex("^FLOOR:"));
+            var deferredAssets = ExtractAndReplaceFloorTokens(floorTokens, modFolderPath, fileName);
+
+            List<dynamic> bundleTokens = JsonExtensions.FindTokensByValueMatch(newSOJSON, new System.Text.RegularExpressions.Regex("^BUNDLE:"));
+            deferredAssets.AddRange(ExtractAndReplaceBundleTokens(bundleTokens, modFolderPath, fileName));
 
             var newSOJSONWithRefs = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(newSOJSON.ToString());
 
@@ -114,6 +134,13 @@ namespace AssetBundleLoader
             // Using the original json and the created SO, fix self-references
             // TODO: Set all custom references with this, not just self? Would reduce the need for the fileOrder to only being required for copyFrom
             FixSelfReferences(newSO, newSOJSONWithRefs);
+
+            foreach (var deferred in deferredAssets)
+            {
+                AssignAtJsonPath(newSO, deferred.JsonPath, deferred.Asset);
+            }
+
+            BuildingModelLoader.TryPrepareBuildingModel(newSO);
 
             // Cache the ID of this new object, so following objects can refer to it (if it doesn't already exist)
             if (isNewObject)
@@ -180,6 +207,67 @@ namespace AssetBundleLoader
             }
         }
 
+        private static List<(string JsonPath, UnityEngine.Object Asset)> ExtractAndReplaceFloorTokens(List<dynamic> tokens, string modFolderPath, string fileName)
+        {
+            var deferredAssets = new List<(string JsonPath, UnityEngine.Object Asset)>();
+
+            foreach (var token in tokens)
+            {
+                string jsonPath = token.Path.ToString();
+                string relativePath = token.ToString().Replace("FLOOR:", "").Trim();
+
+                if (modFolderPath == null)
+                {
+                    BundleLoader.PluginLogger.LogError($"{fileName} failed to load floorplan {relativePath}, the mod loading it didn't provide a folder to search");
+                }
+                else
+                {
+                    var floorplan = FloorDataLoader.LoadFloorplan(modFolderPath, relativePath);
+                    if (floorplan != null)
+                    {
+                        deferredAssets.Add((jsonPath, floorplan));
+                    }
+                }
+
+                token.Replace(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse("{\"m_FileID\":0,\"m_PathID\":0}"));
+            }
+
+            return deferredAssets;
+        }
+
+        private static List<(string JsonPath, UnityEngine.Object Asset)> ExtractAndReplaceBundleTokens(List<dynamic> tokens, string modFolderPath, string fileName)
+        {
+            var deferredAssets = new List<(string JsonPath, UnityEngine.Object Asset)>();
+
+            foreach (var token in tokens)
+            {
+                string jsonPath = token.Path.ToString();
+                string assetReference = token.ToString().Replace("BUNDLE:", "").Trim();
+                var bundleAndAsset = assetReference.Split('|');
+
+                if (modFolderPath == null)
+                {
+                    BundleLoader.PluginLogger.LogError($"{fileName} failed to load asset {assetReference}, the mod loading it didn't provide a folder to search");
+                }
+                else if (bundleAndAsset.Length != 2)
+                {
+                    BundleLoader.PluginLogger.LogError($"{fileName} failed to load asset '{assetReference}', references are in the form BUNDLE:bundleName|assetName");
+                }
+                else
+                {
+                    var asset = BundleAssetLoader.LoadAsset(modFolderPath, bundleAndAsset[0], bundleAndAsset[1]);
+                    if (asset != null)
+                    {
+                        deferredAssets.Add((jsonPath, asset));
+                    }
+                }
+
+                token.Replace(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse("{\"m_FileID\":0,\"m_PathID\":0}"));
+            }
+
+            return deferredAssets;
+        }
+
         private static void FixSelfReferences(ScriptableObject so, dynamic json)
         {
             string selfReference = "REF:" + so.GetActualType() + "|" + so.name;
@@ -190,75 +278,109 @@ namespace AssetBundleLoader
                      .Where(val => val.ToString() == selfReference)
                     .ToList())
             {
-                List<string> path = new List<string>();
+                // Explicitly typed, otherwise the call below binds dynamically
+                string selfPath = self.Path.ToString();
+                AssignAtJsonPath(so, selfPath, so.TryCast(so.GetActualType()));
+            }
+        }
 
-                // Split the path (doesn't handle arrays, will be done later)
-                string[] pathComponents = self.Path.Split(".");
+        private static void AssignAtJsonPath(ScriptableObject so, string jsonPath, object value)
+        {
+            // Split the path (doesn't handle arrays, will be done later)
+            string[] pathComponents = jsonPath.Split(".");
 
-                // Loop through the path, keep a reference to the parent FieldInfo and object, and index if required
-                object parentObj = null;
-                PropertyInfo parentField = null;
-                object currentObj = so;
-                int lastIndex = -1;
-                foreach (var comp in pathComponents)
+            // Loop through the path, keep a reference to the parent FieldInfo and object, and index if required
+            object parentObj = null;
+            PropertyInfo parentField = null;
+            object currentObj = so;
+            int lastIndex = -1;
+            foreach (var comp in pathComponents)
+            {
+                if (comp.IndexOf("[") > -1)
                 {
-                    if (comp.IndexOf("[") > -1)
+                    var splitComp = comp.Split("[");
+                    int index = Int32.Parse(splitComp[1].Split("]")[0]);
+
+                    try
                     {
-                        var splitComp = comp.Split("[");
-                        int index = Int32.Parse(splitComp[1].Split("]")[0]);
+                        parentField = currentObj.GetActualType().GetProperty(splitComp[0]);
+                        if (parentField == null)
+                            throw new NullReferenceException();
+                    }
+                    catch
+                    {
+                        BundleLoader.PluginLogger.LogError($"Unknown field '{splitComp[0]}' on type '{currentObj.GetActualType().FullName}'");
+                    }
 
-                        try
-                        {
-                            parentField = currentObj.GetActualType().GetProperty(splitComp[0]);
-                            if (parentField == null)
-                                throw new NullReferenceException();
-                        }
-                        catch
-                        {
-                            BundleLoader.PluginLogger.LogError($"Unknown field '{splitComp[0]}' on type '{currentObj.GetActualType().FullName}'");
-                        }
+                    if (parentField.PropertyType.IsArray)
+                    {
+                        var objArray = (object[])(currentObj.GetActualType().GetProperty(splitComp[0]).GetValue(currentObj));
 
-                        if (parentField.PropertyType.IsArray)
-                        {
-                            var objArray = (object[])(currentObj.GetActualType().GetProperty(splitComp[0]).GetValue(currentObj));
-
-                            lastIndex = index;
-                            parentObj = objArray;
-                            currentObj = objArray[index];
-                        }
-                        else
-                        {
-                            dynamic preset = currentObj.TryCast(currentObj.GetActualType());
-                            dynamic objArray = (currentObj.GetActualType().GetProperty(splitComp[0]).GetValue(preset));
-
-                            lastIndex = index;
-                            parentObj = objArray;
-                            currentObj = objArray[index];
-                        }
+                        lastIndex = index;
+                        parentObj = objArray;
+                        currentObj = objArray[index];
                     }
                     else
                     {
-                        parentField = currentObj.GetActualType().GetProperty(comp);
-                        parentObj = currentObj;
+                        dynamic preset = currentObj.TryCast(currentObj.GetActualType());
+                        dynamic objArray = (currentObj.GetActualType().GetProperty(splitComp[0]).GetValue(preset));
 
-                        if (pathComponents.Length > 1)
-                            currentObj = currentObj.GetActualType().GetProperty(comp).GetValue(currentObj);
+                        // Deserialising can leave the list shorter than the path expects, so grow it rather than fail
+                        GrowListToFit((object)objArray, index);
+
+                        lastIndex = index;
+                        parentObj = objArray;
+                        currentObj = objArray[index];
                     }
-                }
-
-                // Overwrite the value with our own scriptable object
-                if (parentField.PropertyType.IsArray)
-                {
-                    ((System.Array)parentObj).SetValue(so.TryCast(so.GetActualType()), lastIndex);
-                }
-                else if (parentField.PropertyType.Name.StartsWith("List"))
-                {
-                    parentObj.GetActualType().GetMethod("set_Item").Invoke(parentObj, new object[] { lastIndex, so.TryCast(so.GetActualType()) });
                 }
                 else
                 {
-                    parentField.SetValue(parentObj, so.TryCast(so.GetActualType()));
+                    // Reflection needs the object as its own type, not the ScriptableObject it arrived as
+                    var typedObj = currentObj.TryCast(currentObj.GetActualType());
+
+                    parentField = currentObj.GetActualType().GetProperty(comp);
+                    parentObj = typedObj;
+
+                    if (pathComponents.Length > 1)
+                        currentObj = parentField.GetValue(typedObj);
                 }
+            }
+
+            // Bundle assets are loaded as UnityEngine.Object, so cast them to the type the field holds
+            Type fieldType = parentField.PropertyType.IsArray ? parentField.PropertyType.GetElementType()
+                : parentField.PropertyType.Name.StartsWith("List") ? parentField.PropertyType.GetGenericArguments()[0]
+                : parentField.PropertyType;
+
+            if (value != null && !fieldType.IsInstanceOfType(value))
+            {
+                value = value.TryCast(fieldType);
+            }
+
+            if (parentField.PropertyType.IsArray)
+            {
+                ((System.Array)parentObj).SetValue(value, lastIndex);
+            }
+            else if (parentField.PropertyType.Name.StartsWith("List"))
+            {
+                parentObj.GetActualType().GetMethod("set_Item").Invoke(parentObj, new object[] { lastIndex, value });
+            }
+            else
+            {
+                parentField.SetValue(parentObj, value);
+            }
+        }
+
+        private static void GrowListToFit(object list, int index)
+        {
+            var listType = list.GetActualType();
+            var count = (int)listType.GetProperty("Count").GetValue(list);
+            if (count > index) return;
+
+            var add = listType.GetMethod("Add");
+            while (count <= index)
+            {
+                add.Invoke(list, new object[] { null });
+                count++;
             }
         }
 

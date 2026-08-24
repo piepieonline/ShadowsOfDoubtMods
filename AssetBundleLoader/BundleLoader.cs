@@ -62,7 +62,7 @@ public class BundleLoader : BasePlugin
                 return loadedBundles[patchedBundlePath];
             }
 
-            PluginLogger.LogInfo("Using existing bundle: " + patchedBundlePath);
+            PluginLogger.LogInfo("Loading bundle: " + patchedBundlePath);
 
             EnableLogging = false;
 

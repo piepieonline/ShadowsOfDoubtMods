@@ -6,7 +6,10 @@ using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Configuration;
 using HarmonyLib;
+using Il2CppSystem.Dynamic;
+using LibCpp2IL.BinaryStructures;
 using UniverseLib;
+using Il2CppType = Il2CppInterop.Runtime.Il2CppType;
 
 
 #if MONO
@@ -121,7 +124,8 @@ namespace CommunityCaseLoader
         private static void LoadManifest(dynamic manifest, ref List<ScriptableObject> objectsToLoad)
         {
             var moName = manifest.Value<string>("moName");
-            var folderPath = manifest.Value<string>("folderPath");
+            // Explicitly typed, otherwise passing it to LoadFileToGame makes that call (and its result) dynamic
+            string folderPath = manifest.Value<string>("folderPath");
 
             if (manifest.Value<bool>("enabled"))
             {
@@ -159,7 +163,7 @@ namespace CommunityCaseLoader
 
             foreach (var fileContent in fileContents)
             {
-                var outputFile = AssetBundleLoader.JsonLoader.LoadFileToGame(fileContent.Content, fileContent.IsNewFile);
+                var outputFile = AssetBundleLoader.JsonLoader.LoadFileToGame(fileContent.Content, fileContent.IsNewFile, folderPath);
 
                 if (fileContent.IsNewFile)
                 {
@@ -196,24 +200,27 @@ namespace CommunityCaseLoader
         // Save safe, vmailTreeMap builds on the loader, sideJobThreadIDMap builds on vmail send or rebuilds after loading 
         public static Dictionary<string, JobPresetAndTag> vmailTreeMap = new Dictionary<string, JobPresetAndTag>(); // TODO: Murders, too?
         public static Dictionary<int, int> sideJobThreadIDMap = new Dictionary<int, int>();
-
+        
         public static void Postfix()
         {
             // Force single type for testing
             if (CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder != "")
             {
+                var allMurderMOs = Toolbox.Instance.resourcesCache[Il2CppType.Of<MurderMO>()].Values;
+                
                 bool foundSpecificMurder = false;
                 CommunityCaseLoaderPlugin.PluginLogger.LogWarning($"Forcing MurderMO: {CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder}");
-                for (int i = Toolbox.Instance.allMurderMOs.Count - 1; i >= 0; i--)
+                foreach(var so in allMurderMOs)
                 {
-                    if (Toolbox.Instance.allMurderMOs[i].name != CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder)
+                    MurderMO mo = so.TryCast<MurderMO>();
+                    if (mo.name != CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder)
                     {
-                        Toolbox.Instance.allMurderMOs[i].disabled = true; // TODO: Cache the current state to allow changing at runtime
+                        mo.disabled = true; // TODO: Cache the current state to allow changing at runtime
                     }
                     else
                     {
                         foundSpecificMurder = true;
-                        Toolbox.Instance.allMurderMOs[i].disabled = false;
+                        mo.disabled = false;
                     }
                 }
 
@@ -221,9 +228,9 @@ namespace CommunityCaseLoader
                 {
                     CommunityCaseLoaderPlugin.PluginLogger.LogError($"MurderMO not found: {CommunityCaseLoaderPlugin.DEBUG_LoadSpecificMurder}");
                     CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Loaded MurderMOs:");
-                    for (int i = Toolbox.Instance.allMurderMOs.Count - 1; i >= 0; i--)
+                    foreach(var mo in allMurderMOs)
                     {
-                        CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"\t{Toolbox.Instance.allMurderMOs[i].name}");
+                        CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"\t{mo.name}");
                     }
                 }
             }
@@ -238,7 +245,7 @@ namespace CommunityCaseLoader
                     else
                     {
                         SideJobController.Instance.jobTracking[i].preset.disabled = false;
-                        SideJobController.Instance.jobTracking[i].preset.maxJobs = 1;
+                        // SideJobController.Instance.jobTracking[i].preset.maxJobs = 1;
                         SideJobController.Instance.jobTracking[i].preset.immediatePostCountThreshold = 100;
                     }
                 }

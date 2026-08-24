@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">	
 	<PropertyGroup>
 		<AssemblyName>CommunityCaseLoader</AssemblyName>
-		<Description>An example mod that works on both IL2CPP and Mono game branches</Description>
-		<Version>1.0.0</Version>
+		<Description>Load custom content from JSON files</Description>
+		<Version>1.1.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 		<RestoreAdditionalProjectSources>

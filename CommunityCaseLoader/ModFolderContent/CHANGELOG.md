@@ -1,3 +1,11 @@
+# 1.1.0
+
+* Added support for floorplans (text assets)
+
+# 1.0.0
+
+* Updated for game version 41.04
+
 # 0.2.5
 
 * Loading sodso_patch files, which allow for modification of base game ScriptableObjects with partial JSONs

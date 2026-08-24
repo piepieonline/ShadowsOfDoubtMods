@@ -5,6 +5,11 @@ Various methods for loading content into Shadows of Doubt, including asset bundl
 * Load new ScriptableObjects from raw JSON files with text based referencing
   * Patch ScriptableObjects from partial JSON representation
 * Create Texture2D from PNG files on the file system (Uses BigGustave library to replace stripped Unity and System methods)
+* Load building floorplans from FloorSaveData JSON files, referenced from a BuildingPreset as `"blueprints": [ "FLOOR:MyFloorplan" ]`
+  * The path is relative to the folder holding the mod's manifest, and the file name becomes the floor's name in the city's floor data, so prefix it to avoid clashing with other mods
+* Reference assets inside a mod's AssetBundle from JSON as `"prefab": "BUNDLE:MyBundle.ab|MyPrefab"`, for the fields `REF:` can't reach - prefabs, meshes, textures and the like
+  * The bundle path is relative to the folder holding the mod's manifest, and the asset name is the name it has inside the bundle
+  * A BuildingPreset's model is finished off on load: prefabs keep their own tags, and anything left untagged is treated as a lit part of the building model, with the bundle's copies of the game's shaders swapped for the game's own
 
 # Manual Installation
 
