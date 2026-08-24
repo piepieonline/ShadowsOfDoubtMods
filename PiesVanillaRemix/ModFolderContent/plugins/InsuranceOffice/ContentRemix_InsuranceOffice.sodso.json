@@ -1,0 +1,28 @@
+{
+  "presetName": "ContentRemix_InsuranceOffice",
+  "name": "ContentRemix_InsuranceOffice",
+  "type": "AddressPreset",
+  "fileType": "AddressPreset",
+  "copyFrom": "REF:AddressPreset|MediumOffice",
+  "company": "REF:CompanyPreset|ContentRemix_InsuranceOfficeCompany",
+  "important": true,
+  "maxInstances": 3,
+  "compatible": [
+    "REF:LayoutConfiguration|OfficeHighrise"
+  ],
+  "roomConfig": [
+    "REF:RoomConfiguration|Office",
+    "REF:RoomConfiguration|Reception",
+    "REF:RoomConfiguration|BusinessBackroom",
+    "REF:RoomConfiguration|BathroomUnisexEatery",
+    "REF:RoomConfiguration|BreakRoom",
+    "REF:RoomConfiguration|BusinessStoreroom",
+    "REF:RoomConfiguration|UtilityCupboardCommon",
+    "REF:RoomConfiguration|UtilityCupboardRare",
+    "REF:RoomConfiguration|BathroomEmployees"
+  ],
+  "specialItems": [
+    "REF:InteractablePreset|CompanyRoster",
+    "REF:InteractablePreset|ContentRemix_PolicyLedger"
+  ]
+}

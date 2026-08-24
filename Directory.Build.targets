@@ -10,8 +10,8 @@
         </PropertyGroup>
 
         <ItemGroup>
-            <DeployBinary Include="$(TargetDir)$(TargetName).dll" />
-            <DeployBinary Include="$(TargetDir)$(TargetName).pdb" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+            <DeployBinary Include="$(TargetDir)$(TargetName).dll" Condition="'$(IsContentOnlyMod)'!='true'" />
+            <DeployBinary Include="$(TargetDir)$(TargetName).pdb" Condition="'$(IsContentOnlyMod)'!='true' And Exists('$(TargetDir)$(TargetName).pdb')" />
             <DeployContent Include="$(ProjectDir)ModFolderContent/**/*" />
         </ItemGroup>
 

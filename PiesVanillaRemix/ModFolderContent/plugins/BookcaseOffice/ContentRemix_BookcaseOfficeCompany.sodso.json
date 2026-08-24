@@ -1,0 +1,11 @@
+{
+  "presetName": "ContentRemix_BookcaseOfficeCompany",
+  "name": "ContentRemix_BookcaseOfficeCompany",
+  "type": "CompanyPreset",
+  "fileType": "CompanyPreset",
+  "copyFrom": "REF:CompanyPreset|MediumOffice",
+  "structure": "REF:CompanyStructurePreset|ContentRemix_BookcaseOfficeStructure",
+  "suffixList": [
+    "company.suffix.officerecords"
+  ]
+}

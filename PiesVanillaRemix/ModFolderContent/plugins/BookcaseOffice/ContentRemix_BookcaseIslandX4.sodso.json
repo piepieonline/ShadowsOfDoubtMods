@@ -1,0 +1,132 @@
+{
+  "presetName": "ContentRemix_BookcaseIslandX4",
+  "name": "ContentRemix_BookcaseIslandX4",
+  "type": "FurnitureCluster",
+  "fileType": "FurnitureCluster",
+  "copyFrom": "REF:FurnitureCluster|OfficeCubicleIslandX4SpaceLeft",
+  "clusterElements": [
+    {
+      "onlyValidIfPreviousObjectPlaced": false,
+      "placements": [
+        {
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "furnitureClass": "REF:FurnitureClass|ContentRemix_1x1OfficeBookcase",
+      "facing": 1,
+      "importantToCluster": true,
+      "chanceOfPlacementAttempt": 1,
+      "placementScoreBoost": 0,
+      "useFovBlock": true,
+      "blockDirection": {
+        "x": -1,
+        "y": 0
+      },
+      "maxFOVBlockDistance": 1,
+      "localScale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "positionOffset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "onlyValidIfPreviousObjectPlaced": false,
+      "placements": [
+        {
+          "x": 1,
+          "y": 0
+        }
+      ],
+      "furnitureClass": "REF:FurnitureClass|ContentRemix_1x1OfficeBookcase",
+      "facing": 1,
+      "importantToCluster": true,
+      "chanceOfPlacementAttempt": 1,
+      "placementScoreBoost": 0,
+      "useFovBlock": true,
+      "blockDirection": {
+        "x": 1,
+        "y": 0
+      },
+      "maxFOVBlockDistance": 1,
+      "localScale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "positionOffset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "onlyValidIfPreviousObjectPlaced": false,
+      "placements": [
+        {
+          "x": 0,
+          "y": -1
+        }
+      ],
+      "furnitureClass": "REF:FurnitureClass|ContentRemix_1x1OfficeBookcase",
+      "facing": 0,
+      "importantToCluster": true,
+      "chanceOfPlacementAttempt": 1,
+      "placementScoreBoost": 0,
+      "useFovBlock": true,
+      "blockDirection": {
+        "x": -1,
+        "y": 0
+      },
+      "maxFOVBlockDistance": 1,
+      "localScale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "positionOffset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "onlyValidIfPreviousObjectPlaced": false,
+      "placements": [
+        {
+          "x": 1,
+          "y": -1
+        }
+      ],
+      "furnitureClass": "REF:FurnitureClass|ContentRemix_1x1OfficeBookcase",
+      "facing": 0,
+      "importantToCluster": true,
+      "chanceOfPlacementAttempt": 1,
+      "placementScoreBoost": 0,
+      "useFovBlock": true,
+      "blockDirection": {
+        "x": 1,
+        "y": 0
+      },
+      "maxFOVBlockDistance": 1,
+      "localScale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "positionOffset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ],
+  "zeroNodeClasses": [
+    "REF:FurnitureClass|ContentRemix_1x1OfficeBookcase"
+  ]
+}

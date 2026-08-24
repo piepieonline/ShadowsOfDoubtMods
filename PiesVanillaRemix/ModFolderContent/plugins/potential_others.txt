@@ -1,0 +1,43 @@
+Part 1 — Filling the commercial tower
+Tenants that read as "tower floor" but aren't offices
+
+The trick is finding things that plausibly rent a floor plate but have a completely different room grammar than desks-and-a-breakroom:
+
+Records-heavy (gives the player a reason to break in, which offices currently lack):
+
+Architecture / drafting firm — flat files full of blueprints. Steal or buy floorplans for other buildings in the city. Instantly the most gameplay-relevant office type possible.
+Credit bureau / records service — microfiche readers, filing warrens, a terminal that answers "who is this person financially."
+Employment / temp agency — a directory of who works where, useful for tracking down a name you only half have.
+Insurance adjuster — claims files, photos of accidents, motive material (who benefits from a death).
+Notary / small law office — wills, contracts, a document safe. Wills are murder motives you can physically find.
+Alarm monitoring / security firm — holds keys and door codes for half the district. Very juicy, very lootable.
+
+Loud/weird spatial layouts:
+
+Radio station — soundproofed booths, tape archive, one DJ alone in the building from midnight to six.
+Newspaper bureau — a clippings "morgue," a darkroom, one editor working late.
+Computer bureau / data center — 80s mainframe room, raised floor, cold, humming, almost no people. Great contrast.
+Telephone answering service or switchboard — rows of operators, call slips, night shift.
+Photo studio / photo lab — darkroom, negatives, the classic blackmail engine.
+Print shop — heavy machinery, and the obvious forgery angle.
+
+Non-commercial floors: dentist, physiotherapist, veterinary clinic, dance studio, martial arts dojo, union hall, small chapel, tanning salon, storage lockers, talent agency, travel agency, import/export front company (a nearly empty floor with crates and one desk).
+
+Making generic offices read differently
+
+Even if you keep MediumOffice as one type, variation can come from four cheap axes:
+
+1. Sector tag. Assign each office a sector — accounting, ad agency, debt collection, shipping, telemarketing, real estate — and let that drive job titles, document types on desks, wall decor, and what's in the boss's drawer. Same layout, different smell.
+
+2. Signature room. Give every office exactly one distinguishing room: a vault, a mail room, a boardroom with a slide projector, a server closet, a sample room, a smoking lounge, a bunk room. That single deviation does more for memorability than fifty new props.
+
+3. Security tier. A debt collection office has barred windows, a safe, and a baseball bat behind the desk. An ad agency has an unlocked door, a liquor cabinet, and a couch someone sleeps on. Security posture is characterization.
+
+4. Occupancy schedule. A telemarketing floor that only lives at night, an accountancy that's dead except at tax time, a firm where one person is always there at 3am. Right now every office is empty on the same schedule, which is probably the biggest single cause of sameyness — it means the player only ever experiences them one way.
+
+5. Layout archetype. Bullpen (open desks), warren (private offices off a corridor), client-facing (big lobby, small back), executive suite (three enormous rooms). Four floor grammars, procedurally mixed with the sector tag, gets you a lot of perceived variety.
+
+
+City hall:
+- A library
+- The actual physical DB of the gov DB 

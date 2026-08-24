@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ProjectName>PiesVanillaRemix</ProjectName>
+        <IsContentOnlyMod>true</IsContentOnlyMod>
+        <Version>1.0.0</Version>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <Folder Include="ModFolderContent\" />
+    </ItemGroup>
+
+</Project>

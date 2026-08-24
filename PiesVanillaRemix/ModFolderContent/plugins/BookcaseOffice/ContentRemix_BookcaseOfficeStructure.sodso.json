@@ -1,0 +1,87 @@
+{
+  "presetName": "ContentRemix_BookcaseOfficeStructure",
+  "name": "ContentRemix_BookcaseOfficeStructure",
+  "type": "CompanyStructurePreset",
+  "fileType": "CompanyStructurePreset",
+  "copyFrom": "REF:CompanyStructurePreset|MediumOffice",
+  "companyStructure": {
+    "occupation": "REF:OccupationPreset|CompanyDirector",
+    "positionsMinimum": 1,
+    "positionsMaximum": 1,
+    "payGrade": 1.0,
+    "subordinates": [
+      {
+        "occupation": "REF:OccupationPreset|OfficeManager",
+        "positionsMinimum": 1,
+        "positionsMaximum": 1,
+        "payGrade": 0.836,
+        "subordinates": [
+          {
+            "occupation": "REF:OccupationPreset|ContentRemix_Archivist",
+            "positionsMinimum": 2,
+            "positionsMaximum": 2,
+            "payGrade": 0.35,
+            "subordinates": []
+          },
+          {
+            "occupation": "REF:OccupationPreset|MarketingExecutive",
+            "positionsMinimum": 1,
+            "positionsMaximum": 2,
+            "payGrade": 0.513,
+            "subordinates": []
+          },
+          {
+            "occupation": "REF:OccupationPreset|DataAnalyst",
+            "positionsMinimum": 0,
+            "positionsMaximum": 1,
+            "payGrade": 0.124,
+            "subordinates": []
+          },
+          {
+            "occupation": "REF:OccupationPreset|Receptionist",
+            "positionsMinimum": 1,
+            "positionsMaximum": 1,
+            "payGrade": 0.0,
+            "subordinates": []
+          },
+          {
+            "occupation": "REF:OccupationPreset|Accountant",
+            "positionsMinimum": 1,
+            "positionsMaximum": 1,
+            "payGrade": 0.597,
+            "subordinates": []
+          },
+          {
+            "occupation": "REF:OccupationPreset|CustomerServiceTechnician",
+            "positionsMinimum": 0,
+            "positionsMaximum": 1,
+            "payGrade": 0.108,
+            "subordinates": []
+          },
+          {
+            "occupation": "REF:OccupationPreset|QATechnician",
+            "positionsMinimum": 1,
+            "positionsMaximum": 1,
+            "payGrade": 0.124,
+            "subordinates": []
+          }
+        ]
+      },
+      {
+        "occupation": "REF:OccupationPreset|HeadOfHR",
+        "positionsMinimum": 1,
+        "positionsMaximum": 1,
+        "payGrade": 0.826,
+        "subordinates": [
+          {
+            "occupation": "REF:OccupationPreset|HRAdministrator",
+            "positionsMinimum": 1,
+            "positionsMaximum": 1,
+            "payGrade": 0.439,
+            "subordinates": []
+          }
+        ]
+      }
+    ]
+  }
+}

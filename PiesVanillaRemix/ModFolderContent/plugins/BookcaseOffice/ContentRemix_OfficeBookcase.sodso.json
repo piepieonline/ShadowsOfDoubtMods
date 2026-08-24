@@ -1,0 +1,124 @@
+{
+  "presetName": "ContentRemix_OfficeBookcase",
+  "name": "ContentRemix_OfficeBookcase",
+  "type": "FurniturePreset",
+  "fileType": "FurniturePreset",
+  "copyFrom": "REF:FurniturePreset|LargeBookcase",
+  "classes": [
+    "REF:FurnitureClass|ContentRemix_1x1OfficeBookcase"
+  ],
+  "universalDesignStyle": true,
+  "onlyAllowInFollowing": true,
+  "allowedInAddressesOfType": [
+    "REF:AddressPreset|ContentRemix_BookcaseOffice"
+  ],
+  "allowedRoomFilters": [
+    "REF:RoomTypeFilter|OfficeSpace"
+  ],
+  "isWorkPosition": true,
+  "integratedInteractables": [
+    {
+      "preset": "REF:InteractablePreset|ContentRemix_OfficeBookcaseInteractable",
+      "pairToController": 0,
+      "belongsTo": 2
+    }
+  ],
+"subObjects": [
+    {
+      "preset": "REF:SubObjectClassPreset|Paperwork",
+      "parent": "",
+      "localPos": {
+        "x": 0,
+        "y": 0.15000000596046448,
+        "z": -0.6000000238418579
+      },
+      "localRot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "belongsTo": 1,
+      "security": 0
+    },
+    {
+      "preset": "REF:SubObjectClassPreset|Bookcase",
+      "parent": "",
+      "localPos": {
+        "x": 0,
+        "y": 0.6000000238418579,
+        "z": -0.6000000238418579
+      },
+      "localRot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "belongsTo": 1,
+      "security": 0
+    },
+    {
+      "preset": "REF:SubObjectClassPreset|Bookcase",
+      "parent": "",
+      "localPos": {
+        "x": 0,
+        "y": 1.1100000143051147,
+        "z": -0.6000000238418579
+      },
+      "localRot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "belongsTo": 1,
+      "security": 0
+    },
+    {
+      "preset": "REF:SubObjectClassPreset|Bookcase",
+      "parent": "",
+      "localPos": {
+        "x": 0,
+        "y": 1.600000023841858,
+        "z": -0.6000000238418579
+      },
+      "localRot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "belongsTo": 1,
+      "security": 0
+    },
+    {
+      "preset": "REF:SubObjectClassPreset|Bookcase",
+      "parent": "",
+      "localPos": {
+        "x": 0,
+        "y": 2.0999999046325684,
+        "z": -0.6000000238418579
+      },
+      "localRot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "belongsTo": 1,
+      "security": 0
+    },
+    {
+      "preset": "REF:SubObjectClassPreset|Bookcase",
+      "parent": "",
+      "localPos": {
+        "x": 0,
+        "y": 2.5999999046325684,
+        "z": -0.6000000238418579
+      },
+      "localRot": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "belongsTo": 1,
+      "security": 0
+    }
+]
+}

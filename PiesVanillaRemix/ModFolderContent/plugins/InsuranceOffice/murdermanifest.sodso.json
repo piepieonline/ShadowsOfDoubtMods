@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "fileOrder": [
+    "REF:ContentRemix_ClaimsManager",
+    "REF:ContentRemix_ClaimsAdjuster",
+    "REF:ContentRemix_ClaimsInvestigator",
+    "REF:ContentRemix_Underwriter",
+    "REF:ContentRemix_InsuranceAgent",
+    "REF:ContentRemix_InsuranceOfficeStructure",
+    "REF:ContentRemix_InsuranceOfficeCompany",
+    "REF:ContentRemix_PolicyLedgerEvidence",
+    "REF:ContentRemix_PolicyLedger",
+    "REF:ContentRemix_InsuranceOffice"
+  ],
+  "loadBefore": "",
+  "version": 1
+}

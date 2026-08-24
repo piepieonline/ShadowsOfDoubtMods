@@ -1,0 +1,8 @@
+{
+  "presetName": "ContentRemix_ClaimsManager",
+  "name": "ContentRemix_ClaimsManager",
+  "type": "OccupationPreset",
+  "fileType": "OccupationPreset",
+  "copyFrom": "REF:OccupationPreset|OfficeManager",
+  "jobFillPriority": 4
+}

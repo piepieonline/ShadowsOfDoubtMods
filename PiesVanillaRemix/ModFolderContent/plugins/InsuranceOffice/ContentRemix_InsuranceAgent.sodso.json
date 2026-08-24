@@ -1,0 +1,8 @@
+{
+  "presetName": "ContentRemix_InsuranceAgent",
+  "name": "ContentRemix_InsuranceAgent",
+  "type": "OccupationPreset",
+  "fileType": "OccupationPreset",
+  "copyFrom": "REF:OccupationPreset|MarketingExecutive",
+  "jobFillPriority": 4
+}

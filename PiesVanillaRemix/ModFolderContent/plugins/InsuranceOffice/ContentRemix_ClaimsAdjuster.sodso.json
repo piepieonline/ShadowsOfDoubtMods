@@ -1,0 +1,8 @@
+{
+  "presetName": "ContentRemix_ClaimsAdjuster",
+  "name": "ContentRemix_ClaimsAdjuster",
+  "type": "OccupationPreset",
+  "fileType": "OccupationPreset",
+  "copyFrom": "REF:OccupationPreset|Accountant",
+  "jobFillPriority": 4
+}

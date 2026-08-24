@@ -1,0 +1,11 @@
+{
+  "presetName": "ContentRemix_InsuranceOfficeCompany",
+  "name": "ContentRemix_InsuranceOfficeCompany",
+  "type": "CompanyPreset",
+  "fileType": "CompanyPreset",
+  "copyFrom": "REF:CompanyPreset|MediumOffice",
+  "structure": "REF:CompanyStructurePreset|ContentRemix_InsuranceOfficeStructure",
+  "suffixList": [
+    "company.suffix.insurance"
+  ]
+}

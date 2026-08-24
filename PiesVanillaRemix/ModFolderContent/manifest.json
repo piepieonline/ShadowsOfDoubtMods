@@ -1,0 +1,11 @@
+{
+  "name": "PiesVanillaRemix",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/PiesVanillaRemix",
+  "description": "Additional building types for Shadows of Doubt",
+  "dependencies": [
+    "BepInEx-BepInExPack_IL2CPP-6.0.738",
+    "Piepieonline-CommunityCaseLoader-1.1.0",
+    "Piepieonline-DDSLoader-1.1.0"
+  ]
+}

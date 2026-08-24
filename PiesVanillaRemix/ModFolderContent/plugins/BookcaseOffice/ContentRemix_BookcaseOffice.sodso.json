@@ -1,0 +1,24 @@
+{
+  "presetName": "ContentRemix_BookcaseOffice",
+  "name": "ContentRemix_BookcaseOffice",
+  "type": "AddressPreset",
+  "fileType": "AddressPreset",
+  "copyFrom": "REF:AddressPreset|MediumOffice",
+  "company": "REF:CompanyPreset|ContentRemix_BookcaseOfficeCompany",
+  "important": true,
+  "maxInstances": 3,
+  "compatible": [
+    "REF:LayoutConfiguration|OfficeHighrise"
+  ],
+  "roomConfig": [
+    "REF:RoomConfiguration|Office",
+    "REF:RoomConfiguration|Reception",
+    "REF:RoomConfiguration|BusinessBackroom",
+    "REF:RoomConfiguration|BathroomUnisexEatery",
+    "REF:RoomConfiguration|BreakRoom",
+    "REF:RoomConfiguration|BusinessStoreroom",
+    "REF:RoomConfiguration|UtilityCupboardCommon",
+    "REF:RoomConfiguration|UtilityCupboardRare",
+    "REF:RoomConfiguration|BathroomEmployees"
+  ]
+}

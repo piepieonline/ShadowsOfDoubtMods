@@ -1,0 +1,142 @@
+{
+ "name": "ContentRemix_PolicyLedger",
+ "id": "33e5529a-d706-4313-bc97-dd4c18acf0a4",
+ "participantA": {
+  "required": false,
+  "connection": 15,
+  "useJobs": false,
+  "disableInbox": false,
+  "jobs": [],
+  "useTraits": false,
+  "traits": [],
+  "traitConditions": 0,
+  "triggers": []
+ },
+ "participantB": {
+  "required": false,
+  "connection": 15,
+  "useJobs": false,
+  "disableInbox": false,
+  "jobs": [],
+  "useTraits": false,
+  "traits": [],
+  "traitConditions": 0,
+  "triggers": []
+ },
+ "participantC": {
+  "required": false,
+  "connection": 15,
+  "useJobs": false,
+  "disableInbox": false,
+  "jobs": [],
+  "useTraits": false,
+  "traits": [],
+  "traitConditions": 0,
+  "triggers": []
+ },
+ "participantD": {
+  "required": false,
+  "connection": 15,
+  "useJobs": false,
+  "disableInbox": false,
+  "jobs": [],
+  "useTraits": false,
+  "traits": [],
+  "traitConditions": 0,
+  "triggers": []
+ },
+ "repeat": 1,
+ "triggerPoint": 0,
+ "messages": [
+  {
+   "msgID": "95bde2e6-5e8f-4512-a6c7-d866ba2982a0",
+   "elementName": "",
+   "instanceID": "7fde411e-e130-4d1f-b99f-178e7d46adf4",
+   "saidBy": 0,
+   "saidTo": 1,
+   "pos": {
+    "x": 0.0,
+    "y": 214.0
+   },
+   "size": {
+    "x": 322.0,
+    "y": 54.0
+   },
+   "rot": 0.0,
+   "font": "Tox Typewriter",
+   "col": {
+    "r": 0.0,
+    "g": 0.0,
+    "b": 0.0,
+    "a": 1.0
+   },
+   "fontSize": 14.0,
+   "charSpace": 0.0,
+   "wordSpace": 0.0,
+   "lineSpace": 4.0,
+   "paraSpace": 0.0,
+   "alignH": 1,
+   "alignV": 0,
+   "fontStyle": 0,
+   "order": 1,
+   "usePages": false,
+   "isHandwriting": false,
+   "links": []
+  },
+  {
+   "msgID": "0a1c14a7-9488-4d70-b77a-db46cb652c70",
+   "elementName": "",
+   "instanceID": "ffaefa32-997e-47ba-a6da-f95e8f51e33d",
+   "saidBy": 0,
+   "saidTo": 1,
+   "pos": {
+    "x": 0.0,
+    "y": -22.0
+   },
+   "size": {
+    "x": 318.0,
+    "y": 396.0
+   },
+   "rot": 0.0,
+   "font": "TruetypewriterPolyglott SDF",
+   "col": {
+    "r": 0.0,
+    "g": 0.0,
+    "b": 0.0,
+    "a": 1.0
+   },
+   "fontSize": 15.0,
+   "charSpace": 0.0,
+   "wordSpace": 0.0,
+   "lineSpace": 6.0,
+   "paraSpace": 0.0,
+   "alignH": 0,
+   "alignV": 0,
+   "fontStyle": 0,
+   "order": 2,
+   "usePages": true,
+   "isHandwriting": false,
+   "links": []
+  }
+ ],
+ "stopMovement": true,
+ "ignoreGlobalRepeat": false,
+ "treeType": 2,
+ "document": {
+  "background": "Paper",
+  "fill": 1,
+  "size": {
+   "x": 342.0,
+   "y": 482.0
+  },
+  "colour": {
+   "r": 1.0,
+   "g": 1.0,
+   "b": 1.0,
+   "a": 1.0
+  }
+ },
+ "startingMessage": "",
+ "treeChance": 1.0,
+ "priority": 3
+}

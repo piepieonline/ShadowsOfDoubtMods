@@ -1,0 +1,39 @@
+{
+  "presetName": "ContentRemix_1x1OfficeBookcase",
+  "name": "ContentRemix_1x1OfficeBookcase",
+  "type": "FurnitureClass",
+  "fileType": "FurnitureClass",
+  "copyFrom": "REF:FurnitureClass|1x1OfficeCubicle",
+  "nodeRules": [
+    {
+      "offset": {
+        "x": 0,
+        "y": -1
+      },
+      "option": 2,
+      "anyOccupiedTile": false,
+      "furnitureClass": "REF:FurnitureClass|ContentRemix_1x1OfficeBookcase",
+      "addScore": 1
+    },
+    {
+      "offset": {
+        "x": 1,
+        "y": 1
+      },
+      "option": 1,
+      "anyOccupiedTile": false,
+      "furnitureClass": "REF:FurnitureClass|ContentRemix_1x1OfficeBookcase",
+      "addScore": 1
+    },
+    {
+      "offset": {
+        "x": -1,
+        "y": 1
+      },
+      "option": 1,
+      "anyOccupiedTile": false,
+      "furnitureClass": "REF:FurnitureClass|ContentRemix_1x1OfficeBookcase",
+      "addScore": 1
+    }
+  ]
+}

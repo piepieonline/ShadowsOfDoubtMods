@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "fileOrder": [
+    "REF:ContentRemix_Archivist",
+    "REF:ContentRemix_BookcaseOfficeStructure",
+    "REF:ContentRemix_BookcaseOfficeCompany",
+    "REF:ContentRemix_BookcaseOffice",
+    "REF:ContentRemix_1x1OfficeBookcase",
+    "REF:ContentRemix_BookcaseWorkActions",
+    "REF:ContentRemix_OfficeBookcaseInteractable",
+    "REF:ContentRemix_OfficeBookcase",
+    "REF:ContentRemix_BookcaseIslandX4"
+  ],
+  "loadBefore": "",
+  "version": 1
+}

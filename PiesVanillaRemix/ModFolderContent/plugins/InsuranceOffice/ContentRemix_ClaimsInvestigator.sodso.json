@@ -1,0 +1,8 @@
+{
+  "presetName": "ContentRemix_ClaimsInvestigator",
+  "name": "ContentRemix_ClaimsInvestigator",
+  "type": "OccupationPreset",
+  "fileType": "OccupationPreset",
+  "copyFrom": "REF:OccupationPreset|QATechnician",
+  "jobFillPriority": 4
+}

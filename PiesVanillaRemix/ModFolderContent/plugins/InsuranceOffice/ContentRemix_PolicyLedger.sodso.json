@@ -1,0 +1,29 @@
+{
+  "presetName": "ContentRemix_PolicyLedger",
+  "name": "ContentRemix_PolicyLedger",
+  "type": "InteractablePreset",
+  "fileType": "InteractablePreset",
+  "copyFrom": "REF:InteractablePreset|SalesLedger",
+  "useEvidence": true,
+  "findEvidence": 0,
+  "spawnEvidence": "REF:EvidencePreset|ContentRemix_PolicyLedgerEvidence",
+  "autoPlacement": 4,
+  "alwaysPlaceAtGameLocation": false,
+  "frequencyPerGamelocationMin": 0,
+  "frequencyPerGameLocationMax": 0,
+  "frequencyPerOwnerMin": 0,
+  "frequencyPerOwnerMax": 0,
+  "subObjectClasses": [
+    "REF:SubObjectClassPreset|DeepDrawerOfficeItem"
+  ],
+  "backupClasses": [
+    "REF:SubObjectClassPreset|DrawerItemGeneric"
+  ],
+  "limitToCertainRooms": true,
+  "onlyInRooms": [
+    "REF:RoomConfiguration|Office",
+    "REF:RoomConfiguration|BusinessBackroom"
+  ],
+  "limitPerAddress": true,
+  "perAddressLimit": 1
+}

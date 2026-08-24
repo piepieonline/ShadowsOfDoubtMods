@@ -1,0 +1,22 @@
+{
+  "enabled": true,
+  "files": {
+    "names.company.suffix.insurance.csv": "Strings/English/Companies/Names",
+    "jobs.csv": "Strings/English/Citizens",
+    "DDS/Trees/33e5529a-d706-4313-bc97-dd4c18acf0a4.tree": "DDS/Trees",
+    "DDS/Messages/0a1c14a7-9488-4d70-b77a-db46cb652c70.msg": "DDS/Messages",
+    "DDS/Messages/95bde2e6-5e8f-4512-a6c7-d866ba2982a0.msg": "DDS/Messages",
+    "DDS/Blocks/17ca5787-b3fb-4955-8a68-b1f2271e268d.block": "DDS/Blocks",
+    "DDS/Blocks/17fa83c5-221b-4f52-a845-ee0c24595189.block": "DDS/Blocks",
+    "DDS/Blocks/2cc82195-f2d5-40e6-8ac8-397a5605f8ec.block": "DDS/Blocks",
+    "DDS/Blocks/4ff3b495-8193-402c-b616-94972b29508a.block": "DDS/Blocks",
+    "DDS/Blocks/5d24bafe-ad99-49cc-8d44-79884932fecb.block": "DDS/Blocks",
+    "DDS/Blocks/79abbe90-73c6-4d31-8e0a-c07afed5f7ab.block": "DDS/Blocks",
+    "DDS/Blocks/84ebb160-1c65-408f-b05c-5ec3a219cb79.block": "DDS/Blocks",
+    "DDS/Blocks/b5c24556-61f3-4f20-a982-9a338871412c.block": "DDS/Blocks",
+    "DDS/Blocks/e93a4131-3cce-4a03-855a-4ee8d033b99c.block": "DDS/Blocks",
+    "dds.blocks.csv": "Strings/English/DDS",
+    "evidence.names.csv": "Strings/English/Evidence",
+    "names.rooms.csv": "Strings/English/Misc"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "fileOrder": [
+    "REF:ShoppingPlazaBuildingPreset"
+  ],
+  "loadBefore": "",
+  "version": 1
+}

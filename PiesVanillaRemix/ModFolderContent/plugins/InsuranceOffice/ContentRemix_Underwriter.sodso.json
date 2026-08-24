@@ -1,0 +1,8 @@
+{
+  "presetName": "ContentRemix_Underwriter",
+  "name": "ContentRemix_Underwriter",
+  "type": "OccupationPreset",
+  "fileType": "OccupationPreset",
+  "copyFrom": "REF:OccupationPreset|Accountant",
+  "jobFillPriority": 4
+}

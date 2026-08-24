@@ -1,0 +1,41 @@
+{
+  "presetName": "ShoppingPlazaBuildingPreset",
+  "buildingHeight": 2,
+  "floorLayouts": [
+    {
+      "floorsWithThisSetting": 1,
+      "blueprints": [ "FLOOR:Custom_ShoppingVil_Ground" ],
+      "airVentMaximumExtrusion": 0,
+      "controlRoomVariants": [],
+      "forceShowModel": 0,
+      "forceHideModels": [],
+      "forceHideModelsInRooms": [],
+      "forceHideModelsOutside": [],
+      "overrideCeilingHeight": 0,
+      "newCeilingHeight": 51
+    },
+    {
+      "floorsWithThisSetting": 1,
+      "blueprints": [ "FLOOR:Custom_ShoppingVil_Roof" ],
+      "airVentMaximumExtrusion": 1,
+      "controlRoomVariants": [],
+      "forceShowModel": 0,
+      "forceHideModels": [],
+      "forceHideModelsInRooms": [],
+      "forceHideModelsOutside": [],
+      "overrideCeilingHeight": 0,
+      "newCeilingHeight": 51
+    }
+  ],
+  "overrideNaming": true,
+  "possibleNames": [
+    "Shopping Plaza"
+  ],
+  "fileType": "BuildingPreset",
+  "name": "ShoppingPlazaBuildingPreset",
+  "type": "BuildingPreset",
+  "copyFrom": "REF:BuildingPreset|Park",
+  "defaultExteriorWallMaterial": [
+    "REF:MaterialGroupPreset|Brick"
+  ]
+}

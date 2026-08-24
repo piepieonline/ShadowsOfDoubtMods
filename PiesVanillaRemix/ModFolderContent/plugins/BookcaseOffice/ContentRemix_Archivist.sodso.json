@@ -1,0 +1,25 @@
+{
+  "presetName": "ContentRemix_Archivist",
+  "name": "ContentRemix_Archivist",
+  "type": "OccupationPreset",
+  "fileType": "OccupationPreset",
+  "copyFrom": "REF:OccupationPreset|Accountant",
+  "jobAIPosition": 0,
+  "jobPostion": 3,
+  "ownsWorkPosition": true,
+  "jobFillPriority": 4,
+  "preferredRooms": [
+    "REF:RoomConfiguration|Office"
+  ],
+  "actionSetup": [
+    {
+      "actions": [
+        "REF:AIActionPreset|StackShelves"
+      ],
+      "condition": 0,
+      "chance": 1.0,
+      "traitModifiers": [],
+      "statusModifiers": []
+    }
+  ]
+}

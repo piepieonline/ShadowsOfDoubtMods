@@ -1,0 +1,8 @@
+{
+  "presetName": "CustomParkPublicBathroomRTP",
+  "copyFrom": "REF:RoomTypePreset|PublicBathroom",
+  "fileType": "RoomTypePreset",
+  "name": "CustomParkPublicBathroomRTP",
+  "type": "RoomTypePreset",
+  "mustAdjoinRooms": []
+}

@@ -1,0 +1,12 @@
+{
+  "presetName": "ContentRemix_OfficeBookcaseInteractable",
+  "name": "ContentRemix_OfficeBookcaseInteractable",
+  "type": "InteractablePreset",
+  "fileType": "InteractablePreset",
+  "copyFrom": "REF:InteractablePreset|Bookcase",
+  "specialCaseFlag": 3,
+  "actionsPreset": [
+    "REF:InteractableActionsPreset|Bookcase",
+    "REF:InteractableActionsPreset|ContentRemix_BookcaseWorkActions"
+  ]
+}

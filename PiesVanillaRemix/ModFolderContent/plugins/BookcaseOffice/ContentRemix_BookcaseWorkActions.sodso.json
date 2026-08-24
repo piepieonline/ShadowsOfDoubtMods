@@ -1,0 +1,31 @@
+{
+  "presetName": "ContentRemix_BookcaseWorkActions",
+  "name": "ContentRemix_BookcaseWorkActions",
+  "type": "InteractableActionsPreset",
+  "fileType": "InteractableActionsPreset",
+  "copyFrom": "REF:InteractableActionsPreset|StackShelves",
+  "actions": [
+    {
+      "interactionName": "AI_StackShelves",
+      "action": "REF:AIActionPreset|StackShelves",
+      "useDefaultKeySetting": true,
+      "keyOverride": 0,
+      "specialCase": 0,
+      "usableByAI": true,
+      "aiUsageDelay": 0.0,
+      "effectSwitchStates": [],
+      "onlyActiveIf": [],
+      "actionIsIllegal": false,
+      "availableWhileIllegal": true,
+      "availableWhileWitnessesToIllegal": false,
+      "onlyAvailableToRestrainedWhileIllegal": false,
+      "availableWhileLockedIn": false,
+      "availableWhileJumping": true,
+      "actionCost": 0,
+      "useStrikethrough": false,
+      "isHidingPlace": false,
+      "onlyHidingPlaceIfPublic": false,
+      "playOnTrigger": true
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "presetName": "ContentRemix_InsuranceOfficeStructure",
+  "name": "ContentRemix_InsuranceOfficeStructure",
+  "type": "CompanyStructurePreset",
+  "fileType": "CompanyStructurePreset",
+  "copyFrom": "REF:CompanyStructurePreset|MediumOffice",
+  "companyStructure": {
+    "occupation": "REF:OccupationPreset|CompanyDirector",
+    "positionsMinimum": 1,
+    "positionsMaximum": 1,
+    "payGrade": 1.0,
+    "subordinates": [
+      {
+        "occupation": "REF:OccupationPreset|ContentRemix_ClaimsManager",
+        "positionsMinimum": 1,
+        "positionsMaximum": 1,
+        "payGrade": 0.836,
+        "subordinates": [
+          {
+            "occupation": "REF:OccupationPreset|ContentRemix_ClaimsAdjuster",
+            "positionsMinimum": 2,
+            "positionsMaximum": 2,
+            "payGrade": 0.45,
+            "subordinates": []
+          },
+          {
+            "occupation": "REF:OccupationPreset|ContentRemix_ClaimsInvestigator",
+            "positionsMinimum": 1,
+            "positionsMaximum": 1,
+            "payGrade": 0.52,
+            "subordinates": []
+          },
+          {
+            "occupation": "REF:OccupationPreset|Receptionist",
+            "positionsMinimum": 1,
+            "positionsMaximum": 1,
+            "payGrade": 0.0,
+            "subordinates": []
+          }
+        ]
+      },
+      {
+        "occupation": "REF:OccupationPreset|ContentRemix_Underwriter",
+        "positionsMinimum": 1,
+        "positionsMaximum": 1,
+        "payGrade": 0.62,
+        "subordinates": [
+          {
+            "occupation": "REF:OccupationPreset|ContentRemix_InsuranceAgent",
+            "positionsMinimum": 1,
+            "positionsMaximum": 1,
+            "payGrade": 0.4,
+            "subordinates": []
+          }
+        ]
+      }
+    ]
+  }
+}

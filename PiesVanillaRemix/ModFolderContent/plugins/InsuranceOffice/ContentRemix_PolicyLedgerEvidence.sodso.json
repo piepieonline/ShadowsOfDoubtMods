@@ -1,0 +1,23 @@
+{
+  "presetName": "ContentRemix_PolicyLedgerEvidence",
+  "name": "ContentRemix_PolicyLedgerEvidence",
+  "type": "EvidencePreset",
+  "fileType": "EvidencePreset",
+  "copyFrom": "REF:EvidencePreset|SalesRecords",
+  "ddsDocumentID": "33e5529a-d706-4313-bc97-dd4c18acf0a4",
+  "useWriter": false,
+  "useBelongsToInName": false,
+  "allowCustomNames": true,
+  "enableSummary": true,
+  "factSetup": [
+    {
+      "preset": "REF:FactPreset|FoundAt",
+      "link": 5,
+      "onlyIfInOwnedPosition": 0,
+      "createOnDiscovery": 1,
+      "forceDiscoveryOnCreation": 1,
+      "switchFindingFactToFrom": 0
+    }
+  ],
+  "keyMergeOnDiscovery": []
+}

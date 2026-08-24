@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "files": {
+    "names.company.suffix.officerecords.csv": "Strings/English/Companies/Names",
+    "jobs.csv": "Strings/English/Citizens",
+    "names.rooms.csv": "Strings/English/Misc"
+  }
+}

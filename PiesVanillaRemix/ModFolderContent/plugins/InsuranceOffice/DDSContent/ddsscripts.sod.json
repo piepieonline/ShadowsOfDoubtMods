@@ -1,0 +1,94 @@
+{
+  "values": {
+    "citizen": {
+      "policynumber": {
+        "seed": "tonumber(inputObject.humanID)",
+        "script": "return string.format('%02d-%05d', math.random(10, 99), math.random(0, 99999))"
+      },
+      "policyvalue": {
+        "seed": "tonumber(inputObject.humanID)",
+        "script": "local function comma(n) local s = string.format('%d', n) local r = s:reverse():gsub('(%d%d%d)', '%1,') r = r:reverse() if r:sub(1, 1) == ',' then r = r:sub(2) end return r end local c = inputObject local id = 0 local oki, vi = pcall(function() return c.humanID end) if oki and vi ~= nil then id = tonumber(vi) or 0 end local sal = 0 local ok, v = pcall(function() return c.job.salary end) if ok and v ~= nil then sal = tonumber(v) or 0 end if sal < 3000 then sal = 3000 + (id % 25) * 120 end local years = 4 + math.random(0, 8) local sum = math.floor(sal * years / 500 + 0.5) * 500 if sum < 15000 then sum = 15000 end return comma(sum)"
+      },
+      "policypremium": {
+        "seed": "tonumber(inputObject.humanID)",
+        "script": "local function comma(n) local s = string.format('%d', n) local r = s:reverse():gsub('(%d%d%d)', '%1,') r = r:reverse() if r:sub(1, 1) == ',' then r = r:sub(2) end return r end local c = inputObject local id = 0 local oki, vi = pcall(function() return c.humanID end) if oki and vi ~= nil then id = tonumber(vi) or 0 end local sal = 0 local ok, v = pcall(function() return c.job.salary end) if ok and v ~= nil then sal = tonumber(v) or 0 end if sal < 3000 then sal = 3000 + (id % 25) * 120 end local years = 4 + math.random(0, 8) local sum = math.floor(sal * years / 500 + 0.5) * 500 if sum < 15000 then sum = 15000 end local rate = 0.009 + math.random(0, 70) / 10000 local prem = math.floor(sum * rate / 5 + 0.5) * 5 if prem < 120 then prem = 120 end return comma(prem)"
+      },
+      "policystatus": {
+        "seed": "tonumber(inputObject.humanID)",
+        "script": "local c = inputObject local dead = false local okd, vd = pcall(function() return c.death.isDead end) if okd and vd == true then dead = true end local s if dead then s = { 'CLAIM PENDING', 'CLAIM PENDING', 'PAID OUT' } else s = { 'IN FORCE', 'IN FORCE', 'IN FORCE', 'IN FORCE', 'IN FORCE', 'LAPSED - PREMIUM UNPAID' } end return s[math.random(1, #s)]"
+      },
+      "policybeneficiary": {
+        "seed": "tonumber(inputObject.humanID)",
+        "script": "local c = inputObject if c == nil then return 'Estate of the insured' end local ok, p = pcall(function() return c.partner.citizenName end) if ok and p ~= nil then return tostring(p) end local ok2, aq = pcall(function() return c.acquaintances end) if ok2 and aq ~= nil and aq.Count > 0 then local ok3, n = pcall(function() return aq[math.floor(math.random(0, aq.Count - 1))].with.citizenName end) if ok3 and n ~= nil then return tostring(n) end end return 'Estate of the insured'"
+      }
+    }
+  },
+  "scopes": {
+    "citizen": {},
+    "city": {},
+    "company": {},
+    "controls": {},
+    "evidence": {
+      "policyholder1": {
+        "scope": "citizen",
+        "file": "policyholder.lua"
+      },
+      "policyholder2": {
+        "scope": "citizen",
+        "file": "policyholder.lua"
+      },
+      "policyholder3": {
+        "scope": "citizen",
+        "file": "policyholder.lua"
+      },
+      "policyholder4": {
+        "scope": "citizen",
+        "file": "policyholder.lua"
+      },
+      "policyholder5": {
+        "scope": "citizen",
+        "file": "policyholder.lua"
+      },
+      "policyholder6": {
+        "scope": "citizen",
+        "file": "policyholder.lua"
+      }
+    },
+    "group": {},
+    "job": {},
+    "killer": {},
+    "location": {},
+    "murder": {},
+    "object": {
+      "policyholder1": {
+        "scope": "citizen",
+        "file": "policyholder.lua"
+      },
+      "policyholder2": {
+        "scope": "citizen",
+        "file": "policyholder.lua"
+      },
+      "policyholder3": {
+        "scope": "citizen",
+        "file": "policyholder.lua"
+      },
+      "policyholder4": {
+        "scope": "citizen",
+        "file": "policyholder.lua"
+      },
+      "policyholder5": {
+        "scope": "citizen",
+        "file": "policyholder.lua"
+      },
+      "policyholder6": {
+        "scope": "citizen",
+        "file": "policyholder.lua"
+      }
+    },
+    "random": {},
+    "sidejob": {},
+    "story": {},
+    "syncdisk": {},
+    "time": {}
+  }
+}

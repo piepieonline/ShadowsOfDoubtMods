@@ -1,0 +1,25 @@
+{
+  "presetName": "CustomParkRoomConfig",
+  "fileType": "RoomConfiguration",
+  "name": "CustomParkRoomConfig",
+  "type": "RoomConfiguration",
+  "copyFrom": "REF:RoomConfiguration|Park",
+  "wallFrontage": [
+    {
+      "name": "Park Walls",
+      "wallPreset": "REF:DoorPairPreset|NothingWall",
+      "insideFrontage": [],
+      "outsideFrontage": [
+        "REF:WallFrontageClass|ParkWall"
+      ],
+      "onlyIfBorderingOutside": 1,
+      "localOffset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "limitToBuildingTypes": 0,
+      "limitedToBuildings": []
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "enabled": false,
+  "fileOrder": [
+    "REF:ShopAssistant",
+    "REF:Shop",
+    "REF:Supermarket",
+    "REF:Chemist",
+    "REF:Launderette",
+    "REF:PawnShop",
+    "REF:SyncClinic"
+  ],
+  "loadBefore": "",
+  "version": 1
+}

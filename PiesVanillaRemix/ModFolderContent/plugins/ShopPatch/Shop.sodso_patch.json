@@ -1,0 +1,29 @@
+{
+  "presetName": "Shop",
+  "name": "Shop",
+  "type": "CompanyStructurePreset",
+  "fileType": "CompanyStructurePreset",
+  "companyStructure": {
+    "occupation": "REF:OccupationPreset|RetailOwner",
+    "positionsMinimum": 1,
+    "positionsMaximum": 1,
+    "payGrade": 1.0,
+    "subordinates": [
+      {
+        "occupation": "REF:OccupationPreset|Shopkeeper",
+        "positionsMinimum": 4,
+        "positionsMaximum": 4,
+        "payGrade": 0.423,
+        "subordinates": [
+          {
+            "occupation": "REF:OccupationPreset|ShopAssistant",
+            "positionsMinimum": 2,
+            "positionsMaximum": 3,
+            "payGrade": 0.052,
+            "subordinates": []
+          }
+        ]
+      }
+    ]
+  }
+}
