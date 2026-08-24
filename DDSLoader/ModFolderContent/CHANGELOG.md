@@ -1,3 +1,7 @@
+# 1.1.0
+
+* DDSContent folders can now use a ddsmanifest to list which files to load, and where to put them
+
 # 1.0.9
 
 * Made compatible with both 42.01 and 42.02 

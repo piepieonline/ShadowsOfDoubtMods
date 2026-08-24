@@ -20,198 +20,182 @@ namespace DDSLoader
                     Toolbox.Instance.allArticleTrees.Clear();
                 }
 
-                foreach (var dir in DDSLoader.DDSLoaderPlugin.modsToLoadFrom)
+                foreach (var source in DDSLoader.DDSLoaderPlugin.contentToLoadFrom)
                 {
-                    var treesPath = Path.Combine(dir.FullName, "DDS", "Trees");
-                    var messagesPath = Path.Combine(dir.FullName, "DDS", "Messages");
-                    var blocksPath = Path.Combine(dir.FullName, "DDS", "Blocks");
-
-                    if (Directory.Exists(blocksPath))
+                    foreach (var blockPath in source.GetFiles("DDS/Blocks", ".block"))
                     {
-                        foreach (var blockPath in Directory.GetFiles(blocksPath, "*.block"))
+                        try
                         {
-                            try
+                            var block = JsonUtility.FromJson<DDSSaveClasses.DDSBlockSave>(File.ReadAllText(blockPath));
+                            if (block == null)
                             {
-                                var block = JsonUtility.FromJson<DDSSaveClasses.DDSBlockSave>(File.ReadAllText(blockPath));
-                                if (block == null)
-                                {
-                                    DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {blockPath} (Empty)");
-                                }
-                                else
-                                {
-                                    Toolbox.Instance.allDDSBlocks.Add(block.id, block);
-                                }
+                                DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {blockPath} (Empty)");
                             }
-                            catch (Exception exception)
+                            else
                             {
-                                DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {blockPath}");
-                                DDSLoaderPlugin.PluginLogger.LogError(exception);
+                                Toolbox.Instance.allDDSBlocks.Add(block.id, block);
                             }
                         }
-
-                        foreach (var blockPath in Directory.GetFiles(blocksPath, "*.block_patch"))
+                        catch (Exception exception)
                         {
-                            try
-                            {
-                                var patchedBlock = JsonUtility.FromJson<DDSSaveClasses.DDSBlockSave>(CreatePatchedJson(blockPath));
-                                if (patchedBlock == null)
-                                {
-                                    DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {blockPath} (Empty)");
-                                }
-                                else
-                                {
-                                    Toolbox.Instance.allDDSBlocks[patchedBlock.id] = patchedBlock;
-                                }
-                            }
-                            catch (Exception exception)
-                            {
-                                DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {blockPath}");
-                                DDSLoaderPlugin.PluginLogger.LogError(exception);
-                            }
+                            DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {blockPath}");
+                            DDSLoaderPlugin.PluginLogger.LogError(exception);
                         }
                     }
 
-                    if (Directory.Exists(messagesPath))
+                    foreach (var blockPath in source.GetFiles("DDS/Blocks", ".block_patch"))
                     {
-                        foreach (var messagePath in Directory.GetFiles(messagesPath, "*.msg"))
+                        try
                         {
-                            try
+                            var patchedBlock = JsonUtility.FromJson<DDSSaveClasses.DDSBlockSave>(CreatePatchedJson(blockPath, "Blocks"));
+                            if (patchedBlock == null)
                             {
-                                var message = JsonUtility.FromJson<DDSSaveClasses.DDSMessageSave>(File.ReadAllText(messagePath));
-                                if (message == null)
-                                {
-                                    DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {messagePath} (Empty)");
-                                }
-                                else
-                                {
-                                    Toolbox.Instance.allDDSMessages.Add(message.id, message);
-                                }
+                                DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {blockPath} (Empty)");
                             }
-                            catch (Exception exception)
+                            else
                             {
-                                DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {messagePath}");
-                                DDSLoaderPlugin.PluginLogger.LogError(exception);
+                                Toolbox.Instance.allDDSBlocks[patchedBlock.id] = patchedBlock;
                             }
                         }
-
-                        foreach (var messagePath in Directory.GetFiles(messagesPath, "*.msg_patch"))
+                        catch (Exception exception)
                         {
-                            try
-                            {
-                                var patchedMessage = JsonUtility.FromJson<DDSSaveClasses.DDSMessageSave>(CreatePatchedJson(messagePath));
-                                if (patchedMessage == null)
-                                {
-                                    DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {messagePath} (Empty)");
-                                }
-                                else
-                                {
-                                    Toolbox.Instance.allDDSMessages[patchedMessage.id] = patchedMessage;
-                                }
-                            }
-                            catch (Exception exception)
-                            {
-                                DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {messagePath}");
-                                DDSLoaderPlugin.PluginLogger.LogError(exception);
-                            }
+                            DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {blockPath}");
+                            DDSLoaderPlugin.PluginLogger.LogError(exception);
                         }
                     }
 
-                    if (Directory.Exists(treesPath))
+                    foreach (var messagePath in source.GetFiles("DDS/Messages", ".msg"))
                     {
-                        foreach (var treePath in Directory.GetFiles(treesPath, "*.tree"))
+                        try
                         {
-                            try
+                            var message = JsonUtility.FromJson<DDSSaveClasses.DDSMessageSave>(File.ReadAllText(messagePath));
+                            if (message == null)
                             {
-                                var tree = JsonUtility.FromJson<DDSSaveClasses.DDSTreeSave>(File.ReadAllText(treePath));
+                                DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {messagePath} (Empty)");
+                            }
+                            else
+                            {
+                                Toolbox.Instance.allDDSMessages.Add(message.id, message);
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {messagePath}");
+                            DDSLoaderPlugin.PluginLogger.LogError(exception);
+                        }
+                    }
 
-                                if (tree == null)
-                                {
-                                    DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {treePath} (Empty)");
-                                }
-                                else
-                                {
+                    foreach (var messagePath in source.GetFiles("DDS/Messages", ".msg_patch"))
+                    {
+                        try
+                        {
+                            var patchedMessage = JsonUtility.FromJson<DDSSaveClasses.DDSMessageSave>(CreatePatchedJson(messagePath, "Messages"));
+                            if (patchedMessage == null)
+                            {
+                                DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {messagePath} (Empty)");
+                            }
+                            else
+                            {
+                                Toolbox.Instance.allDDSMessages[patchedMessage.id] = patchedMessage;
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {messagePath}");
+                            DDSLoaderPlugin.PluginLogger.LogError(exception);
+                        }
+                    }
+
+                    foreach (var treePath in source.GetFiles("DDS/Trees", ".tree"))
+                    {
+                        try
+                        {
+                            var tree = JsonUtility.FromJson<DDSSaveClasses.DDSTreeSave>(File.ReadAllText(treePath));
+
+                            if (tree == null)
+                            {
+                                DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {treePath} (Empty)");
+                            }
+                            else
+                            {
 #if MONO
-                                    tree.messageRef = new Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+                                tree.messageRef = new Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
 #elif IL2CPP
-                                    tree.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+                                tree.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
 #endif
 
-                                    foreach (var msg in tree.messages)
-                                    {
-                                        tree.messageRef.Add(msg.instanceID, msg);
-                                    }
+                                foreach (var msg in tree.messages)
+                                {
+                                    tree.messageRef.Add(msg.instanceID, msg);
+                                }
 
-                                    Toolbox.Instance.allDDSTrees.Add(tree.id, tree);
+                                Toolbox.Instance.allDDSTrees.Add(tree.id, tree);
 
-                                    // Sanity checks
-                                    if (tree.treeType == DDSSaveClasses.TreeType.newspaper)
-                                    {
-                                        DDSLoaderPlugin.PluginLogger.LogWarning($"Newspaper content is no longer supported - use the official editor");
-                                        // LoadNewspaperArticle(tree, messagesPath);
-                                    }
+                                // Sanity checks
+                                if (tree.treeType == DDSSaveClasses.TreeType.newspaper)
+                                {
+                                    DDSLoaderPlugin.PluginLogger.LogWarning($"Newspaper content is no longer supported - use the official editor");
+                                    // LoadNewspaperArticle(tree, messagesPath);
+                                }
 
-                                    // Check that the starting message ID is valid
-                                    bool validStartingMessage = false;
-                                    foreach(var msg in tree.messages)
+                                // Check that the starting message ID is valid
+                                bool validStartingMessage = false;
+                                foreach(var msg in tree.messages)
+                                {
+                                    if (msg.instanceID == tree.startingMessage)
                                     {
-                                        if (msg.instanceID == tree.startingMessage)
-                                        {
-                                            validStartingMessage = true;
-                                            break;
-                                        }
-                                    }
-
-                                    if (!validStartingMessage)
-                                    {
-                                        DDSLoaderPlugin.PluginLogger.LogWarning($"DDS Tree {tree.name} ({tree.id}) doesn't reference an existing message instanceID as it's starting message. This item may not work if it is a conversation or vmail!");
+                                        validStartingMessage = true;
+                                        break;
                                     }
                                 }
-                            }
-                            catch (Exception exception)
-                            {
-                                DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {treePath}");
-                                DDSLoaderPlugin.PluginLogger.LogError(exception);
+
+                                if (!validStartingMessage)
+                                {
+                                    DDSLoaderPlugin.PluginLogger.LogWarning($"DDS Tree {tree.name} ({tree.id}) doesn't reference an existing message instanceID as it's starting message. This item may not work if it is a conversation or vmail!");
+                                }
                             }
                         }
-
-                        foreach (var treePath in Directory.GetFiles(treesPath, "*.tree_patch"))
+                        catch (Exception exception)
                         {
-                            try
-                            {
-                                var patchedTree = JsonUtility.FromJson<DDSSaveClasses.DDSTreeSave>(CreatePatchedJson(treePath));
-
-                                if (patchedTree == null)
-                                {
-                                    DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {treePath} (Empty)");
-                                }
-                                else
-                                {
-#if MONO
-                                    patchedTree.messageRef = new Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
-#elif IL2CPP
-                                    patchedTree.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
-#endif
-
-                                    foreach (var msg in patchedTree.messages)
-                                    {
-                                        patchedTree.messageRef.Add(msg.instanceID, msg);
-                                    }
-
-                                    Toolbox.Instance.allDDSTrees[patchedTree.id] = patchedTree;
-                                }
-                            }
-                            catch (Exception exception)
-                            {
-                                DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {treePath}");
-                                DDSLoaderPlugin.PluginLogger.LogError(exception);
-                            }
+                            DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {treePath}");
+                            DDSLoaderPlugin.PluginLogger.LogError(exception);
                         }
                     }
 
-                    DDSLoaderPlugin.PluginLogger.LogInfo($"Loaded DDS Content and Patches For: {dir.Parent.Name}");
+                    foreach (var treePath in source.GetFiles("DDS/Trees", ".tree_patch"))
+                    {
+                        try
+                        {
+                            var patchedTree = JsonUtility.FromJson<DDSSaveClasses.DDSTreeSave>(CreatePatchedJson(treePath, "Trees"));
 
-                    var selectedLanguagePath = Path.Combine(dir.FullName, "Strings", Game.Instance.language);
-                    var englishLanguagePath = Path.Combine(dir.FullName, "Strings", "English");
+                            if (patchedTree == null)
+                            {
+                                DDSLoaderPlugin.PluginLogger.LogWarning($"Failed to load: {treePath} (Empty)");
+                            }
+                            else
+                            {
+#if MONO
+                                patchedTree.messageRef = new Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+#elif IL2CPP
+                                patchedTree.messageRef = new Il2CppSystem.Collections.Generic.Dictionary<string, DDSSaveClasses.DDSMessageSettings>();
+#endif
+
+                                foreach (var msg in patchedTree.messages)
+                                {
+                                    patchedTree.messageRef.Add(msg.instanceID, msg);
+                                }
+
+                                Toolbox.Instance.allDDSTrees[patchedTree.id] = patchedTree;
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            DDSLoaderPlugin.PluginLogger.LogError($"Failed to load: {treePath}");
+                            DDSLoaderPlugin.PluginLogger.LogError(exception);
+                        }
+                    }
+
+                    DDSLoaderPlugin.PluginLogger.LogInfo($"Loaded DDS Content and Patches For: {source.Name}");
 
                     // var StringsLoadIntoDictionaryMI = typeof(Strings).GetMethod("LoadIntoDictionary", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
                     var StringsLoadIntoDictionaryMI = Il2CppInterop.Runtime.Il2CppType.From(typeof(Strings)).GetMethod("LoadIntoDictionary", Il2CppSystem.Reflection.BindingFlags.NonPublic | Il2CppSystem.Reflection.BindingFlags.Static);
@@ -222,10 +206,10 @@ namespace DDSLoader
                     }
                     else
                     {
-                        var stringsPath = Directory.Exists(selectedLanguagePath) ? selectedLanguagePath : Directory.Exists(englishLanguagePath) ? englishLanguagePath : "";
-                        if (stringsPath != "")
+                        var stringFiles = source.HasStringsForLanguage(Game.Instance.language) ? source.GetStringFiles(Game.Instance.language) : source.GetStringFiles("English");
+                        if (stringFiles.Count > 0)
                         {
-                            foreach (var stringFile in Directory.GetFiles(stringsPath, "*.csv", SearchOption.AllDirectories))
+                            foreach (var stringFile in stringFiles)
                             {
                                 var fileName = Path.GetFileNameWithoutExtension(stringFile);
                                 foreach (var line in File.ReadAllLines(stringFile))
@@ -233,6 +217,13 @@ namespace DDSLoader
                                     Strings.ParseLine(line.Trim(), out var key, out var notes, out var display, out var alt, out var freq, out var suffix, out var misc);
                                     if (display != null && StringsLoadIntoDictionaryMI != null)
                                     {
+                                        if (!Strings.stringTable.ContainsKey(fileName))
+                                        {
+                                            Strings.stringTable[fileName] =
+                                                new Il2CppSystem.Collections.Generic.Dictionary<string,
+                                                    Strings.DisplayString>();
+                                        }
+                                        
                                         // Manually remove to prevent the override check failing
                                         // As well as from the random table
                                         if (Strings.stringTable[fileName].ContainsKey(key))
@@ -269,19 +260,18 @@ namespace DDSLoader
                                 }
                             }
 
-                            DDSLoaderPlugin.PluginLogger.LogInfo($"Loaded String Content For: {dir.Parent.Name}");
+                            DDSLoaderPlugin.PluginLogger.LogInfo($"Loaded String Content For: {source.Name}");
                         }
                     }
                 }
             }
 
-            static string CreatePatchedJson(string patchPath)
+            static string CreatePatchedJson(string patchPath, string vanillaFolderName)
             {
                 var patchFileInfo = new FileInfo(patchPath);
-                var patchDirInfo = new DirectoryInfo(patchFileInfo.DirectoryName);
 
                 return JSONPatch.ApplyPatch(
-                    File.ReadAllText(Path.Combine(Application.streamingAssetsPath, "DDS", patchDirInfo.Name, patchFileInfo.Name.Split('_')[0])),
+                    File.ReadAllText(Path.Combine(Application.streamingAssetsPath, "DDS", vanillaFolderName, patchFileInfo.Name.Split('_')[0])),
                     File.ReadAllText(patchPath)
                 ).ToString();
             }

@@ -24,7 +24,7 @@ namespace DDSLoader
     {
         public static ManualLogSource PluginLogger;
 
-        public static List<DirectoryInfo> modsToLoadFrom = new List<DirectoryInfo>();
+        public static List<DDSContentSource> contentToLoadFrom = new List<DDSContentSource>();
 
         public static ConfigEntry<bool> debugLogConversations;
         public static ConfigEntry<string> debugPauseTreeGUID;
@@ -55,10 +55,26 @@ namespace DDSLoader
             debugPrintLoadedStrings = Config.Bind("Debug", "Log loaded strings to the console", false);
 
             // Load all folders named DDSContent (includes subfolders), unless they have a disable file
-            modsToLoadFrom = Directory.GetDirectories(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), ".."), "DDSContent", SearchOption.AllDirectories)
+            // A folder is either scanned for content, or, if it contains a manifest, loads exactly what the manifest lists
+            foreach (var dir in Directory.GetDirectories(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), ".."), "DDSContent", SearchOption.AllDirectories)
                 .Select(dirPath => new DirectoryInfo(dirPath))
-                .Where(dir => !File.Exists(Path.Combine(dir.Parent.FullName, "disabled.txt")))
-                .ToList();
+                .Where(dir => !File.Exists(Path.Combine(dir.Parent.FullName, "disabled.txt"))))
+            {
+                try
+                {
+                    var source = File.Exists(Path.Combine(dir.FullName, DDSContentSource.ManifestFileName)) ? DDSContentSource.FromManifest(dir) : DDSContentSource.FromFolderScan(dir);
+
+                    if (source != null)
+                    {
+                        contentToLoadFrom.Add(source);
+                    }
+                }
+                catch (System.Exception exception)
+                {
+                    PluginLogger.LogError($"Failed to load DDS content from: {dir.FullName}");
+                    PluginLogger.LogError(exception);
+                }
+            }
         }
     }
 }
