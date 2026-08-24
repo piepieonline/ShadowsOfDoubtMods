@@ -32,6 +32,7 @@ namespace DocumentationGenerator
         private static string MURDER_BUILDER_DOC_EXPORT_PATH = "Z:/mnt/38BC2DAABC2D639A/Game Modding/ShadowsOfDoubt/PieMurderBuilder/scripts/ref/";
         private static string DDS_EDITOR_DOC_EXPORT_PATH = "Z:/mnt/38BC2DAABC2D639A/Game Modding/ShadowsOfDoubt/SOD_DDS_Editor_Pie/scripts/ref/"; 
         private static string ONLINE_TYPE_EXPORT_PATH = "Z:/mnt/38BC2DAABC2D639A/Game Modding/ShadowsOfDoubt/PieMurderBuilder/data/";
+        private static string BUILDING_PRESET_EXPORT_PATH = "Z:/mnt/38BC2DAABC2D639A/Game Modding/ShadowsOfDoubt/ShadowsOfDoubt-FloorEditorUnity/Assets/GameFloorExports/BuildingPresets/";
 
         private static readonly string[] OnlineTypes = new string[]
         {
@@ -74,6 +75,7 @@ namespace DocumentationGenerator
                 var codegenIDMap = new Dictionary<string, IEnumerable<string>>();
                 var codegenTemplates = new Dictionary<string, dynamic>();
                 var codegenSOTypeMapping = new Dictionary<string, Dictionary<string, (string Class, bool Array, string Tooltip)>>();
+                var exportedBuildingPresets = new HashSet<string>();
 
                 if (DocumentationGenerator.IsFullExportEnabled)
                 {
@@ -87,6 +89,8 @@ namespace DocumentationGenerator
                     if (System.IO.Directory.Exists(onlineTypeDirectory)) System.IO.Directory.Delete(onlineTypeDirectory, true);
                     System.IO.Directory.CreateDirectory(onlineTypeDirectory);
                 }
+
+                System.IO.Directory.CreateDirectory(BUILDING_PRESET_EXPORT_PATH);
 
                 var typesToForceInclude = new string[] { "UnityEngine.Sprite", "UnityEngine.GameObject", "UnityEngine.TextAsset" };
                 foreach (var uo in RuntimeHelper.FindObjectsOfTypeAll(typeof(UnityEngine.Object)))
@@ -124,6 +128,12 @@ namespace DocumentationGenerator
                                 System.IO.Directory.CreateDirectory(System.IO.Path.Combine(SO_EXPORT_PATH, soTypeName));
                             }
                             System.IO.File.WriteAllText(System.IO.Path.Combine(SO_EXPORT_PATH, soTypeName, soName + ".json"), RestoredJsonUtility.ToJsonInternal((dynamic)so, true));
+                        }
+
+                        // The floor editor project assembles buildings from these, so floorplan refs are written as plain names
+                        if (soName != "" && soTypeName == "BuildingPreset" && exportedBuildingPresets.Add(soName))
+                        {
+                            Generator_BuildingPresets.GenerateBuildingPreset(BUILDING_PRESET_EXPORT_PATH, so.TryCast<BuildingPreset>());
                         }
 
                         if (soName != "" && OnlineTypes.Contains(soTypeName))
