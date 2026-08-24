@@ -1,9 +1,12 @@
 {
   "name": "Theft_Objective_Colours",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/TheftObjectiveColours",
   "description": "Adds colour variety to corporate theft objectives in SOD, making it easy to tell them apart. No more looking at a stack of identical envelopes and guessing.",
   "dependencies": [
-    "BepInEx-BepInExPack_IL2CPP-6.0.738"
+    "BepInEx-BepInExPack_IL2CPP-6.0.738",
+    "Piepieonline-Asset_Bundle_Loader-2.1.2",
+    "Piepieonline-DDSLoader-1.0.9",
+    "Piepieonline-DDS_Script_Extensions-1.0.0"
   ]
 }
