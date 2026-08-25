@@ -6,6 +6,8 @@ using HarmonyLib;
 namespace AnyCitySize
 {
     [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+    // ExtraCityEdit adds its own panel and button to the city editor, so load after it to be able to share the space
+    [BepInDependency("truedartt.extracityedit", BepInDependency.DependencyFlags.SoftDependency)]
     public class AnyCitySizePlugin : BasePlugin
     {
         public static ManualLogSource Logger;

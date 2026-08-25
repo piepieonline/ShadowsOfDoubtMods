@@ -1,80 +1,119 @@
 ﻿using HarmonyLib;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace AnyCitySize
 {
     internal class AnyCitySizeHooks
     {
-        [HarmonyPatch(typeof(MainMenuController), "Start")]
-        public class MainMenuController_Start
+        static class CitySizeInput
         {
-            public static int selectedX, selectedY;
+            static int selectedX, selectedY;
 
-            static TMPro.TextMeshProUGUI newSizeTMPButtonLabel;
+            static TMPro.TextMeshProUGUI mainMenuLabel;
+            static TMPro.TextMeshProUGUI cityEditorLabel;
 
             static PopupMessageController.LeftButton popupLeftCallbackCache;
             static PopupMessageController.RightButton popupRightCallbackCache;
 
-            public static void Postfix()
+            public static bool MainMenuInitialised => mainMenuLabel != null;
+            public static bool CityEditorInitialised => cityEditorLabel != null;
+
+            public static void InitialiseMainMenu()
             {
-                if (newSizeTMPButtonLabel != null) return;
+                if (mainMenuLabel != null) return;
 
-                AnyCitySizePlugin.Logger.LogInfo($"Modifying the Generate City menu");
+                var menuCanvas = GameObject.Find("MenuCanvas");
+                if (menuCanvas == null) return;
 
-                selectedX = RestartSafeController.Instance.cityX;
-                selectedY = RestartSafeController.Instance.cityY;
+                var componentsRoot = menuCanvas.transform.Find("MainMenu/GenerateCityPanel/GenerateNewCityComponents");
+                if (componentsRoot == null) return;
 
-                // Copy the city name input box as our template
-                var inputTemplate = GameObject.Find("MenuCanvas").transform.Find("MainMenu/GenerateCityPanel/GenerateNewCityComponents/CityNameInput").gameObject;
+                var inputTemplate = componentsRoot.Find("CityNameInput");
+                var sizeDropdown = componentsRoot.Find("SizeDropdown");
+                if (inputTemplate == null || sizeDropdown == null) return;
 
-                if (inputTemplate != null)
-                {
-                    var newInputBox = GameObject.Instantiate(inputTemplate.gameObject);
-                    newInputBox.SetActive(true);
+                AnyCitySizePlugin.Logger.LogInfo("Modifying the Generate City menu");
 
-                    // Change the label in front
-                    newInputBox.transform.Find("LabelText").GetComponent<TMPro.TextMeshProUGUI>().SetText("Size");
-                    // Remove the randomize button
-                    newInputBox.transform.Find("ButtonArea").gameObject.SetActive(false);
-
-                    var newInputBoxButton = newInputBox.GetComponentInChildren<UnityEngine.UI.Button>();
-                    newInputBoxButton.onClick.RemoveAllListeners();
-                    newInputBoxButton.onClick.AddListener((Action)(() => {
-                        popupLeftCallbackCache = PopupMessageController.Instance.OnLeftButton;
-                        popupRightCallbackCache = PopupMessageController.Instance.OnRightButton;
-
-                        PopupMessageController.Instance.inputField.SetText($"{RestartSafeController.Instance.cityX - 2}x{RestartSafeController.Instance.cityY - 2}");
-                        PopupMessageController.Instance.OnLeftButton = (PopupMessageController.LeftButton)HandlePopupCancel;
-                        PopupMessageController.Instance.OnRightButton = (PopupMessageController.RightButton)HandlePopupSubmit;
-                        PopupMessageController.Instance.PopupMessage("Enter city width.", true, true, RButton: "Confirm", enableInputField: true);
-
-                    }));
-
-                    newSizeTMPButtonLabel = newInputBoxButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
-                    UpdateMenuText();
-
-                    // Disable the normal input box
-                    inputTemplate.transform.parent.GetChild(1).gameObject.SetActive(false);
-
-                    // Add the new input area
-                    newInputBox.transform.SetParent(inputTemplate.transform.parent, true);
-                    newInputBox.transform.SetSiblingIndex(1);
-                }
+                mainMenuLabel = ReplaceSizeDropdown(inputTemplate.gameObject, sizeDropdown);
+                UpdateMenuText();
             }
-            
-            // TODO: This is being called on submit for all popups, for unknown reasons
-            public static void HandlePopupSubmit()
-            {
-                PopupMessageController.Instance.OnLeftButton -= (PopupMessageController.LeftButton)HandlePopupCancel;
-                PopupMessageController.Instance.OnRightButton -= (PopupMessageController.RightButton)HandlePopupSubmit;
-                PopupMessageController.Instance.OnLeftButton = popupLeftCallbackCache;
-                PopupMessageController.Instance.OnRightButton = popupRightCallbackCache;
 
+            public static void InitialiseCityEditor(PrototypeDebugPanel panel)
+            {
+                if (cityEditorLabel != null) return;
+                if (panel.citySizeDropdownController == null || panel.cityNameInputButton == null) return;
+
+                var sizeDropdown = panel.citySizeDropdownController.transform;
+                var componentsRoot = sizeDropdown.parent;
+
+                var inputTemplate = panel.cityNameInputButton.transform;
+                while (inputTemplate.parent != null && inputTemplate.parent != componentsRoot)
+                {
+                    inputTemplate = inputTemplate.parent;
+                }
+                if (inputTemplate.parent == null) return;
+
+                AnyCitySizePlugin.Logger.LogInfo("Modifying the City Editor panel");
+
+                cityEditorLabel = ReplaceSizeDropdown(inputTemplate.gameObject, sizeDropdown);
+                UpdateMenuText();
+            }
+
+            static TMPro.TextMeshProUGUI ReplaceSizeDropdown(GameObject inputTemplate, Transform sizeDropdown)
+            {
+                var newInputBox = GameObject.Instantiate(inputTemplate);
+                newInputBox.name = "AnyCitySizeInput";
+                newInputBox.SetActive(true);
+
+                var labelText = newInputBox.transform.Find("LabelText");
+                if (labelText != null) labelText.GetComponent<TMPro.TextMeshProUGUI>().SetText("Size");
+
+                // Remove the randomize button
+                var buttonArea = newInputBox.transform.Find("ButtonArea");
+                if (buttonArea != null) buttonArea.gameObject.SetActive(false);
+
+                var newInputBoxButton = newInputBox.GetComponentInChildren<Button>();
+                // Instantiate copies the template's persistent listeners, which would open the city name popup as well
+                newInputBoxButton.onClick = new Button.ButtonClickedEvent();
+                newInputBoxButton.onClick.AddListener((Action)OpenSizePopup);
+
+                var newInputBoxButtonController = newInputBoxButton.GetComponent<ButtonController>();
+                if (newInputBoxButtonController != null) newInputBoxButtonController.useAutomaticText = false;
+
+                sizeDropdown.gameObject.SetActive(false);
+
+                newInputBox.transform.SetParent(sizeDropdown.parent, true);
+                newInputBox.transform.SetSiblingIndex(sizeDropdown.GetSiblingIndex());
+
+                return newInputBoxButton.GetComponentInChildren<TMPro.TextMeshProUGUI>();
+            }
+
+            static void OpenSizePopup()
+            {
+                popupLeftCallbackCache = PopupMessageController.Instance.OnLeftButton;
+                popupRightCallbackCache = PopupMessageController.Instance.OnRightButton;
+
+                PopupMessageController.Instance.OnLeftButton = (PopupMessageController.LeftButton)HandlePopupCancel;
+                PopupMessageController.Instance.OnRightButton = (PopupMessageController.RightButton)HandlePopupSubmit;
+                PopupMessageController.Instance.PopupMessage(
+                    "citySize",
+                    true,
+                    true,
+                    RButton: "Confirm",
+                    enableInputField: true,
+                    inputFieldDefault: $"{RestartSafeController.Instance.cityX - 2}x{RestartSafeController.Instance.cityY - 2}",
+                    mainTextPreWrittenOverride: "Enter the city size, as WIDTHxHEIGHT.");
+
+                PopupMessageController.Instance.titleText.SetText("City Size");
+            }
+
+            static void HandlePopupSubmit()
+            {
                 string enteredValue = PopupMessageController.Instance.inputField.text;
+                RestorePopupCallbacks();
 
                 if ((new System.Text.RegularExpressions.Regex("^\\d+x\\d+$")).Match(enteredValue).Length == 0) return;
                 AnyCitySizePlugin.Logger.LogInfo($"Setting value to: {enteredValue}");
@@ -87,28 +126,46 @@ namespace AnyCitySize
                 UpdateMenuText();
             }
 
-            public static void HandlePopupCancel()
+            static void HandlePopupCancel()
             {
-                PopupMessageController.Instance.OnLeftButton -= (PopupMessageController.LeftButton)HandlePopupCancel;
-                PopupMessageController.Instance.OnRightButton -= (PopupMessageController.RightButton)HandlePopupSubmit;
+                RestorePopupCallbacks();
+            }
+
+            static void RestorePopupCallbacks()
+            {
                 PopupMessageController.Instance.OnLeftButton = popupLeftCallbackCache;
                 PopupMessageController.Instance.OnRightButton = popupRightCallbackCache;
             }
 
             public static void UpdateMenuText()
             {
-                if(newSizeTMPButtonLabel != null)
-                {
-                    selectedX = RestartSafeController.Instance.cityX;
-                    selectedY = RestartSafeController.Instance.cityY;
+                selectedX = RestartSafeController.Instance.cityX;
+                selectedY = RestartSafeController.Instance.cityY;
 
-                    newSizeTMPButtonLabel.SetText($"Width: {RestartSafeController.Instance.cityX - 2} Height: {RestartSafeController.Instance.cityY - 2}");
-                }
+                var sizeText = $"Width: {selectedX - 2} Height: {selectedY - 2}";
+                if (mainMenuLabel != null) mainMenuLabel.SetText(sizeText);
+                if (cityEditorLabel != null) cityEditorLabel.SetText(sizeText);
             }
 
-            public static bool IsInitialised()
+            public static bool SizeChangedExternally()
             {
-                return newSizeTMPButtonLabel != null;
+                return RestartSafeController.Instance.cityX != selectedX || RestartSafeController.Instance.cityY != selectedY;
+            }
+
+            public static void RestoreSelectedSize()
+            {
+                RestartSafeController.Instance.cityX = selectedX;
+                RestartSafeController.Instance.cityY = selectedY;
+                UpdateMenuText();
+            }
+        }
+
+        [HarmonyPatch(typeof(MainMenuController), "Start")]
+        public class MainMenuController_Start
+        {
+            public static void Postfix()
+            {
+                CitySizeInput.InitialiseMainMenu();
             }
         }
 
@@ -118,9 +175,9 @@ namespace AnyCitySize
         {
             public static void Postfix(MainMenuController __instance)
             {
-                if (__instance.mainMenuActive && (RestartSafeController.Instance.cityX != MainMenuController_Start.selectedX || RestartSafeController.Instance.cityY != MainMenuController_Start.selectedY))
+                if (__instance.mainMenuActive && CitySizeInput.MainMenuInitialised && CitySizeInput.SizeChangedExternally())
                 {
-                    MainMenuController_Start.UpdateMenuText();
+                    CitySizeInput.UpdateMenuText();
                 }
             }
         }
@@ -129,14 +186,77 @@ namespace AnyCitySize
         [HarmonyPatch(typeof(MainMenuController), "OnChangeCityGenerationOption")]
         public class MainMenuController_OnChangeCityGenerationOption
         {
-            public static void Postfix(MainMenuController __instance)
+            public static void Postfix()
             {
-                if (MainMenuController_Start.IsInitialised() && (RestartSafeController.Instance.cityX != MainMenuController_Start.selectedX || RestartSafeController.Instance.cityY != MainMenuController_Start.selectedY))
+                if (CitySizeInput.MainMenuInitialised && CitySizeInput.SizeChangedExternally())
                 {
-                    RestartSafeController.Instance.cityX = MainMenuController_Start.selectedX;
-                    RestartSafeController.Instance.cityY = MainMenuController_Start.selectedY;
-                    MainMenuController_Start.UpdateMenuText();
+                    CitySizeInput.RestoreSelectedSize();
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(PrototypeDebugPanel), "OnEnable")]
+        public class PrototypeDebugPanel_OnEnable
+        {
+            public static void Postfix(PrototypeDebugPanel __instance)
+            {
+                CitySizeInput.InitialiseCityEditor(__instance);
+                CityStatsPanel.Initialise(__instance);
+                CityStatsPanel.Refresh();
+            }
+        }
+
+        // Fallback, in case the sizes get out of sync somehow
+        [HarmonyPatch(typeof(PrototypeDebugPanel), "Update")]
+        public class PrototypeDebugPanel_Update
+        {
+            public static void Postfix()
+            {
+                if (CitySizeInput.CityEditorInitialised && CitySizeInput.SizeChangedExternally())
+                {
+                    CitySizeInput.UpdateMenuText();
+                }
+            }
+        }
+
+        // When we update the other options, we need to persist the size
+        [HarmonyPatch(typeof(PrototypeDebugPanel), "OnChangeCityGenerationOption")]
+        public class PrototypeDebugPanel_OnChangeCityGenerationOption
+        {
+            public static void Postfix()
+            {
+                if (CitySizeInput.CityEditorInitialised && CitySizeInput.SizeChangedExternally())
+                {
+                    CitySizeInput.RestoreSelectedSize();
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CityEditorController), "OnHaltOnEndOfLoadState")]
+        public class CityEditorController_OnHaltOnEndOfLoadState
+        {
+            public static void Postfix()
+            {
+                CityStatsPanel.Refresh();
+            }
+        }
+
+        [HarmonyPatch(typeof(CityEditorController), "ClearCurrentCityEditorData")]
+        public class CityEditorController_ClearCurrentCityEditorData
+        {
+            public static void Postfix()
+            {
+                CityStatsPanel.Refresh();
+            }
+        }
+
+        // Swapping a tile's building changes which floor plans the city will be built from
+        [HarmonyPatch(typeof(CityEditorBuildingEdit), "OnChangeBuildingType")]
+        public class CityEditorBuildingEdit_OnChangeBuildingType
+        {
+            public static void Postfix()
+            {
+                CityStatsPanel.Refresh();
             }
         }
     }

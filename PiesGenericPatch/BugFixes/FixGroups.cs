@@ -81,6 +81,7 @@ namespace Pies_Generic_Patch.BugFixes
 
         // Delayed until all citizens are created, otherwise most cheaters and dates won't get groups created
         // Add the goal (when the base game tries to do this, groups haven't been assigned yet)
+        // TODO: Looks like, on initial load, only the first NPC per home gets assigned to the homed array, meaning that partners are not allowed to be in groups
         [HarmonyPatch(typeof(GroupsController), nameof(GroupsController.CreateGroups))]
         public class GroupsController_CreateGroups
         {
