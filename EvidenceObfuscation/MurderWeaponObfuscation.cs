@@ -47,5 +47,20 @@ namespace EvidenceObfuscation
                 return true;
             }
         }
+        
+        [HarmonyPatch(typeof(Human.Wound), nameof(Human.Wound.ProcessBloodPoolForWound))]
+        public class Human_Wound_ProcessBloodPoolForWound
+        {
+            public static bool Prefix(Human.Wound __instance)
+            {
+                if(EvidenceObfuscationPlugin.MurderWeapon_BloodPoolRemoved.Value)
+                {
+                    __instance.bloodPoolAmount = 0;
+                    return false;
+                }
+
+                return true;
+            }
+        }
     }
 }

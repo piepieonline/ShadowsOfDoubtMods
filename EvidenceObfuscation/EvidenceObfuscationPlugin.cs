@@ -32,6 +32,7 @@ namespace EvidenceObfuscation
         public static ConfigEntry<bool> MurderWeapon_EntryWoundRemoval;
         public static ConfigEntry<bool> MurderWeapon_GunTypeRemoved;
         public static ConfigEntry<bool> MurderWeapon_MeleeTypeRemoved;
+        public static ConfigEntry<bool> MurderWeapon_BloodPoolRemoved;
 
 #if MONO
         private void Awake()
@@ -54,6 +55,7 @@ namespace EvidenceObfuscation
             MurderWeapon_EntryWoundRemoval = Config.Bind("Murder Weapon", "Should entry wound evidence be removed?", false, "Recommended true, as these pieces of evidence are kind of broken anyway");
             MurderWeapon_GunTypeRemoved = Config.Bind("Murder Weapon", "Should the gun type be removed from the inspection of the body?", false);
             MurderWeapon_MeleeTypeRemoved = Config.Bind("Murder Weapon", "Should the melee weapon type be removed from the inspection of the body?", false);
+            MurderWeapon_BloodPoolRemoved = Config.Bind("Murder Weapon", "Should the blood pool be removed?", false);
 
             PluginLogger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
             var harmony = new Harmony($"{MyPluginInfo.PLUGIN_GUID}");
