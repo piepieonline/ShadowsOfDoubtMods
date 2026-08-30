@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using UnityEngine;
 using BigGustave;
@@ -36,6 +37,45 @@ namespace AssetBundleLoader
 
                 tex.Apply();
             }
+            return tex;
+        }
+
+        static Dictionary<string, Texture2D> loadedTextures = new Dictionary<string, Texture2D>();
+        
+        public static Texture2D LoadTextureFromMod(string modFolderPath, string relativePath)
+        {
+            string writtenPath = Path.Combine(modFolderPath, relativePath + ".png");
+
+            string filePath = ModFilePath.Resolve(writtenPath);
+            if (filePath == null)
+            {
+                BundleLoader.PluginLogger.LogError($"Texture '{relativePath}' failed to load, {writtenPath} doesn't exist!");
+                return null;
+            }
+
+            return CreateTexture2DFromFile(filePath, Path.GetFileNameWithoutExtension(relativePath));
+        }
+        
+        public static Texture2D CreateTexture2DFromFile(string filePath, string textureName)
+        {
+            string cacheKey = ModFilePath.CacheKey(filePath);
+
+            if (loadedTextures.ContainsKey(cacheKey) && loadedTextures[cacheKey] != null)
+            {
+                return loadedTextures[cacheKey];
+            }
+
+            var tex = new Texture2D(2, 2);
+            tex.name = textureName;
+            tex.hideFlags = HideFlags.DontUnloadUnusedAsset;
+
+            if (!ImageConversion.LoadImage(tex, File.ReadAllBytes(filePath), false))
+            {
+                BundleLoader.PluginLogger.LogError($"{filePath} couldn't be decoded, anything using it will be untextured");
+            }
+
+            loadedTextures[cacheKey] = tex;
+
             return tex;
         }
 

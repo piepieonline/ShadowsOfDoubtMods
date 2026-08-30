@@ -81,6 +81,9 @@ namespace AssetBundleLoader
                     }
                 }
 
+                // Mods can reference each other's content, so references are only resolved once every mod has loaded
+                JsonLoader.ResolvePendingReferences();
+
                 haveLoadedCustomPresets = true;
             }
         }

@@ -26,28 +26,11 @@ namespace AssetBundleLoader
             preset.hideFlags = HideFlags.DontUnloadUnusedAsset;
             preset.prefab.hideFlags = HideFlags.DontUnloadUnusedAsset;
 
-            if (!HasBuildingTag(preset.prefab))
-            {
-                preset.prefab.tag = "BuildingModel";
-            }
+            ApplyBuildingConventions(preset.prefab);
 
             foreach (var renderer in preset.prefab.GetComponentsInChildren<MeshRenderer>(true))
             {
-                var model = renderer.gameObject;
-
-                // The game tags these itself, by matching them back to the model they are a static copy of
-                if (model.name.Contains("_static_")) continue;
-
-                // Lit models are the ones the game hands the emission map to, so windows stay lit without this
-                if (!HasBuildingTag(model))
-                {
-                    model.tag = "BuildingModelLights";
-                }
-
-                if (model.layer == 0)
-                {
-                    model.layer = buildingModelLayer;
-                }
+                if (renderer.gameObject.name.Contains("_static_")) continue;
 
                 foreach (var material in renderer.sharedMaterials)
                 {
@@ -56,19 +39,30 @@ namespace AssetBundleLoader
             }
         }
 
-        /// <summary>
-        /// Tags are stored as an index into the tag list of the project the prefab was built in, so a bundle can
-        /// arrive holding tags that mean something else entirely here, or nothing at all
-        /// </summary>
-        static bool HasBuildingTag(GameObject model)
+        public static void ApplyBuildingConventions(GameObject prefab)
         {
-            try
+            if (!buildingTags.Contains(prefab.tag))
             {
-                return buildingTags.Contains(model.tag);
+                prefab.tag = "BuildingModel";
             }
-            catch
+
+            foreach (var renderer in prefab.GetComponentsInChildren<MeshRenderer>(true))
             {
-                return false;
+                var model = renderer.gameObject;
+
+                // The game tags these itself, by matching them back to the model they are a static copy of
+                if (model.name.Contains("_static_")) continue;
+
+                // Lit models are the ones the game hands the emission map to, so windows stay lit without this
+                if (!buildingTags.Contains(model.tag))
+                {
+                    model.tag = "BuildingModelLights";
+                }
+
+                if (model.layer == 0)
+                {
+                    model.layer = buildingModelLayer;
+                }
             }
         }
 
@@ -86,7 +80,7 @@ namespace AssetBundleLoader
         }
 
         /// Shader.Find can return the bundle's own copy, so take the shader from a building the game shipped
-        static Shader FindGameShader(string shaderName)
+        public static Shader FindGameShader(string shaderName)
         {
             if (gameShaders.ContainsKey(shaderName)) return gameShaders[shaderName];
 

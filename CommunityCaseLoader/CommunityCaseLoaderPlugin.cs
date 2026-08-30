@@ -95,7 +95,7 @@ namespace CommunityCaseLoader
                 manifest["folderPath"] = mod.FullName;
 
                 var loadBefore = manifest.Value<string>("loadBefore");
-                if (loadBefore == null && loadBefore == "")
+                if (loadBefore == null || loadBefore == "")
                 {
                     loadedManifests.Add(manifest);
                 }
@@ -113,15 +113,19 @@ namespace CommunityCaseLoader
                 }
             }
 
+            var filesToLoad = new List<LoadedFileContent>();
+
             foreach (var manifest in loadedManifests)
             {
-                LoadManifest(manifest, ref objectsToLoad);
+                ReadManifest(manifest, ref filesToLoad);
             }
+
+            LoadFiles(filesToLoad, ref objectsToLoad);
 
             return objectsToLoad;
         }
 
-        private static void LoadManifest(dynamic manifest, ref List<ScriptableObject> objectsToLoad)
+        private static void ReadManifest(dynamic manifest, ref List<LoadedFileContent> fileContents)
         {
             var moName = manifest.Value<string>("moName");
             // Explicitly typed, otherwise passing it to LoadFileToGame makes that call (and its result) dynamic
@@ -137,58 +141,93 @@ namespace CommunityCaseLoader
                 return;
             }
 
-            List<LoadedFileContent> fileContents = new List<LoadedFileContent>();
-
             foreach (var file in manifest["fileOrder"])
             {
-                string newFilePath = Path.Combine(folderPath, file.ToString().Replace("REF:", "") + ".sodso.json");
-                string patchFilePath = Path.Combine(folderPath, file.ToString().Replace("REF:", "") + ".sodso_patch.json");
+                string fileName = file.ToString().Replace("REF:", "");
+                string newFilePath = Path.Combine(folderPath, fileName + ".sodso.json");
+                string patchFilePath = Path.Combine(folderPath, fileName + ".sodso_patch.json");
                 
                 // \\?\ is used to bypass MAX_PATH on windows
                 if (File.Exists("\\\\?\\" + newFilePath))
                 {
                     var fileContent = File.ReadAllText("\\\\?\\" + newFilePath);
-                    fileContents.Add(new LoadedFileContent() { Content = fileContent, IsNewFile =  true });
+                    fileContents.Add(new LoadedFileContent() { Content = fileContent, IsNewFile =  true, FolderPath = folderPath, FileName = fileName });
                 }
                 else if (File.Exists("\\\\?\\" + patchFilePath))
                 {
                     var fileContent = File.ReadAllText("\\\\?\\" + patchFilePath);
-                    fileContents.Add(new LoadedFileContent() { Content = fileContent, IsNewFile =  false });
+                    fileContents.Add(new LoadedFileContent() { Content = fileContent, IsNewFile =  false, FolderPath = folderPath, FileName = fileName });
                 }
                 else
                 {
                     CommunityCaseLoaderPlugin.PluginLogger.LogError($"Failed to load file: {file} (File not found)");
                 }
             }
+        }
 
-            foreach (var fileContent in fileContents)
+        // A file that copies from, or patches, an object another file creates can only load once that object exists,
+        // so keep coming back to the ones that aren't ready for as long as each pass gets something loaded
+        private static void LoadFiles(List<LoadedFileContent> fileContents, ref List<ScriptableObject> objectsToLoad)
+        {
+            var remaining = fileContents;
+
+            while (remaining.Count > 0)
             {
-                var outputFile = AssetBundleLoader.JsonLoader.LoadFileToGame(fileContent.Content, fileContent.IsNewFile, folderPath);
+                var deferred = new List<LoadedFileContent>();
 
-                if (fileContent.IsNewFile)
+                foreach (var fileContent in remaining)
                 {
-                    objectsToLoad.Add(outputFile);
-                }
-
-                // If it's a sidejob with 
-                if (outputFile.GetActualType() == typeof(JobPreset))
-                {
-                    var preset = UniverseLib.ReflectionExtensions.TryCast<JobPreset>(outputFile);
-                    foreach (var spawnItem in preset.spawnItems)
+                    try
                     {
-                        if (spawnItem.vmailThread != "")
-                        {
-                            // Note that the same thread can't be used across multiple SideJobs types
-                            Toolbox_Start.vmailTreeMap[spawnItem.vmailThread] = new JobPresetAndTag() { JobPreset = preset, JobTag = spawnItem.itemTag };
-                        }
+                        LoadFile(fileContent, ref objectsToLoad);
+                    }
+                    catch (AssetBundleLoader.MissingDependencyException ex)
+                    {
+                        fileContent.MissingDependency = ex.Key;
+                        deferred.Add(fileContent);
                     }
                 }
 
-                if (CommunityCaseLoaderPlugin.DEBUG_ListAllLoadedObjects)
+                if (deferred.Count == remaining.Count)
                 {
-                    CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Loading Object: {outputFile.name}");
+                    foreach (var fileContent in deferred)
+                    {
+                        CommunityCaseLoaderPlugin.PluginLogger.LogError($"Failed to load file: {fileContent.FileName} ({fileContent.MissingDependency} was never loaded, or the two of them depend on each other)");
+                    }
+
+                    return;
                 }
 
+                remaining = deferred;
+            }
+        }
+
+        private static void LoadFile(LoadedFileContent fileContent, ref List<ScriptableObject> objectsToLoad)
+        {
+            var outputFile = AssetBundleLoader.JsonLoader.LoadFileToGame(fileContent.Content, fileContent.IsNewFile, fileContent.FolderPath);
+
+            if (fileContent.IsNewFile)
+            {
+                objectsToLoad.Add(outputFile);
+            }
+
+            // If it's a sidejob with 
+            if (outputFile.GetActualType() == typeof(JobPreset))
+            {
+                var preset = UniverseLib.ReflectionExtensions.TryCast<JobPreset>(outputFile);
+                foreach (var spawnItem in preset.spawnItems)
+                {
+                    if (spawnItem.vmailThread != "")
+                    {
+                        // Note that the same thread can't be used across multiple SideJobs types
+                        Toolbox_Start.vmailTreeMap[spawnItem.vmailThread] = new JobPresetAndTag() { JobPreset = preset, JobTag = spawnItem.itemTag };
+                    }
+                }
+            }
+
+            if (CommunityCaseLoaderPlugin.DEBUG_ListAllLoadedObjects)
+            {
+                CommunityCaseLoaderPlugin.PluginLogger.LogInfo($"Loading Object: {outputFile.name}");
             }
         }
     }
@@ -377,5 +416,8 @@ namespace CommunityCaseLoader
     {
         public string Content;
         public bool IsNewFile;
+        public string FolderPath;
+        public string FileName;
+        public string MissingDependency;
     }
 }

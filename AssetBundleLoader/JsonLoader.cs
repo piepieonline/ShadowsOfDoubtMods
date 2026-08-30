@@ -14,10 +14,26 @@ using UniverseLib;
 
 namespace AssetBundleLoader
 {
+    /// A file that copies from, or patches, an object that hasn't loaded yet, so whoever is loading it can come back to it
+    public class MissingDependencyException : Exception
+    {
+        public string Key { get; }
+
+        public MissingDependencyException(string fileName, string key)
+            : base($"{fileName} needs {key}, which hasn't loaded yet")
+        {
+            Key = key;
+        }
+    }
+
     public static class JsonLoader
     {
         public static Dictionary<string, (ScriptableObject scriptableObject, string fileId)> ScriptableObjectIDMap =
             new System.Collections.Generic.Dictionary<string, (ScriptableObject scriptableObject, string fileId)>();
+
+        // References to objects that hadn't loaded yet, assigned once every mod has had its turn to load
+        private static List<(ScriptableObject Target, string JsonPath, string Key)> pendingReferences =
+            new List<(ScriptableObject Target, string JsonPath, string Key)>();
 
         private static void SerializeTypes(ref Dictionary<string, Dictionary<string, string>> dict, Type soType)
         {
@@ -55,12 +71,12 @@ namespace AssetBundleLoader
         }
         
         [Obsolete("Use the overload taking the folder the mod's content was loaded from, so that file based references can be resolved")]
-        public static ScriptableObject LoadFileToGame(string json, bool isNewObject = true)
+        public static ScriptableObject LoadFileToGame(string json, bool isNewObject)
         {
             return LoadFileToGame(json, isNewObject, null);
         }
         
-        public static ScriptableObject LoadFileToGame(string json, bool isNewObject = true, string modFolderPath = null)
+        public static ScriptableObject LoadFileToGame(string json, bool isNewObject, string modFolderPath)
         {
             var newSOJSON = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(json);
 
@@ -90,12 +106,22 @@ namespace AssetBundleLoader
             List<dynamic> bundleTokens = JsonExtensions.FindTokensByValueMatch(newSOJSON, new System.Text.RegularExpressions.Regex("^BUNDLE:"));
             deferredAssets.AddRange(ExtractAndReplaceBundleTokens(bundleTokens, modFolderPath, fileName));
 
+            List<dynamic> prefabTokens = JsonExtensions.FindTokensByValueMatch(newSOJSON, new System.Text.RegularExpressions.Regex("^PREFAB:"));
+            deferredAssets.AddRange(ExtractAndReplacePrefabTokens(prefabTokens, modFolderPath, fileName));
+
+            List<dynamic> textureTokens = JsonExtensions.FindTokensByValueMatch(newSOJSON, new System.Text.RegularExpressions.Regex("^TEXTURE:"));
+            deferredAssets.AddRange(ExtractAndReplaceTextureTokens(textureTokens, modFolderPath, fileName));
+
+            List<dynamic> vanillaTokens = JsonExtensions.FindTokensByValueMatch(newSOJSON, new System.Text.RegularExpressions.Regex("^VANILLA:"));
+            deferredAssets.AddRange(ExtractAndReplaceVanillaTokens(vanillaTokens, fileName));
+
             var newSOJSONWithRefs = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(newSOJSON.ToString());
 
             // Replace references to existing (or created before us) ScriptableObjets
+            List<(string JsonPath, string Key)> unresolvedReferences;
             try
             {
-                ExtractAndReplaceTokens(
+                unresolvedReferences = ExtractAndReplaceTokens(
                     JsonExtensions.FindTokensByValueMatch(newSOJSON, new System.Text.RegularExpressions.Regex("^REF")),
                     $"{fileType}|{fileName}");
             }
@@ -114,8 +140,13 @@ namespace AssetBundleLoader
                 // Shortcut, so we don't have to create everything from scratch
                 if (copyFrom != null && copyFrom.Contains("|"))
                 {
-                    newSO = ScriptableObject.Instantiate(ScriptableObjectIDMap[copyFrom.Replace("REF:", "").Trim()]
-                        .scriptableObject);
+                    string copyFromKey = copyFrom.Replace("REF:", "").Trim();
+                    if (!ScriptableObjectIDMap.ContainsKey(copyFromKey))
+                    {
+                        throw new MissingDependencyException(fileName, copyFromKey);
+                    }
+
+                    newSO = ScriptableObject.Instantiate(ScriptableObjectIDMap[copyFromKey].scriptableObject);
                 }
                 else
                 {
@@ -124,6 +155,11 @@ namespace AssetBundleLoader
             }
             else
             {
+                if (!ScriptableObjectIDMap.ContainsKey(cacheKey))
+                {
+                    throw new MissingDependencyException(fileName, cacheKey);
+                }
+
                 newSO = ScriptableObjectIDMap[cacheKey].scriptableObject;
             }
 
@@ -132,8 +168,12 @@ namespace AssetBundleLoader
             newSO.name = newSOName;
 
             // Using the original json and the created SO, fix self-references
-            // TODO: Set all custom references with this, not just self? Would reduce the need for the fileOrder to only being required for copyFrom
             FixSelfReferences(newSO, newSOJSONWithRefs);
+
+            foreach (var unresolved in unresolvedReferences)
+            {
+                pendingReferences.Add((newSO, unresolved.JsonPath, unresolved.Key));
+            }
 
             foreach (var deferred in deferredAssets)
             {
@@ -157,8 +197,11 @@ namespace AssetBundleLoader
             return newSO;
         }
 
-        private static void ExtractAndReplaceTokens(List<dynamic> tokens, string typeAndNameKey)
+        /// Anything that can't be resolved yet is blanked out and returned, so it can be assigned once every mod has loaded
+        private static List<(string JsonPath, string Key)> ExtractAndReplaceTokens(List<dynamic> tokens, string typeAndNameKey)
         {
+            var unresolved = new List<(string JsonPath, string Key)>();
+
             foreach (var token in tokens)
             {
                 var tokenType = NewtonsoftExtensions.NewtonsoftJson.JToken_Type(token);
@@ -168,17 +211,21 @@ namespace AssetBundleLoader
 
                     foreach (var item in token.Children<dynamic>())
                     {
+                        string itemPath = item.Path.ToString();
                         var tokenValue = item.ToString().Replace("REF:", "");
+
+                        if (tokenValue != typeAndNameKey && ScriptableObjectIDMap.ContainsKey(tokenValue))
+                        {
+                            newArr.Add(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(ScriptableObjectIDMap[tokenValue].Item2));
+                            continue;
+                        }
+
+                        // The slot is kept either way, so the indices the fixups were recorded against still line up
+                        newArr.Add(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse("{\"m_FileID\":0,\"m_PathID\":0}"));
+
                         if (tokenValue != typeAndNameKey)
                         {
-                            if (ScriptableObjectIDMap.ContainsKey(tokenValue))
-                            {
-                                newArr.Add(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(ScriptableObjectIDMap[tokenValue].Item2));
-                            }
-                            else
-                            {
-                                BundleLoader.PluginLogger.LogError($"{typeAndNameKey} failed to load, {tokenValue} doesn't exist! (Check your fileOrder in your manifest)");
-                            }
+                            unresolved.Add((itemPath, tokenValue));
                         }
                     }
 
@@ -186,25 +233,44 @@ namespace AssetBundleLoader
                 }
                 else
                 {
+                    string jsonPath = token.Path.ToString();
                     var tokenValue = token.ToString().Replace("REF:", "");
 
                     if (tokenValue == typeAndNameKey)
                     {
                         token.Replace(null);
                     }
+                    else if (ScriptableObjectIDMap.ContainsKey(tokenValue))
+                    {
+                        token.Replace(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(ScriptableObjectIDMap[tokenValue].Item2));
+                    }
                     else
                     {
-                        if (ScriptableObjectIDMap.ContainsKey(tokenValue))
-                        {
-                            token.Replace(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(ScriptableObjectIDMap[tokenValue].Item2));
-                        }
-                        else
-                        {
-                            BundleLoader.PluginLogger.LogError($"{typeAndNameKey} failed to load, {tokenValue} doesn't exist! (Check your fileOrder in your manifest)");
-                        }
+                        token.Replace(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse("{\"m_FileID\":0,\"m_PathID\":0}"));
+                        unresolved.Add((jsonPath, tokenValue));
                     }
                 }
             }
+
+            return unresolved;
+        }
+
+        /// Every mod has loaded, so anything still missing is missing for good
+        public static void ResolvePendingReferences()
+        {
+            foreach (var pending in pendingReferences)
+            {
+                if (ScriptableObjectIDMap.TryGetValue(pending.Key, out var reference))
+                {
+                    AssignAtJsonPath(pending.Target, pending.JsonPath, reference.scriptableObject.TryCast(reference.scriptableObject.GetActualType()));
+                }
+                else
+                {
+                    BundleLoader.PluginLogger.LogError($"{pending.Target.name} is missing its reference to {pending.Key}, which no mod loaded!");
+                }
+            }
+
+            pendingReferences.Clear();
         }
 
         private static List<(string JsonPath, UnityEngine.Object Asset)> ExtractAndReplaceFloorTokens(List<dynamic> tokens, string modFolderPath, string fileName)
@@ -227,6 +293,84 @@ namespace AssetBundleLoader
                     {
                         deferredAssets.Add((jsonPath, floorplan));
                     }
+                }
+
+                token.Replace(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse("{\"m_FileID\":0,\"m_PathID\":0}"));
+            }
+
+            return deferredAssets;
+        }
+
+        private static List<(string JsonPath, UnityEngine.Object Asset)> ExtractAndReplaceTextureTokens(List<dynamic> tokens, string modFolderPath, string fileName)
+        {
+            var deferredAssets = new List<(string JsonPath, UnityEngine.Object Asset)>();
+
+            foreach (var token in tokens)
+            {
+                string jsonPath = token.Path.ToString();
+                string relativePath = token.ToString().Replace("TEXTURE:", "").Trim();
+
+                if (modFolderPath == null)
+                {
+                    BundleLoader.PluginLogger.LogError($"{fileName} failed to load texture {relativePath}, the mod loading it didn't provide a folder to search");
+                }
+                else
+                {
+                    var texture = Texture2DLoader.LoadTextureFromMod(modFolderPath, relativePath);
+                    if (texture != null)
+                    {
+                        deferredAssets.Add((jsonPath, texture));
+                    }
+                }
+
+                token.Replace(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse("{\"m_FileID\":0,\"m_PathID\":0}"));
+            }
+
+            return deferredAssets;
+        }
+
+        private static List<(string JsonPath, UnityEngine.Object Asset)> ExtractAndReplacePrefabTokens(List<dynamic> tokens, string modFolderPath, string fileName)
+        {
+            var deferredAssets = new List<(string JsonPath, UnityEngine.Object Asset)>();
+
+            foreach (var token in tokens)
+            {
+                string jsonPath = token.Path.ToString();
+                string relativePath = token.ToString().Replace("PREFAB:", "").Trim();
+
+                if (modFolderPath == null)
+                {
+                    BundleLoader.PluginLogger.LogError($"{fileName} failed to load prefab {relativePath}, the mod loading it didn't provide a folder to search");
+                }
+                else
+                {
+                    var prefab = PrefabLoader.LoadPrefabFromJSON(modFolderPath, relativePath);
+                    // TODO: Create one if null so roofs are shown?
+                    if (prefab != null)
+                    {
+                        deferredAssets.Add((jsonPath, prefab));
+                    }
+                }
+
+                token.Replace(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse("{\"m_FileID\":0,\"m_PathID\":0}"));
+            }
+
+            return deferredAssets;
+        }
+
+        private static List<(string JsonPath, UnityEngine.Object Asset)> ExtractAndReplaceVanillaTokens(List<dynamic> tokens, string fileName)
+        {
+            var deferredAssets = new List<(string JsonPath, UnityEngine.Object Asset)>();
+
+            foreach (var token in tokens)
+            {
+                string jsonPath = token.Path.ToString();
+                string assetReference = token.ToString().Replace("VANILLA:", "").Trim();
+
+                var asset = VanillaAssetLoader.Resolve(assetReference, fileName);
+                if (asset != null)
+                {
+                    deferredAssets.Add((jsonPath, asset));
                 }
 
                 token.Replace(NewtonsoftExtensions.NewtonsoftJson.JToken_Parse("{\"m_FileID\":0,\"m_PathID\":0}"));
