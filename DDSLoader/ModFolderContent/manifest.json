@@ -5,6 +5,6 @@
   "description": "Library. Loader for (new and patch overrides) DDS Tree/Message/Block content and localised strings",
   "dependencies": [
     "BepInEx-BepInExPack_IL2CPP-6.0.738",
-    "Piepieonline-Asset_Bundle_Loader-2.0.4"
+    "Piepieonline-Asset_Bundle_Loader-2.2.0"
   ]
 }

@@ -26,6 +26,15 @@ namespace AssetBundleLoader
         }
     }
 
+    /// A file the loader can't act on at all, so the rest of its mod's files should still get their turn
+    public class InvalidContentException : Exception
+    {
+        public InvalidContentException(string fileName, string problem)
+            : base($"{fileName} can't be loaded, {problem}")
+        {
+        }
+    }
+
     public static class JsonLoader
     {
         public static Dictionary<string, (ScriptableObject scriptableObject, string fileId)> ScriptableObjectIDMap =
@@ -91,12 +100,33 @@ namespace AssetBundleLoader
             newSOJSON = NewtonsoftJson.JToken_Parse(replaced);
             */
 
+            if (fileName == null)
+            {
+                throw new InvalidContentException("<unnamed>", "it has no 'name' to create or look up");
+            }
+
+            if (fileType == null)
+            {
+                throw new InvalidContentException(fileName, "it has no 'fileType' to create or look up");
+            }
+
             newSOJSON.SelectToken("fileType").Replace(null);
 
             string copyFrom = newSOJSON.Value<string>("copyFrom");
             if (copyFrom != null)
             {
                 newSOJSON.SelectToken("copyFrom").Replace(null);
+            }
+
+            var patches = newSOJSON.SelectToken("patches");
+            if (patches != null)
+            {
+                if (isNewObject)
+                {
+                    throw new InvalidContentException(fileName, "'patches' can only be applied to an object that already exists");
+                }
+
+                newSOJSON = BuildPatchedDocument(patches, fileType + "|" + fileName, fileName);
             }
 
             // Assets built at runtime have no file ID, so they are blanked out here and assigned once Unity has deserialised
@@ -132,7 +162,7 @@ namespace AssetBundleLoader
             }
 
             ScriptableObject newSO;
-            string newSOName = newSOJSON.SelectToken("name").ToString();
+            string newSOName = fileName;
             string cacheKey = fileType + "|" + newSOName;
                 
             if (isNewObject)
@@ -195,6 +225,22 @@ namespace AssetBundleLoader
             }
 
             return newSO;
+        }
+
+        /// The object as it stands now is what the operations are applied to, so patches stack rather than overwrite each other
+        private static dynamic BuildPatchedDocument(dynamic patches, string cacheKey, string fileName)
+        {
+            if (!ScriptableObjectIDMap.ContainsKey(cacheKey))
+            {
+                throw new MissingDependencyException(fileName, cacheKey);
+            }
+
+            var target = NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(
+                RestoredJsonUtility.ToJsonInternal(ScriptableObjectIDMap[cacheKey].scriptableObject, false));
+
+            JSONPatch.ApplyOperations(target, patches);
+
+            return target;
         }
 
         /// Anything that can't be resolved yet is blanked out and returned, so it can be assigned once every mod has loaded
@@ -575,6 +621,7 @@ namespace AssetBundleLoader
 
             Type t_JToken;
             MethodInfo m_JToken_Parse;
+            MethodInfo m_JToken_DeepEquals;
             Dictionary<string, MethodInfo> m_Type_Getter;
             public enum e_JToken_Type { None, Object, Array, Constructor, Property, Comment, Integer, Float, String, Boolean, Null, Undefined, Date, Raw, Bytes, Guid, Uri, TimeSpan };
 
@@ -595,6 +642,7 @@ namespace AssetBundleLoader
 
                 t_JToken = newtonsoftJson.GetType("Newtonsoft.Json.Linq.JToken");
                 m_JToken_Parse = t_JToken.GetMethod("Parse", [typeof(string)]);
+                m_JToken_DeepEquals = t_JToken.GetMethod("DeepEquals", [t_JToken, t_JToken]);
                 m_Type_Getter = new Dictionary<string, MethodInfo>();
 
                 t_JObject = newtonsoftJson.GetType("Newtonsoft.Json.Linq.JObject");
@@ -603,8 +651,8 @@ namespace AssetBundleLoader
                 m_JObject_FromObject = t_JObject.GetMethod("FromObject", [typeof(object)]);
                 m_JObject_Type = t_JObject.GetProperty("Type");
 
-                t_JArray = newtonsoftJson.GetType("Newtonsoft.Json.Linq.t_JArray");
-                m_JArray_FromObject = t_JObject.GetMethod("FromObject", [typeof(object)]);
+                t_JArray = newtonsoftJson.GetType("Newtonsoft.Json.Linq.JArray");
+                m_JArray_FromObject = t_JArray.GetMethod("FromObject", [typeof(object)]);
             }
 
             public static NewtonsoftExtensions NewtonsoftJson
@@ -625,6 +673,11 @@ namespace AssetBundleLoader
             public dynamic JToken_Parse(string json)
             {
                 return _instance.m_JToken_Parse.Invoke(null, [json]);
+            }
+
+            public bool JToken_DeepEquals(dynamic left, dynamic right)
+            {
+                return (bool)_instance.m_JToken_DeepEquals.Invoke(null, [left, right]);
             }
 
             public e_JToken_Type JToken_Type(dynamic jtoken)
@@ -673,9 +726,7 @@ namespace AssetBundleLoader
             public static string ToJsonInternal(Il2CppObjectBase obj, bool prettyPrint)
             {
                 _iCallToJsonInternal ??= IL2CPP.ResolveICall<Delegate_ToJsonInternal>("UnityEngine.JsonUtility::ToJsonInternal");
-                System.IntPtr scriptableObjectPtr = (System.IntPtr)typeof(MurderMO).GetMethod("get_Pointer").Invoke(obj, null);
-
-                var newPointer = _iCallToJsonInternal.Invoke(scriptableObjectPtr, prettyPrint);
+                var newPointer = _iCallToJsonInternal.Invoke(obj.Pointer, prettyPrint);
                 var newStr = IL2CPP.Il2CppStringToManaged(newPointer);
 
                 return newStr;

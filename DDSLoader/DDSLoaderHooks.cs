@@ -4,6 +4,8 @@ using System.IO;
 using UnityEngine;
 using HarmonyLib;
 
+using AssetBundleLoader;
+
 namespace DDSLoader
 {
     internal class DDSLoaderHooks

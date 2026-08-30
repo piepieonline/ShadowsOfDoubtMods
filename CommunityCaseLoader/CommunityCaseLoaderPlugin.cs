@@ -186,6 +186,12 @@ namespace CommunityCaseLoader
                         fileContent.MissingDependency = ex.Key;
                         deferred.Add(fileContent);
                     }
+                    // Dropped rather than deferred, so one broken file can't stop the rest of the mod loading
+                    catch (System.Exception ex)
+                    {
+                        CommunityCaseLoaderPlugin.PluginLogger.LogError($"Failed to load file: {fileContent.FileName}");
+                        CommunityCaseLoaderPlugin.PluginLogger.LogError(ex);
+                    }
                 }
 
                 if (deferred.Count == remaining.Count)
