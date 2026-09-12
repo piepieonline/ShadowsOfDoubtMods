@@ -10,6 +10,8 @@ using SOD.Common.Extensions;
 using DialogAdditions;
 using HireAHitman.Dialog;
 using Il2CppInterop.Runtime;
+using UniverseLib;
+using Il2CppType = Il2CppInterop.Runtime.Il2CppType;
 
 namespace HireAHitman
 {
@@ -128,8 +130,9 @@ namespace HireAHitman
                         HitmanMOEasy.disabled = true;
                     }
 
-                    foreach (var murderMO in Toolbox.Instance.GetFromResourceCache<MurderMO>())
+                    foreach (var so in Toolbox.Instance.resourcesCache[Il2CppType.Of<MurderMO>()].Values)
                     {
+                        var murderMO = so.TryCast<MurderMO>();
                         if (!murderMO.disabled && murderMO != HitmanMO && murderMO != HitmanMOEasy)
                         {
                             overriddenDisabledMOs.Add(murderMO);
@@ -137,8 +140,9 @@ namespace HireAHitman
                         }
                     }
 
-                    foreach (var murderPreset in Toolbox.Instance.GetFromResourceCache<MurderPreset>())
+                    foreach (var so in Toolbox.Instance.resourcesCache[Il2CppType.Of<MurderPreset>()].Values)
                     {
+                        var murderPreset = so.TryCast<MurderPreset>();
                         if (!murderPreset.disabled && murderPreset.presetName != "ProfessionalHitPreset")
                         {
                             overriddenDisabledPresets.Add(murderPreset);
@@ -311,8 +315,8 @@ namespace HireAHitman
                     }
                 }
                 
-                HitmanMO = Toolbox.Instance.GetFromResourceCache<MurderMO>("ProfessionalHitMO");
-                HitmanMOEasy = Toolbox.Instance.GetFromResourceCache<MurderMO>("EasyProfessionalHitMO");
+                HitmanMO = Toolbox.Instance.resourcesCache[Il2CppType.Of<MurderMO>()]["ProfessionalHitMO"].TryCast<MurderMO>();
+                HitmanMOEasy = Toolbox.Instance.resourcesCache[Il2CppType.Of<MurderMO>()]["EasyProfessionalHitMO"].TryCast<MurderMO>();
                 HitmanMO.disabled = !HireAHitmanPlugin.EnableHitmanInNormalGameplay.Value;
             }
         }
