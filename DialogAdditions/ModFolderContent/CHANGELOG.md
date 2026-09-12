@@ -1,3 +1,8 @@
+# 0.17.0
+
+- Fixed for the silent experimental release
+- Fixed asking for partner success looping through all options
+
 # 0.16.0
 
 - Added DialogUIRework compatibility

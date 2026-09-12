@@ -148,7 +148,7 @@ namespace DialogAdditions
                 {
                     var fileContent = File.ReadAllText(filePath);
 
-                    DialogPreset loadedPreset = AssetBundleLoader.JsonLoader.LoadFileToGame(fileContent).TryCast<DialogPreset>();
+                    DialogPreset loadedPreset = AssetBundleLoader.JsonLoader.LoadFileToGame(fileContent, true, basePath).TryCast<DialogPreset>();
 
                     objectsToLoad.Add(loadedPreset);
                 }

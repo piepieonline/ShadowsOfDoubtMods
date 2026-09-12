@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UniverseLib;
+using Il2CppType = Il2CppInterop.Runtime.Il2CppType;
 
 namespace DialogAdditions
 {
@@ -16,10 +18,13 @@ namespace DialogAdditions
         {
             public static void Postfix()
             {
-                Toolbox.Instance.scopeDictionary["citizen"].containedScopes.Add(new DDSScope.ContainedScope() { name = "currentgroup", type = Toolbox.Instance.scopeDictionary["group"] });
-                GameplayControls.Instance.humanScope.containedScopes.Add(new DDSScope.ContainedScope() { name = "currentgroup", type = Toolbox.Instance.scopeDictionary["group"] });
-                Toolbox.Instance.scopeDictionary["group"].containedValues.Add("membercount");
-                Toolbox.Instance.scopeDictionary["group"].containedValues.Add("type");
+                var scopes = Toolbox.Instance.resourcesCache[Il2CppType.Of<DDSScope>()];
+                var citizenScope = scopes["citizen"].TryCast<DDSScope>();
+                var groupScope = scopes["group"].TryCast<DDSScope>();
+                citizenScope.containedScopes.Add(new DDSScope.ContainedScope() { name = "currentgroup", type = groupScope });
+                GameplayControls.Instance.humanScope.containedScopes.Add(new DDSScope.ContainedScope() { name = "currentgroup", type = groupScope });
+                groupScope.containedValues.Add("membercount");
+                groupScope.containedValues.Add("type");
             }
         }
 
