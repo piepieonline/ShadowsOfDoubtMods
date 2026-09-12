@@ -59,6 +59,9 @@ This is a subset taken from the default `ddsscripts.sod.json` file (`/DDSContent
  
 When referencing scope scripts from the DDS system, each needs to be prefixed with 'customscope_'.
 When referencing value scripts from the DDS system, each needs to be prefixed with 'custom_'. If a numeric postfix is attached, the generated seed will be offset by this number.
+* Instead of an inline `script`, a value or scope can specify `"file": "path/to/script.lua"`, relative to the directory containing `ddsscripts.sod.json`
+* `_caller` is available in every script, and contains the name of the script being run without the `custom_`/`customscope_` prefix
+* `_cache` is a Lua table available in every script for storing state between calls. It is cleared each time a city is loaded
 
 # Debugging
 

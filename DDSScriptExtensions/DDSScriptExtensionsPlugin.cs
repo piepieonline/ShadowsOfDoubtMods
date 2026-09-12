@@ -73,14 +73,14 @@ namespace DDSScriptExtensions
                 var fileContent = AssetBundleLoader.JsonLoader.NewtonsoftExtensions.NewtonsoftJson.JToken_Parse(System.IO.File.ReadAllText(System.IO.Path.Combine(mod.FullName, "ddsscripts.sod.json")));
                 var modFolderName = mod.Parent.Parent.Name;
 
-                LoadSubsection(fileContent, mod.Parent.Parent.Name, "scopes");
-                LoadSubsection(fileContent, mod.Parent.Parent.Name, "values");
+                LoadSubsection(fileContent, mod.Parent.Parent.Name, mod.FullName, "scopes");
+                LoadSubsection(fileContent, mod.Parent.Parent.Name, mod.FullName, "values");
 
                 DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"Loaded DDS Scripts for: {modFolderName}");
             }
         }
 
-        private static void LoadSubsection(dynamic fileContent, string modFolderName, string subsection)
+        private static void LoadSubsection(dynamic fileContent, string modFolderName, string scriptDirectory, string subsection)
         {
             if(fileContent.ContainsKey(subsection))
             {
@@ -99,9 +99,14 @@ namespace DDSScriptExtensions
                         }
                         else
                         {
+                            var scriptSource = ReadScriptSource(childValue, modFolderName, scriptDirectory, group.Name);
+
+                            if (scriptSource == null)
+                                continue;
+
                             LoadedExtensions[subsection][group.Name][prefixedValueName] = new DDSScript()
                             {
-                                script = childValue.Value["script"].Value.ToString()
+                                script = scriptSource
                             };
 
                             if (childValue.Value["seed"] != null && childValue.Value["seed"].Value != "")
@@ -117,6 +122,28 @@ namespace DDSScriptExtensions
                     }
                 }
             }
+        }
+
+        private static string ReadScriptSource(dynamic childValue, string modFolderName, string scriptDirectory, string groupName)
+        {
+            if (childValue.Value["file"] != null && childValue.Value["file"].Value != "")
+            {
+                var scriptPath = Path.Combine(scriptDirectory, childValue.Value["file"].Value.ToString());
+
+                if (!File.Exists(scriptPath))
+                {
+                    PluginLogger.LogError($"Missing DDS script file for {groupName}.{childValue.Name} in {modFolderName}: {scriptPath}");
+                    return null;
+                }
+
+                return File.ReadAllText(scriptPath);
+            }
+
+            if (childValue.Value["script"] != null)
+                return childValue.Value["script"].Value.ToString();
+
+            PluginLogger.LogError($"DDS script {groupName}.{childValue.Name} in {modFolderName} has neither a 'script' nor a 'file'");
+            return null;
         }
     }
 

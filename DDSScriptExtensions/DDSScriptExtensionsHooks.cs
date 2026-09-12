@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UniverseLib;
+using Il2CppType = Il2CppInterop.Runtime.Il2CppType;
 using static lzma;
 
 namespace DDSScriptExtensions
@@ -58,6 +59,12 @@ namespace DDSScriptExtensions
                 }
 
                 DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["CSToString"] = (System.Func<string, object>)ToTypedStringExtension.ToTypedString;
+
+                // Per-load scratch space for scripts. The Lua environment is built once at plugin
+                // load and shared by every script, so anything a script leaves in Globals would
+                // otherwise outlive the city it was computed for. Replacing the table here scopes
+                // it to one loaded save.
+                DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["_cache"] = new Table(DDSScriptExtensionsPlugin.LuaScriptEnvironment);
             }
         }
 
@@ -66,50 +73,48 @@ namespace DDSScriptExtensions
         {
             public static bool Prefix(ref DDSScope __result, DDSScope baseScope, DDSScope currentScope, string newScope, object inputObject, ref object outputObject, object additionalObject)
             {
-                if (newScope.StartsWith("customscope_") && DDSScriptExtensionsPlugin.LoadedExtensions["scopes"][currentScope.name].ContainsKey(newScope))
+                if (newScope.StartsWith("customscope_")
+                    && DDSScriptExtensionsPlugin.LoadedExtensions["scopes"].TryGetValue(currentScope.name, out var scopeScripts)
+                    && scopeScripts.TryGetValue(newScope, out var ddsScript))
                 {
-                    if (DDSScriptExtensionsPlugin.LoadedExtensions["scopes"][currentScope.name].ContainsKey(newScope))
-                    {
-                        var ddsScript = DDSScriptExtensionsPlugin.LoadedExtensions["scopes"][currentScope.name][newScope];
+                    DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["_caller"] = newScope.Substring("customscope_".Length);
+                    DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["inputObject"] = inputObject?.TryCast(inputObject.GetActualType());
+                    DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["additionalObject"] = additionalObject?.TryCast(additionalObject.GetActualType());
 
-                        DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["inputObject"] = inputObject?.TryCast(inputObject.GetActualType());
-                        DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["additionalObject"] = additionalObject?.TryCast(inputObject.GetActualType());
+                    if (DDSScriptExtensionsPlugin.DebugEnabled.Value)
+                    {
+                        try
+                        {
+                            if (inputObject != null)
+                                DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"inputObject is: {inputObject.GetType().Name} - {ToTypedStringExtension.ToTypedString(inputObject)}");
+                            else
+                                DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"inputObject is null");
+
+                            if (additionalObject != null)
+                                DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"additionalObject is: {additionalObject.GetType().Name} - {ToTypedStringExtension.ToTypedString(additionalObject)}");
+                            else
+                                DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"additionalObject is null");
+                        }
+                        catch
+                        { }
+                    }
+
+                    try
+                    {
+                        // Run the calculation function
+                        outputObject = DDSScriptExtensionsPlugin.LuaScriptEnvironment.DoString(ddsScript.script).ToObject();
 
                         if (DDSScriptExtensionsPlugin.DebugEnabled.Value)
                         {
-                            try
-                            {
-                                if (inputObject != null)
-                                    DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"inputObject is: {inputObject.GetType().Name} - {ToTypedStringExtension.ToTypedString(inputObject)}");
-                                else
-                                    DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"inputObject is null");
-
-                                if (additionalObject != null)
-                                    DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"additionalObject is: {additionalObject.GetType().Name} - {ToTypedStringExtension.ToTypedString(inputObject)}");
-                                else
-                                    DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"additionalObject is null");
-                            }
-                            catch
-                            { }
+                            DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"DDSScript 'Scope' result for {newScope}: Scope: {ddsScript.scope}, Object: {ToTypedStringExtension.ToTypedString(outputObject)} ");
                         }
-
-                        try
-                        {
-                            // Run the calculation function
-                            outputObject = DDSScriptExtensionsPlugin.LuaScriptEnvironment.DoString(ddsScript.script).ToObject();
-
-                            if (DDSScriptExtensionsPlugin.DebugEnabled.Value)
-                            {
-                                DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"DDSScript 'Scope' result for {newScope}: Scope: {ddsScript.scope}, Object: {ToTypedStringExtension.ToTypedString(outputObject)} ");
-                            }
-                            __result = Toolbox.Instance.scopeDictionary[ddsScript.scope];
-                            return false;
-                        }
-                        catch (System.Exception ex)
-                        {
-                            DDSScriptExtensionsPlugin.PluginLogger.LogError(ex.Message);
-                            DDSScriptExtensionsPlugin.PluginLogger.LogError(ex.StackTrace);
-                        }
+                        __result = Toolbox.Instance.resourcesCache[Il2CppType.Of<DDSScope>()][ddsScript.scope].TryCast<DDSScope>();
+                        return false;
+                    }
+                    catch (System.Exception ex)
+                    {
+                        DDSScriptExtensionsPlugin.PluginLogger.LogError(ex.Message);
+                        DDSScriptExtensionsPlugin.PluginLogger.LogError(ex.StackTrace);
                     }
                 }
 
@@ -143,6 +148,7 @@ namespace DDSScriptExtensions
                     {
                         var ddsScript = DDSScriptExtensionsPlugin.LoadedExtensions["values"][scopeToSearch][trimmedNewValue];
 
+                        DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["_caller"] = newValue.Substring("custom_".Length);
                         DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["baseObject"] = baseObject?.TryCast(baseObject.GetActualType());
                         DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["inputObject"] = inputObject?.TryCast(inputObject.GetActualType());
                         DDSScriptExtensionsPlugin.LuaScriptEnvironment.Globals["additionalObject"] = additionalObject?.TryCast(additionalObject.GetActualType());
@@ -162,7 +168,7 @@ namespace DDSScriptExtensions
                                     DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"inputObject is null");
 
                                 if (additionalObject != null)
-                                    DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"additionalObject is: {additionalObject.GetType().Name} - {ToTypedStringExtension.ToTypedString(inputObject)}");
+                                    DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"additionalObject is: {additionalObject.GetType().Name} - {ToTypedStringExtension.ToTypedString(additionalObject)}");
                                 else
                                     DDSScriptExtensionsPlugin.PluginLogger.LogInfo($"additionalObject is null");
                             }
