@@ -2,16 +2,19 @@
 
 Various bugfix patches that I'm adding to/removing from as required.
 
-Current fixes (* requires a new city to be generated):
-* Fixes group meetups *
-  * Groups and dates will actually meet up and in more locations than just the diners
-* Adds retirees *
-  * The 'retired' occupation is unused by default in SOD, but there are jobs and cases that assume it exists. This ensures that there are people in that occupation.
+Current fixes (\* requires a new city to be generated):
+
+- Fixes group meetups \*
+  - Groups and dates will actually meet up and in more locations than just the diners
+- Fixes NPCs needing the bathroom too often (and other needs)
+  - A citizen talking or interacting caused their needs to increase too quickly, resulting in lots of extra bathroom usage. This prevents the double counting that was occurring
+- Adds retirees \*
+  - The 'retired' occupation is unused by default in SOD, but there are jobs and cases that assume it exists. This ensures that there are people in that occupation.
 
 # Manual Installation
 
-* Ensure you have BepInEx BE and dependencies installed
-* Extract the mod to `.\BepInEx\plugins\`, so you should have `.\BepInEx\plugins\Pies_Generic_Patch\Pies_Generic_Patch.dll`
+- Ensure you have BepInEx BE and dependencies installed
+- Extract the mod to `.\BepInEx\plugins\`, so you should have `.\BepInEx\plugins\Pies_Generic_Patch\Pies_Generic_Patch.dll`
 
 # Source:
 

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UniverseLib;
+using Il2CppType = Il2CppInterop.Runtime.Il2CppType;
 
 namespace Pies_Generic_Patch.BugFixes
 {
@@ -16,6 +17,7 @@ namespace Pies_Generic_Patch.BugFixes
     /// - Routine goals are created before groups, so when it creates routine goals there are no groups assigned to the citizen
     /// - Groups are created before all citizens are created, so only the first 50 or so citizens will be in a group properly
     /// - Specifically for cheaters, there is another issue when meeting up isn't possible (times don't align), so no meetup event is created
+    /// - Presets with a minimum member count of 0 create empty groups, which then throw when their vmails and clues index the member list
     /// </summary>
     public class FixGroups
     {
@@ -95,7 +97,28 @@ namespace Pies_Generic_Patch.BugFixes
                         Pies_Generic_PatchPlugin.Log.LogInfo($"Skipping groups");
                     return false;
                 }
+
+                ClampGroupMinMembers();
+
                 return true;
+            }
+
+            // An empty group still passes the member count check when minMembers is 0, and the vmail and clue
+            // spawning that follows indexes into the member list, taking out the rest of city generation
+            private static void ClampGroupMinMembers()
+            {
+                foreach (var scriptableObject in Toolbox.Instance.resourcesCache[Il2CppType.Of<GroupPreset>()].Values)
+                {
+                    var groupPreset = scriptableObject.TryCast<GroupPreset>();
+
+                    if (groupPreset == null || groupPreset.minMembers >= 1)
+                        continue;
+
+                    groupPreset.minMembers = 1;
+
+                    if (Pies_Generic_PatchPlugin.DebugLogging.Value)
+                        Pies_Generic_PatchPlugin.Log.LogInfo($"Clamped minMembers to 1 for group {groupPreset.name}");
+                }
             }
 
             public static void Postfix()

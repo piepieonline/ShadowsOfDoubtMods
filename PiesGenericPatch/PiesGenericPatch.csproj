@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<AssemblyName>Pies_Generic_Patch</AssemblyName>
-		<Description>Bugfixes for Shadows of Doubt. Currently fixes: Group meetups, Retires not existing</Description>
+		<Description>Bugfixes for Shadows of Doubt. Currently fixes: Group meetups, Retires not existing, Duplicate object IDs on loaded cities, NPC needs miscounting during interactions</Description>
 		<Version>1.0.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
