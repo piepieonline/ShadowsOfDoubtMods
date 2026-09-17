@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<AssemblyName>MOManager</AssemblyName>
-		<Version>1.0.0</Version>
+		<Version>1.1.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 		<RestoreAdditionalProjectSources>
@@ -24,6 +24,9 @@
 	<ItemGroup Condition="'$(Configuration)'=='IL2CPP'">
         <PackageReference Include="SOD.Common" Version="2.1.1" />
 		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+		<Reference Include="UniverseLib.IL2CPP.Interop">
+			<HintPath>$(BepInExPath)plugins/GTFOModding-UnityExplorer_IL2CPP/UniverseLib.IL2CPP.Interop.dll</HintPath>
+		</Reference>
 		<Reference Include="$(BepInExPath)interop/Il2Cppmscorlib.dll" />
 		<Reference Include="$(BepInExPath)interop/Assembly-CSharp.dll" />
 		<Reference Include="$(BepInExPath)interop/Unity.TextMeshPro.dll" />

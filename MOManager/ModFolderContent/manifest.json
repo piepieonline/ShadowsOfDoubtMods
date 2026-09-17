@@ -1,6 +1,6 @@
 {
   "name": "MO_Manager",
-  "version_number": "1.0.1",
+  "version_number": "1.1.0",
   "website_url": "https://github.com/piepieonline/ShadowsOfDoubtMods/tree/master/MOManager",
   "description": "Allows for configuration of which MurderMOs appear and statistically how often.",
   "dependencies": [
