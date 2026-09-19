@@ -195,5 +195,40 @@ namespace Pies_Generic_Patch.BugFixes
                 }
             }
         }
+
+        // Adds |<citizen>.pie_casualsignature| - first name and surname initial, in that citizen's own handwriting
+        [HarmonyPatch(typeof(Strings), nameof(Strings.GetContainedValue))]
+        public class Strings_GetContainedValue
+        {
+            public const string ValueName = "pie_casualsignature";
+
+            public static bool Prefix(ref string __result, string withinScope, string newValue, object inputObject, Evidence baseEvidence, Strings.LinkSetting linkSetting)
+            {
+                if (withinScope.ToLower() != "citizen" || newValue.ToLower() != ValueName)
+                    return true;
+
+                __result = string.Empty;
+
+                var human = inputObject.TryCast<Human>();
+
+                // Unfilled group slots pass the group through instead of a member
+                if (human == null || human.handwriting == null || human.GetSurName().Length <= 0)
+                    return false;
+
+                var name = $"{human.GetFirstName()} {human.GetSurName().Substring(0, 1)}.";
+
+                if (linkSetting == Strings.LinkSetting.forceLinks && baseEvidence != null)
+                {
+                    var link = Strings.AddOrGetLink(human.evidenceEntry, baseEvidence.GetMergedDiscoveryLinkKeysFor(human.evidenceEntry, Evidence.DataKey.firstName));
+
+                    if (link != null)
+                        name = $"<link={link.id}>{name}</link>";
+                }
+
+                __result = $"<font=\"{human.handwriting.fontAsset.name}\">{name}</font>";
+
+                return false;
+            }
+        }
     }
 }
