@@ -6,10 +6,15 @@ Current fixes (\* requires a new city to be generated):
 
 - Fixes group meetups \*
   - Groups and dates will actually meet up and in more locations than just the diners
+  - Group flyers are fixed to actually gives times and members as they should
 - Fixes NPCs needing the bathroom too often (and other needs)
   - A citizen talking or interacting caused their needs to increase too quickly, resulting in lots of extra bathroom usage. This prevents the double counting that was occurring
+- Fixes Type E handwriting
+  - The Type E handwriting preset pointed at the Denise handwriting font instead of Halogen
 - Adds retirees \*
   - The 'retired' occupation is unused by default in SOD, but there are jobs and cases that assume it exists. This ensures that there are people in that occupation.
+- Fixes signatures
+  - When sales ledgers were obfuscated, signatures were globally impacted. This changes them back to always be "F. Lastname" as a signature on legal documents. Ledgers are not affected
 
 # Manual Installation
 

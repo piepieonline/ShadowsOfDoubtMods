@@ -1,3 +1,7 @@
+# 1.4.0
+
+- Fix the Type E handwriting preset duplicating Type D and using the Denise handwriting font instead of Halogen
+
 # 1.3.0
 
 - Fix group sign-up posters not rendering text correctly
