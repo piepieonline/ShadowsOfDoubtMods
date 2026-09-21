@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<AssemblyName>Pies_Generic_Patch</AssemblyName>
-		<Description>Bugfixes for Shadows of Doubt. Currently fixes: Group meetups, Retires not existing, Duplicate object IDs on loaded cities, NPC needs miscounting during interactions, Halogen handwriting using the wrong font</Description>
-		<Version>1.4.0</Version>
+		<Description>Bugfixes for Shadows of Doubt. See the README for what is patched</Description>
+		<Version>1.5.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>latest</LangVersion>
 		<RestoreAdditionalProjectSources>

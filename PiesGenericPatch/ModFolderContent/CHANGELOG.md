@@ -1,3 +1,7 @@
+# 1.5.0
+
+- Fix shopkeepers asking for a password at shops that don't require or have one (caused by a sync disk that reduces dialog success chance, or by an active side job involving that shopkeeper)
+
 # 1.4.0
 
 - Fix the Type E handwriting preset duplicating Type D and using the Denise handwriting font instead of Halogen
